@@ -10,7 +10,6 @@ spring:
     username: root
     password: wanch-coachdbpassword
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
     show-sql: true
     hibernate:
