@@ -1,20 +1,23 @@
 
-
 springapplication:
   name: wanchcoach
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/wanchcoach
-    username:
-    password:
+#    url: jdbc:mysql://127.0.0.1:3306/wanchcoach?allowPublicKeyRetrieval=true
+    url: jdbc:mysql://host.docker.internal:3306/wanchcoach?allowPublicKeyRetrieval=true
+    username: root
+    password: root
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
     show-sql: true
     hibernate:
       ddl-auto: update
+
 logging:
   level:
+    src:
+      main: debug
     root: info
