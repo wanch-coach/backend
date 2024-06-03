@@ -5,7 +5,7 @@ springapplication:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://158.179.193.167:3306/wanchcoach?allowPublicKeyRetrieval=true
+    url: jdbc:mysql://158.179.193.167:3306/wanchcoach
 #    url: jdbc:mysql://host.docker.internal:3306/wanchcoach?allowPublicKeyRetrieval=true
     username: root
     password: wanch-coachdbpassword
