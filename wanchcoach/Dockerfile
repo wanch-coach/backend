@@ -2,7 +2,7 @@ FROM openjdk:17-jdk
 
 ARG JAR_FILE=build/libs/wanchcoach-0.0.1-SNAPSHOT.jar
 
-COPY ${JAR_FILE} wanchcoach.jar
+ADD ${JAR_FILE} wanchcoach.jar
 
 EXPOSE 8081
 
