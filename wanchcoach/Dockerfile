@@ -6,7 +6,7 @@ ADD ${JAR_FILE} wanchcoach.jar
 
 EXPOSE 8081
 
-ENTRYPOINT ["java","-Djava.cloud.config.profile=dev","-jar","/wanchcoach.jar"]
+ENTRYPOINT ["java","-Dspring.cloud.config.profile=dev","-jar","/wanchcoach.jar"]
 
 
 # FROM openjdk:17-jdk
