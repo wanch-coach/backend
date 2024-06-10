@@ -2,7 +2,7 @@ spring:
   application:
     name: wanchcoach
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://158.179.193.167:8888
   cloud:
     config:
       name: application
