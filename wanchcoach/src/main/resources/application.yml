@@ -9,7 +9,7 @@ spring:
   cloud:
     config:
       name: application
-      profile: dev
+      profile: local
 
 encrypt:
-  key:
+  key: ${ENCRYPT_KEY}
