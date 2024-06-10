@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: wanchcoach
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      name: application
+      profile: dev
+
+encrypt:
+  key:

@@ -1,25 +1,6 @@
-
-springapplication:
-  name: wanchcoach
-
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://158.179.193.167:3306/wanchcoach
-#    url: jdbc:mysql://host.docker.internal:3306/wanchcoach?allowPublicKeyRetrieval=true
-    username: root
-    password: wanch-coachdbpassword
-  jpa:
-    open-in-view: false
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-
 server:
   port: 8081
 
-logging:
-  level:
-    src:
-      main: debug
-    root: info
+spring:
+  profiles:
+    active: local
