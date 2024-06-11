@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/wc-backend.iml" filepath="$PROJECT_DIR$/.idea/wc-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wanchcoach.iml" filepath="$PROJECT_DIR$/.idea/modules/wanchcoach.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wanchcoach.main.iml" filepath="$PROJECT_DIR$/.idea/modules/wanchcoach.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/wanchcoach.test.iml" filepath="$PROJECT_DIR$/.idea/modules/wanchcoach.test.iml" />
     </modules>
   </component>
 </project>
