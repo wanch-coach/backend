@@ -6,7 +6,11 @@ ADD ${JAR_FILE} wanchcoach.jar
 
 EXPOSE 8081
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/wanchcoach.jar"]
+# 환경변수 설정
+ARG ENCRYPT_KEY
+ENV ENCRYPT-KEY $ENCRYPT_KEY
+
+ENTRYPOINT ["java","-Dspring.cloud.config.profile=dev","-jar","/wanchcoach.jar"]
 
 
 # FROM openjdk:17-jdk
