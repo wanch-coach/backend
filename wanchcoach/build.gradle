@@ -41,6 +41,10 @@ dependencies {
 //	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+
+	// https://mvnrepository.com/artifact/org.json/json -> JSON 의존성
+	implementation 'com.googlecode.json-simple:json-simple:1.1'
 }
 
 dependencyManagement {
