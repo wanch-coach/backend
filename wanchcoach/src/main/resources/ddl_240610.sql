@@ -3,7 +3,7 @@ CREATE DATABASE `wanchcoach`;
 use wanchcoach;
 
 CREATE TABLE `member` (
-	`member_id`	BIGINT UNSIGNED	PRIMARY KEY,
+	`member_id`	BIGINT 	PRIMARY KEY,
 	`id`	VARCHAR(30)	NOT NULL,
 	`encrypted_pwd`	VARCHAR(255)	NOT NULL,
 	`name`	VARCHAR(30)	NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `member` (
 	`gender`	TINYINT	NOT NULL,
 	`phone_number`	VARCHAR(30)	NOT NULL,
 	`active`	TINYINT	NOT NULL,
-	`refresh_token`	BIGINT UNSIGNED	NULL,
+	`refresh_token`	BIGINT 	NULL,
 	`login_type`	TINYINT	NOT NULL,
 	`location_permission`	TINYINT	NOT NULL DEFAULT 0,
 	`call_permission`	TINYINT	NOT NULL DEFAULT 0,
@@ -20,14 +20,14 @@ CREATE TABLE `member` (
 );
 
 CREATE TABLE `member_device_token` (
-	`device_token_id`	BIGINT UNSIGNED	PRIMARY KEY,
-	`member_id`	BIGINT UNSIGNED	NOT NULL,
+	`device_token_id`	BIGINT 	PRIMARY KEY,
+	`member_id`	BIGINT 	NOT NULL,
 	`device_token`	VARCHAR(255)	NOT NULL
 );
 
 CREATE TABLE `family` (
-	`family_id`	BIGINT UNSIGNED	PRIMARY KEY,
-	`member_id`	BIGINT UNSIGNED	NOT NULL,
+	`family_id`	BIGINT 	PRIMARY KEY,
+	`member_id`	BIGINT 	NOT NULL,
 	`name`	VARCHAR(30)	NOT NULL,
 	`birth_date`	DATE	NOT NULL,
 	`gender`	TINYINT	NOT NULL,
@@ -35,10 +35,10 @@ CREATE TABLE `family` (
 );
 
 CREATE TABLE `treatment` (
-	`treatment_id`	BIGINT UNSIGNED	PRIMARY KEY,
-	`family_id`	BIGINT UNSIGNED	NOT NULL,
-	`hospital_id`	BIGINT UNSIGNED	NOT NULL,
-	`prescription_id`	BIGINT UNSIGNED NULL,
+	`treatment_id`	BIGINT 	PRIMARY KEY,
+	`family_id`	BIGINT 	NOT NULL,
+	`hospital_id`	BIGINT 	NOT NULL,
+	`prescription_id`	BIGINT  NULL,
 	`department`	VARCHAR(30)	NULL,
 	`date`	DATETIME	NOT NULL,
 	`taken`	TINYINT	NOT NULL,
@@ -47,8 +47,8 @@ CREATE TABLE `treatment` (
 );
 
 CREATE TABLE `prescription` (
-	`prescription_id`	BIGINT UNSIGNED	PRIMARY KEY,
-	`pharmacy_id`	BIGINT UNSIGNED	NOT NULL,
+	`prescription_id`	BIGINT 	PRIMARY KEY,
+	`pharmacy_id`	BIGINT 	NOT NULL,
     `remains`	INT	NULL,
 	`taking`	TINYINT	NULL,
 	`end_date`	DATE	NULL,
@@ -56,8 +56,8 @@ CREATE TABLE `prescription` (
 );
 
 CREATE TABLE `prescribed medicine` (
-	`prescription_id`	BIGINT UNSIGNED NOT NULL,
-	`medicine_id`	BIGINT UNSIGNED	NOT NULL,
+	`prescription_id`	BIGINT  NOT NULL,
+	`medicine_id`	BIGINT 	NOT NULL,
 	`quantity`	FLOAT	NULL,
 	`frequency`	INT	NULL,
 	`day`	INT	NULL,
@@ -66,29 +66,29 @@ CREATE TABLE `prescribed medicine` (
 );
 
 CREATE TABLE `treatment alarm` (
-	`treatment_alarm_id`	BIGINT UNSIGNED PRIMARY KEY,
-	`treatment_id`	BIGINT UNSIGNED	NOT NULL,
+	`treatment_alarm_id`	BIGINT  PRIMARY KEY,
+	`treatment_id`	BIGINT 	NOT NULL,
 	`time`	DATETIME	NOT NULL,
 	`content`	VARCHAR(50)	NOT NULL
 );
 
 CREATE TABLE `medicine record` (
-	`mr_id`	BIGINT UNSIGNED	PRIMARY KEY,
-	`family_id`	BIGINT UNSIGNED	NOT NULL,
-	`prescription_id`	BIGINT UNSIGNED	NOT NULL,
+	`mr_id`	BIGINT 	PRIMARY KEY,
+	`family_id`	BIGINT 	NOT NULL,
+	`prescription_id`	BIGINT 	NOT NULL,
 	`time`	DATETIME	NULL
 );
 
 CREATE TABLE `scheduled medicine record` (
-	`mr_id`	BIGINT UNSIGNED	PRIMARY KEY,
-	`family_id`	BIGINT UNSIGNED	NOT NULL,
-	`prescription_id`	BIGINT UNSIGNED	NOT NULL,
+	`mr_id`	BIGINT 	PRIMARY KEY,
+	`family_id`	BIGINT 	NOT NULL,
+	`prescription_id`	BIGINT 	NOT NULL,
 	`estimated_time`	DATETIME	NOT NULL,
 	`alarm`	TINYINT	NOT NULL
 );
 
 CREATE TABLE `medicine administration time` (
-	`family_id`	BIGINT UNSIGNED	PRIMARY KEY,
+	`family_id`	BIGINT 	PRIMARY KEY,
 	`morning`	TIME	NULL,
 	`noon`	TIME	NULL,
 	`evening`	TIME	NULL,
@@ -96,8 +96,8 @@ CREATE TABLE `medicine administration time` (
 );
 
 CREATE TABLE `medicine` (
-	`medicine_id`	BIGINT UNSIGNED PRIMARY KEY,
-	`medicine_cat_id`	BIGINT UNSIGNED	NOT NULL,
+	`medicine_id`	BIGINT  PRIMARY KEY,
+	`medicine_cat_id`	BIGINT 	NOT NULL,
 	`manufacturer`	VARCHAR(30)	NOT NULL,
 	`name`	VARCHAR(30)	NOT NULL,
 	`efficacy`	VARCHAR(255)	NOT NULL,
@@ -106,12 +106,12 @@ CREATE TABLE `medicine` (
 );
 
 CREATE TABLE `medicine category` (
-	`medicine_cat_id`	BIGINT UNSIGNED PRIMARY KEY,
+	`medicine_cat_id`	BIGINT  PRIMARY KEY,
 	`name`	VARCHAR(30)	NOT NULL
 );
 
 CREATE TABLE `pharmacy` (
-	`pharmacy_id`	BIGINT UNSIGNED	PRIMARY KEY,
+	`pharmacy_id`	BIGINT 	PRIMARY KEY,
 	`name`	VARCHAR(30)	NOT NULL,
 	`address`	VARCHAR(100)	NOT NULL,
 	`phone_number`	VARCHAR(30)	NOT NULL,
@@ -122,15 +122,15 @@ CREATE TABLE `pharmacy` (
 );
 
 CREATE TABLE `pharmacy opening hour` (
-	`pharmacy_oh_id`	BIGINT UNSIGNED PRIMARY KEY,
-	`pharmacy_id`	BIGINT UNSIGNED	NOT NULL,
+	`pharmacy_oh_id`	BIGINT  PRIMARY KEY,
+	`pharmacy_id`	BIGINT 	NOT NULL,
 	`day_of_week`	TINYINT	NOT NULL,
 	`start_time`	TIME	NOT NULL,
 	`end_time`	TIME	NOT NULL
 );
 
 CREATE TABLE `hospital` (
-	`hospital_id`	BIGINT UNSIGNED	PRIMARY KEY,
+	`hospital_id`	BIGINT 	PRIMARY KEY,
 	`name`	VARCHAR(30)	NOT NULL,
 	`address`	VARCHAR(100)	NOT NULL,
 	`phone_number`	VARCHAR(30)	NOT NULL,
@@ -141,16 +141,16 @@ CREATE TABLE `hospital` (
 );
 
 CREATE TABLE `hospital opening hour` (
-	`hospital_oh_id`	BIGINT UNSIGNED	PRIMARY KEY,
-	`hospital_id`	BIGINT UNSIGNED	NOT NULL,
+	`hospital_oh_id`	BIGINT 	PRIMARY KEY,
+	`hospital_id`	BIGINT 	NOT NULL,
 	`day_of_week`	TINYINT	NOT NULL,
 	`start_time`	TIME	NOT NULL,
 	`end_time`	TIME	NOT NULL
 );
 
 CREATE TABLE `favorite medicine` (
-	`member_id`	BIGINT UNSIGNED	NOT NULL,
-	`medicine_id`	BIGINT UNSIGNED	NOT NULL,
+	`member_id`	BIGINT 	NOT NULL,
+	`medicine_id`	BIGINT 	NOT NULL,
     PRIMARY KEY (`member_id`, `medicine_id`)
 );
 
