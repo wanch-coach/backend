@@ -1,7 +1,12 @@
 package com.wanchcoach.domain.medical.entity;
 
-import com.wanchcoach.domain.BaseEntity;
+import com.wanchcoach.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalTime;
 
@@ -10,7 +15,12 @@ import java.time.LocalTime;
  *
  * @author 박은규
  */
-
+@Entity
+@Getter
+@SuperBuilder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Table(name = "hospital opening hour")
 public class HospitalOpeningHour extends BaseEntity {
 
     @Id
