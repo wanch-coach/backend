@@ -21,9 +21,9 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     @CreatedDate
-//    @Column(updatable = false) //update 시점에칼럼 수정을 막는다
-    private LocalDateTime createDate;
+    @Column(updatable = false) //update 시점에칼럼 수정을 막는다
+    private LocalDateTime createdDate;
   
     @LastModifiedDate
-    private LocalDateTime modifyDate;
+    private LocalDateTime modifiedDate;
 }
