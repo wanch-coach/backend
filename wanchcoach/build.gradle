@@ -32,7 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config:4.1.2'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -41,11 +41,34 @@ dependencies {
 //	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.apache.commons:commons-lang3:3.14.0'
+
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-filestorage:2.8.1'
+	implementation 'com.oracle.oci.sdk:oci-java-sdk-common:2.8.1'
+
+	implementation 'org.glassfish.jersey.core:jersey-client:2.34'
+	implementation 'org.glassfish.jersey.core:jersey-common:2.34'
+	implementation 'org.glassfish.jersey.ext:jersey-entity-filtering:2.34'
+	implementation 'org.glassfish.jersey.inject:jersey-hk2:2.34'
+	implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.34'
+	implementation 'org.glassfish.jersey.connectors:jersey-apache-connector:2.34'
+
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'javax.annotation:javax.annotation-api:1.3.2'
+	implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
+
+
 }
 
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		mavenBom "com.oracle.oci.sdk:oci-java-sdk-bom:2.8.1"
 	}
 }
 
