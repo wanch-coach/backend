@@ -22,12 +22,13 @@ bin/
 *.iws
 *.iml
 *.ipr
+*.xml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-.idea/libraries/*.iml
-.idea/libraries/*.xml
+.idea/libraries
+.idea/modules
 
 ### NetBeans ###
 /nbproject/private/
