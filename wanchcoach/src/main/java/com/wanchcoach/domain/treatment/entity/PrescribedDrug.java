@@ -1,9 +1,10 @@
 package com.wanchcoach.domain.treatment.entity;
 
-import com.wanchcoach.domain.BaseEntity;
-import com.wanchcoach.domain.medicine.entity.Medicine;
+import com.wanchcoach.domain.drug.entity.Drug;
+import com.wanchcoach.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
@@ -15,13 +16,13 @@ import java.io.Serializable;
 
 @Entity
 @Getter
+@SuperBuilder
 @EqualsAndHashCode(callSuper = false)
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "prescribed medicine")
-@IdClass(PrescribedMedicineId.class)
-public class PrescribedMedicine extends BaseEntity implements Serializable {
+@Table(name = "prescribed drug")
+@IdClass(PrescribedDrugId.class)
+public class PrescribedDrug extends BaseEntity implements Serializable {
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,8 +32,8 @@ public class PrescribedMedicine extends BaseEntity implements Serializable {
     // todo: 약 저장
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "medicine_id", nullable = false)
-    private Medicine medicine;
+    @JoinColumn(name = "drug_id", nullable = false)
+    private Drug drug;
 
     @Column
     private Double quantity;

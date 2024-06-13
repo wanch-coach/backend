@@ -5,10 +5,10 @@ import lombok.*;
 import java.io.Serializable;
 
 @Getter
-//@EqualsAndHashCode
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class PrescribedMedicineId implements Serializable {
+public class PrescribedDrugId implements Serializable {
     private Long prescription;
-    private Long medicine;
+    private Long drug;
 }
