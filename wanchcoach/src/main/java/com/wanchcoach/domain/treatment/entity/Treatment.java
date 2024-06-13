@@ -1,9 +1,11 @@
 package com.wanchcoach.domain.treatment.entity;
 
-import com.wanchcoach.domain.BaseEntity;
+import com.wanchcoach.domain.family.entity.Family;
+import com.wanchcoach.global.entity.BaseEntity;
 import com.wanchcoach.domain.medical.entity.Hospital;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "treatment")
@@ -26,10 +28,9 @@ public class Treatment extends BaseEntity {
     @Column(name = "treatment_id")
     private Long id;
 
-    // todo: Family entity 가져오기
-    // @ManyToOne(fetch = FetchType.LAZY)
-    // @JoinColumn(name = "family_id", nullable = false)
-    // private Family family;
+     @ManyToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "family_id", nullable = false)
+     private Family family;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
