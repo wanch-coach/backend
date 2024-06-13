@@ -1,9 +1,10 @@
 package com.wanchcoach.domain.treatment.entity;
 
-import com.wanchcoach.domain.BaseEntity;
+import com.wanchcoach.global.entity.BaseEntity;
 import com.wanchcoach.domain.medical.entity.Pharmacy;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "prescription")
@@ -41,4 +42,8 @@ public class Prescription extends BaseEntity {
 
     @Column
     private String imageFileName;
+
+    public void updateImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
+    }
 }
