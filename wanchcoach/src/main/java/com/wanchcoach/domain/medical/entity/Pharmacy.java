@@ -1,8 +1,9 @@
 package com.wanchcoach.domain.medical.entity;
 
-import com.wanchcoach.domain.BaseEntity;
+import com.wanchcoach.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 
@@ -14,7 +15,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "pharmacy")
@@ -41,8 +42,8 @@ public class Pharmacy extends BaseEntity {
     private BigDecimal latitude;
 
     @Column(nullable = false)
-    private String postCdn1;
+    private Integer postCdn1;
 
     @Column(nullable = false)
-    private String postCdn2;
+    private Integer postCdn2;
 }
