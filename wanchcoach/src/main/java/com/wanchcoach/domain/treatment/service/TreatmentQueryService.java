@@ -140,7 +140,7 @@ public class TreatmentQueryService {
                 .collect(Collectors.groupingBy(item -> item.getDate().toLocalDate()));
 
         // 2. 진료 목록을 오래된 순(시간 오름차순)으로 정렬
-        groupedItems.forEach((date, treatmentItemList) -> Collections.sort(treatmentItemList, Collections.reverseOrder()));
+        groupedItems.forEach((date, treatmentItemList) -> treatmentItemList.sort(Collections.reverseOrder()));
 
         // 3. 반환값 생성
         return groupedItems.entrySet().stream()
