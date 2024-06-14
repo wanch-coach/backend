@@ -15,8 +15,8 @@ public class Drug extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "drug_id")
-    private Long id;
+    @Column
+    private Long drugId;
 
     @Column(nullable = false)
     private String name;

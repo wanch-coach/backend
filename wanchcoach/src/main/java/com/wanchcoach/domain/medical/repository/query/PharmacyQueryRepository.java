@@ -30,7 +30,7 @@ public class PharmacyQueryRepository {
     public Pharmacy findById(Long pharmacyId) {
         return queryFactory
                 .selectFrom(pharmacy)
-                .where(pharmacy.id.eq(pharmacyId))
+                .where(pharmacy.pharmacyId.eq(pharmacyId))
                 .fetchOne();
     }
 }
