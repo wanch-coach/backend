@@ -30,7 +30,7 @@ public class HospitalQueryRepository {
     public Hospital findById(Long hospitalId) {
         return queryFactory
                 .selectFrom(hospital)
-                .where(hospital.id.eq(hospitalId))
+                .where(hospital.hospitalId.eq(hospitalId))
                 .fetchOne();
     }
 }

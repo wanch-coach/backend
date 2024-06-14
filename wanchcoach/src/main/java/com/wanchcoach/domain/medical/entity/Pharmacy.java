@@ -24,7 +24,7 @@ public class Pharmacy extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pharmacy_id")
-    private Long id;
+    private Long pharmacyId;
 
     @Column(nullable = false)
     private String name;
@@ -42,8 +42,5 @@ public class Pharmacy extends BaseEntity {
     private BigDecimal latitude;
 
     @Column(nullable = false)
-    private Integer postCdn1;
-
-    @Column(nullable = false)
-    private Integer postCdn2;
+    private String postCdn;
 }
