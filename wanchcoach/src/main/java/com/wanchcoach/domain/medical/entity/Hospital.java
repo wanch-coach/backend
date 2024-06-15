@@ -23,8 +23,8 @@ public class Hospital extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "hospital_id")
-    private Long id;
+    @Column
+    private Long hospitalId;
 
     @Column(nullable = false)
     private String name;
@@ -42,8 +42,5 @@ public class Hospital extends BaseEntity {
     private BigDecimal latitude;
 
     @Column(nullable = false)
-    private Integer postCdn1;
-
-    @Column(nullable = false)
-    private Integer postCdn2;
+    private String postCdn;
 }
