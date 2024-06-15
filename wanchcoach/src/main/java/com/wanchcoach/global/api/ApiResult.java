@@ -1,4 +1,4 @@
-package com.wanchcoach.app.global.api;
+package com.wanchcoach.global.api;
 
 import org.springframework.http.HttpStatus;
 

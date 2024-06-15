@@ -1,4 +1,4 @@
-package com.wanchcoach.app.global.util;
+package com.wanchcoach.global.util;
 
 import org.springframework.context.support.MessageSourceAccessor;
 
