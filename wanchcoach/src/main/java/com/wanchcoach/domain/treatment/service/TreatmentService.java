@@ -74,7 +74,7 @@ public class TreatmentService {
         );
 
         // 진료 id 반환
-        return new CreateTreatmentResponse(savedTreatment.getId(), null);
+        return new CreateTreatmentResponse(savedTreatment.getTreatmentId(), null);
     }
 
     /**
@@ -106,7 +106,7 @@ public class TreatmentService {
         // 처방전 이미지 저장
         String fileName = familyQueryRepository.findNameById(dto.familyId()) +
                 "_" +
-                prescription.getId() +
+                prescription.getPrescriptionId() +
                 "_" +
                 prescription.getModifiedDate().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +
                 "." +
@@ -142,6 +142,6 @@ public class TreatmentService {
          */
 
         // 처방전 id 반환
-        return new CreatePrescriptionResponse(prescription.getId());
+        return new CreatePrescriptionResponse(prescription.getPrescriptionId());
     }
 }

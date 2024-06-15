@@ -9,7 +9,7 @@ CREATE TABLE `member` (
 	`name`	VARCHAR(30)	NOT NULL,
 	`email`	VARCHAR(100)	NOT NULL,
 	`birth_date`	DATE	NOT NULL,
-	`gender`	TINYINT	NOT NULL,
+	`gender`	VARCHAR(1)	NOT NULL,
 	`phone_number`	VARCHAR(30)	NOT NULL,
 	`active`	TINYINT	NOT NULL,
 	`refresh_token`	VARCHAR(255) 	NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `member_device_token` (
 );
 
 CREATE TABLE `family` (
-	`family_id`	BIGINT 	PRIMARY KEY,
+	`family_id`	BIGINT 	AUTO_INCREMENT PRIMARY KEY,
 	`member_id`	BIGINT 	NOT NULL,
 	`name`	VARCHAR(30)	NOT NULL,
 	`birth_date`	DATE	NOT NULL,
@@ -141,8 +141,7 @@ CREATE TABLE `pharmacy` (
 	`phone_number`	VARCHAR(30)	NOT NULL,
 	`longitude`	DECIMAL(15, 12)	NOT NULL,
 	`latitude`	DECIMAL(15, 13)	NOT NULL,
-	`post_cdn1`	INT	NOT NULL,
-	`post_cdn2`	INT	NOT NULL,
+	`post_cdn`	VARCHAR(5)	NOT NULL,
     `created_date`  DATETIME NOT NULL DEFAULT NOW(),
     `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
@@ -164,8 +163,7 @@ CREATE TABLE `hospital` (
 	`phone_number`	VARCHAR(30)	NOT NULL,
 	`longitude`	DECIMAL(15, 12)	NOT NULL,
 	`latitude`	DECIMAL(15, 13)	NOT NULL,
-	`post_cdn1`	INT	NOT NULL,
-	`post_cdn2`	INT	NOT NULL,
+    `post_cdn`	VARCHAR(5)	NOT NULL,
     `created_date`  DATETIME NOT NULL DEFAULT NOW(),
     `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
@@ -321,17 +319,28 @@ REFERENCES `drug` (
 	`drug_id`
 );
 
-insert into `member` (id, encrypted_pwd, name, email, birth_date, gender, phone_number, active, refresh_token, login_type)
-values (1, 'test_pwd', '유호재', 'ho_0214@naver.com', now(), 0, '010-7226-0214', true, 'test_token', 1);
+insert into wanchcoach.member (member_id, id, encrypted_pwd, name, email, birth_date, gender, phone_number, active, refresh_token, login_type, location_permission, call_permission, camera_permission, created_date, modified_date)
+values  (1, '1', 'test_pwd', '유호재', 'ho_0214@naver.com', '2024-06-13', 'M', '010-7226-0214', 1, 'test_token', 1, 0, 0, 0, '2024-06-13 22:25:06', '2024-06-13 22:25:06'),
+        (2, '2', 'test_pwd', '신규람', 'gyulife@naver.com', '1998-01-01', 'M', '010-1234-5678', 1, 'test_token2', 0, 1, 1, 1, '2024-06-15 04:44:55', '2024-06-15 04:44:55');
 
-insert into `family` (family_id, member_id, name, birth_date, gender, image_file_name)
-values (1, 1, '유호재', now(), 0, 'test_image_file_name');
+insert into wanchcoach.family (family_id, member_id, name, birth_date, gender, image_file_name, created_date, modified_date)
+values  (1, 1, '유호재', '2024-06-13', 'M', 'test_image_file_name', '2024-06-13 22:25:06', '2024-06-13 22:25:06'),
+        (2, 2, '신규람', '1998-01-01', 'M', null, '2024-06-15 04:45:47', '2024-06-15 04:45:47'),
+        (3, 1, '배용현', '1998-01-02', 'M', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59'),
+        (4, 1, '나종현', '1998-01-03', 'M', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59'),
+        (5, 1, '곽강한', '1995-01-01', 'F', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59'),
+        (6, 2, '신호인', '1997-01-01', 'M', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59'),
+        (7, 2, '홍진식', '2024-06-15', 'F', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59');
 
-insert into `hospital` (hospital_id, name, address, phone_number, longitude, latitude, post_cdn1, post_cdn2)
-values (1, '세브란스병원', '광주광역시 광산구 첨단과기로', '010-2638-5572', 126.833009748716, 35.2271203871567, 622, 53);
+insert into wanchcoach.hospital (hospital_id, name, address, phone_number, longitude, latitude, post_cdn, created_date, modified_date)
+values  (1, '세브란스병원', '광주광역시 광산구 첨단과기로', '010-2638-5572', 126.833009748716, 35.2271203871567, '62253', '2024-06-13 22:25:06', '2024-06-13 22:25:06'),
+        (2, '가톨릭대학교 성빈센트병원', '경기도 수원시 팔달구 중부대로 93, (지동)', '031-1577-8588', 127.027427100000, 37.2779855000000, '16247', '2024-06-15 04:42:45', '2024-06-15 04:42:45'),
+        (3, '강릉아산병원', '강원특별자치도 강릉시 사천면 방동길 38', '033-610-3114', 128.857841100000, 37.8184325000000, '25440', '2024-06-15 04:42:45', '2024-06-15 04:42:45'),
+        (4, '강북삼성병원', '서울특별시 종로구 새문안로 29', '02-2001-2001', 126.967750000000, 37.5684083000000, '03181', '2024-06-15 04:42:45', '2024-06-15 04:42:45'),
+        (5, '건국대학교병원', '서울특별시 광진구 능동로 120-1', '1588-1533', 127.071827600000, 37.5403764000000, '05030', '2024-06-15 04:42:45', '2024-06-15 04:42:45');
 
-insert into `pharmacy` (pharmacy_id, name, address, phone_number, longitude, latitude, post_cdn1, post_cdn2, created_date, modified_date)
-values (1, '종현약국', '서울특별시 관악구 봉천동', '010-4064-3297', 126.941892000000, 37.4823620000000, '559', '48', '2024-06-13 20:45:22', '2024-06-13 20:45:22');
+insert into wanchcoach.pharmacy (pharmacy_id, name, address, phone_number, longitude, latitude, post_cdn, created_date, modified_date)
+values  (1, '나종현국', '서울특별시 관악구 봉천동', '010-9876-5432', 132.000000000000, 37.0000000000000, '01234', '2024-06-15 05:26:59', '2024-06-15 05:26:59');
 
 insert into `drug category` (drug_cat_id, name, created_date, modified_date) values (1, '진통제', '2024-06-13 20:42:32', '2024-06-13 20:42:32');
 insert into `drug category` (drug_cat_id, name, created_date, modified_date) values (2, '소염제', '2024-06-13 20:42:32', '2024-06-13 20:42:32');
@@ -339,4 +348,22 @@ insert into `drug category` (drug_cat_id, name, created_date, modified_date) val
 insert into `drug` (drug_id, drug_cat_id, manufacturer, name, efficacy, ingredient, image_file_name, created_date, modified_date) values (1, 1, '규람제약', '규라미논', '모든 고통을 없애줍니다.', '규라미산나트륨', null, '2024-06-13 20:43:43', '2024-06-13 20:43:43');
 insert into `drug` (drug_id, drug_cat_id, manufacturer, name, efficacy, ingredient, image_file_name, created_date, modified_date) values (2, 2, '호제약', '호재신', '모든 염증을 없애줍니다.', '호재산칼륨', null, '2024-06-13 20:43:43', '2024-06-13 20:43:43');
 
+insert into wanchcoach.prescription (prescription_id, pharmacy_id, remains, taking, end_date, image_file_name, created_date, modified_date)
+values  (1, 1, 9, 1, null, null, '2024-06-15 05:20:40', '2024-06-15 05:20:40'),
+        (2, 1, 6, 1, null, null, '2024-06-15 05:20:57', '2024-06-15 05:20:57');
 
+insert into wanchcoach.treatment (treatment_id, family_id, hospital_id, prescription_id, department, date, taken, alarm, symptom, created_date, modified_date)
+values  (1, 1, 1, 1, '내과', '2024-04-30 00:00:00', 1, 1, '복통', '2024-06-13 22:25:18', '2024-06-13 22:25:19'),
+        (2, 1, 1, 2, '내과', '2024-05-01 00:00:00', 1, 1, '복통', '2024-06-13 22:42:42', '2024-06-13 22:42:43'),
+        (3, 2, 1, null, '비뇨기과', '2024-05-02 00:00:00', 1, 1, '고환통', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (4, 2, 3, null, '피부과', '2024-06-30 00:00:00', 0, 1, '여드름', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (5, 2, 4, null, '내과', '2024-05-15 00:00:00', 1, 1, '복통', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (6, 3, 2, null, '피부과', '2024-05-22 00:00:00', 1, 1, '종기', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (7, 3, 3, null, '정형외과', '2024-06-16 00:00:00', 0, 1, '무릎 통증', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (8, 4, 1, null, '이비인후과', '2024-05-17 00:00:00', 1, 1, '코막힘', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (9, 5, 5, null, '피부과', '2024-06-20 00:00:00', 0, 1, '뾰루지', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (10, 6, 5, null, '이비인후과', '2024-04-30 00:00:00', 1, 1, '기침', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (11, 6, 2, null, '이비인후과', '2024-05-20 00:00:00', 1, 1, '인후통', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (12, 6, 3, null, '외과', '2024-06-27 00:00:00', 0, 1, '베임', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (13, 7, 4, null, '외과', '2024-06-01 00:00:00', 1, 1, '욕창', '2024-06-15 04:53:41', '2024-06-15 04:53:41'),
+        (14, 7, 4, null, '비뇨기과', '2024-07-01 00:00:00', 0, 1, '포경수술', '2024-06-15 04:53:41', '2024-06-15 04:53:41');

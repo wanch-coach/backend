@@ -25,8 +25,8 @@ public class Treatment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "treatment_id")
-    private Long id;
+    @Column
+    private Long treatmentId;
 
      @ManyToOne(fetch = FetchType.LAZY)
      @JoinColumn(name = "family_id", nullable = false)
