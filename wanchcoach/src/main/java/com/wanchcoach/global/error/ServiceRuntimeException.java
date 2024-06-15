@@ -1,4 +1,4 @@
-package com.wanchcoach.app.global.error;
+package com.wanchcoach.global.error;
 
 public class ServiceRuntimeException extends RuntimeException{
 

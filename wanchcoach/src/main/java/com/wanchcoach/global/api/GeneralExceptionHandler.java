@@ -1,7 +1,7 @@
-package com.wanchcoach.app.global.api;
+package com.wanchcoach.global.api;
 
-import com.wanchcoach.app.global.error.NotFoundException;
-import com.wanchcoach.app.global.error.ServiceRuntimeException;
+import com.wanchcoach.global.error.NotFoundException;
+import com.wanchcoach.global.error.ServiceRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.wanchcoach.app.global.api.ApiResult.ERROR;
+import static com.wanchcoach.global.api.ApiResult.ERROR;
 
 @RestControllerAdvice
 @Slf4j

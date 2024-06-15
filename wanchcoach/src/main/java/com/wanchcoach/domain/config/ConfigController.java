@@ -1,4 +1,4 @@
-package com.wanchcoach.app.domain.config;
+package com.wanchcoach.domain.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

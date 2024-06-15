@@ -1,4 +1,4 @@
-package com.wanchcoach.app;
+package com.wanchcoach;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
