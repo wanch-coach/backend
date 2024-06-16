@@ -20,10 +20,6 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class) // 시간에 대해서 자동으로 값을 넣어주는 기능
 public class BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-  
     @CreatedDate
 //    @Column(updatable = false) //update 시점에칼럼 수정을 막는다
     private LocalDateTime createDate;
