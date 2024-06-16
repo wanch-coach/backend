@@ -63,4 +63,8 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private boolean cameraPermission;
+
+    public void updateRefreshToken(String refreshToken) {
+
+    }
 }
