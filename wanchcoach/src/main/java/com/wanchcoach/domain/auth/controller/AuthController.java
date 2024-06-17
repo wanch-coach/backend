@@ -1,7 +1,6 @@
-package com.wanchcoach.domain.auth.api;
+package com.wanchcoach.domain.auth.controller;
 
 import com.wanchcoach.domain.auth.application.OAuthLoginService;
-import com.wanchcoach.domain.auth.params.GoogleLoginParams;
 import com.wanchcoach.domain.auth.params.NaverLoginParams;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,13 +24,6 @@ public class AuthController {
         return ResponseEntity.ok(oAuthLoginService.login(params));
     }
 
-
-//    https://accounts.google.com/o/oauth2/v2/auth?client_id=565955271344-7eprc3nfn0sveu7u8f19omb4et6toji3.apps.googleusercontent.com&redirect_uri=http://localhost:8081/login/oauth2/code/google&response_type=code&scope=email profile
-    @GetMapping("/login/oauth2/code/google")
-    public ResponseEntity<AuthTokens> loginGoogle(GoogleLoginParams params, HttpServletRequest request){
-        log.info(params.toString());
-        return ResponseEntity.ok(oAuthLoginService.login(params));
-    }
 
 
     @GetMapping("/test")
