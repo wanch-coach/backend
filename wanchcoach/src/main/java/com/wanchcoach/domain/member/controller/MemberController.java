@@ -33,8 +33,8 @@ public class MemberController {
         return memberService.idDuplicateCheck(id);
     }
 
-    @GetMapping("/sendsms/{phoneNumber}")
-    public ApiResult<String> sendsms(@PathVariable("phoneNumber") String phoneNumber){
+    @GetMapping("/sendsms")
+    public ApiResult<String> sendsms(@RequestParam("phoneNumber") String phoneNumber){
         return memberService.sendsms(phoneNumber);
     }
 

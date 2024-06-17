@@ -35,10 +35,6 @@ public class MemberService {
     }
     @PostConstruct
     private void initializeMessageService(){
-        System.out.println(apiKey);
-        System.out.println(secretKey);
-        System.out.println(smsDomain);
-        System.out.println("==========================");
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, secretKey, smsDomain);
     }
 
