@@ -1,4 +1,4 @@
-package com.wanchcoach.domain.auth.api;
+package com.wanchcoach.domain.auth.controller;
 
 import com.wanchcoach.domain.auth.application.OAuthLoginService;
 import com.wanchcoach.domain.auth.params.NaverLoginParams;
