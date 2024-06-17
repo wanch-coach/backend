@@ -7,6 +7,7 @@ import com.wanchcoach.domain.member.service.dto.MemberSignupDto;
 import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.nurigo.sdk.message.model.Message;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,5 +33,9 @@ public class MemberController {
         return memberService.idDuplicateCheck(id);
     }
 
+    @GetMapping("/sendsms/{phoneNumber}")
+    public ApiResult<String> sendsms(@PathVariable("phoneNumber") String phoneNumber){
+        return memberService.sendsms(phoneNumber);
+    }
 
 }
