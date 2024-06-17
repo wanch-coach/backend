@@ -53,7 +53,7 @@ public class Member extends BaseEntity {
     private boolean loginType;
 
     @Column
-    private Long refreshToken;
+    private String refreshToken;
 
     @Column(nullable = false)
     private boolean locationPermission;
@@ -63,4 +63,8 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private boolean cameraPermission;
+
+    public void updateRefreshToken(String refreshToken) {
+
+    }
 }

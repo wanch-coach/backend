@@ -48,7 +48,6 @@ public class OAuthLoginService {
                 .loginId(loginId)
                 .email(oAuthInfoResponse.getEmail())
                 .gender(oAuthInfoResponse.getGender())
-                .birthday(oAuthInfoResponse.getBirthday())
                 .build();
         return memberRepository.save(member);
     }
