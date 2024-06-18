@@ -108,7 +108,7 @@ public class TreatmentService {
                 "_" +
                 prescription.getPrescriptionId() +
                 "_" +
-                prescription.getModifyDate().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +
+                prescription.getModifiedDate().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +
                 "." +
                 StringUtils.getFilenameExtension(file.getOriginalFilename());
 
