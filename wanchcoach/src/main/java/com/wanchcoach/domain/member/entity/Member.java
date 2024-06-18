@@ -1,5 +1,19 @@
 package com.wanchcoach.domain.member.entity;
 
+import com.wanchcoach.domain.auth.application.OAuthProvider;
+import com.wanchcoach.global.entity.BaseEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+
+import java.time.LocalDate;
+
 import com.wanchcoach.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -63,8 +77,21 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private boolean cameraPermission;
+    private OAuthProvider oAuthProvider;
 
-    public void updateRefreshToken(String refreshToken) {
-
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
     }
+
+
+//    public void modify(MemberModifyRequest memberModifyRequest){
+//        //getNickName으로 수정
+//        this.nickName = memberModifyRequest.getEmail();
+//    }
+
+//    public void modifyProfileImg(String imgPath) {
+//        this.profileImg = imgPath;
+//    }
+
+
 }
