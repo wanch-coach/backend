@@ -93,4 +93,5 @@ public class Member extends BaseEntity {
 //        this.profileImg = imgPath;
 //    }
 
+
 }
