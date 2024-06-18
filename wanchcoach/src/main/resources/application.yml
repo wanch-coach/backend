@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: wanchcoach
+  config:
+    import: optional:configserver:http://158.179.193.167:8888
+  cloud:
+    config:
+      name: application
+      profile: local
+
+encrypt:
+  key: ${ENCRYPT-KEY}
