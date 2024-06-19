@@ -18,11 +18,11 @@ public class DrugImage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long drug_image_id;
+    private Long drugImageId;
 
-    @JoinColumn(name="origin_file_name")
+    @Column(name="origin_file_name")
     private String originFileName;
 
-    @JoinColumn(name="file_path")
+    @Column(name="file_path")
     private String filePath;
 }
