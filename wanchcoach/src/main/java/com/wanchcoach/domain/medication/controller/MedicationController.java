@@ -47,8 +47,8 @@ public class MedicationController {
         return OK(null);
     }
     //월별 가족 복약 조회(복약 이력/달력)
-    @GetMapping("/families/{familyId}")
-    public ApiResult<?> getMonthMedication(@PathVariable(value="familyId")Long familyId, @RequestParam String year,@RequestParam String month){
+    @GetMapping("/families/{familyId}/year/{year}/month/{month}")
+    public ApiResult<?> getMonthMedication(@PathVariable(value="familyId")Long familyId, @PathVariable(value="year")int year,@PathVariable(value="month")int month){
         return OK(null);
     }
     //일별 복약 상세 조회(복약 이력/달력)
@@ -67,7 +67,7 @@ public class MedicationController {
         return OK(null);
     }
     // 복약 종료
-    @GetMapping("/prescriptions/{prescriptionId}")
+    @PatchMapping("/prescriptions/{prescriptionId}")
     public ApiResult<?> endPrescription(@PathVariable(value="prescriptionId")Long prescriptionId){
         return OK(null);
     }

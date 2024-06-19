@@ -22,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -203,7 +205,10 @@ public class DrugService {
     }
 
     public void updateDrugDetailDB() throws IOException, ParseException{
-        for(int i=166; i<=480; i++) { //총 약품 47384개
+
+        for(int i=167; i<=480; i++) { //총 약품 47384개
+
+            List<Drug> drugList = new ArrayList<>();
 
             String link = "http://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService05/getDrugPrdtPrmsnDtlInq04"; /*URL*/
             String uri = link + "?"
@@ -243,18 +248,23 @@ public class DrugService {
 
                 System.out.println((String)item.get("ITEM_SEQ"));
 
-                drugRepository.findByItemSeq(Long.parseLong((String) item.get("ITEM_SEQ"))).ifPresent(drug -> drug.updateDrugDetail(
-                        (String) item.get("STORAGE_METHOD"),
-                        (String) item.get("VALID_TERM"),
-                        (String) item.get("CHANGE_DATE"),
-                        (String) item.get("EE_DOC_DATA"),
-                        (String) item.get("UD_DOC_DATA"),
-                        (String) item.get("NB_DOC_DATA")
-                ));
+                drugRepository.findByItemSeq(Long.parseLong((String) item.get("ITEM_SEQ"))).ifPresent(drug -> {
+                            drug.updateDrugDetail(
+                                    (String) item.get("STORAGE_METHOD"),
+                                    (String) item.get("VALID_TERM"),
+                                    (String) item.get("CHANGE_DATE"),
+                                    (String) item.get("EE_DOC_DATA"),
+                                    (String) item.get("UD_DOC_DATA"),
+                                    (String) item.get("NB_DOC_DATA")
+                            );
+                            drugList.add(drug);
+                        }
+                );
             }
+
+            drugRepository.saveAll(drugList);
         }
     }
-
 
     private byte[] downloadImage(String imageUrl) throws IOException {
         URL url = new URL(imageUrl);
