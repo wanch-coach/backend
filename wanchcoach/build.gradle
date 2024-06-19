@@ -24,7 +24,7 @@ repositories {
 
 ext {
 	set('snippetsDir', file("build/generated-snippets"))
-	set('springCloudVersion', "2023.0.2")
+	set('springCloudVersion', "2023.0.1")
 }
 
 dependencies {
@@ -32,7 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config:4.1.2'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -42,6 +42,11 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.apache.commons:commons-lang3:3.14.0'
 
+	//queydsl 의존성 추가
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 	// https://mvnrepository.com/artifact/org.json/json -> JSON 의존성
 	implementation 'com.googlecode.json-simple:json-simple:1.1'
