@@ -21,7 +21,7 @@ public class MedicationController {
     public ApiResult<?> getFamilyPk(){
         return OK(null);
     }
-    //날빠 별(월,일) 가족 복약 조회
+    //날짜 별(월,일) 가족 복약 조회
     @GetMapping("/")
     public ApiResult<?> getFamilyMedicationInfo(@RequestParam String year,@RequestParam String month,@RequestParam String day){
         return OK(null);

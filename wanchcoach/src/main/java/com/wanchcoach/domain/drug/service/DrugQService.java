@@ -2,10 +2,12 @@ package com.wanchcoach.domain.drug.service;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugDetailResponse;
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
+import com.wanchcoach.domain.drug.entity.Drug;
 import com.wanchcoach.domain.drug.repository.DrugQRepository;
-import com.wanchcoach.domain.drug.repository.DrugRepository;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDetailDto;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
+import com.wanchcoach.domain.member.entity.Member;
+import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +42,9 @@ public class DrugQService {
     public SearchDrugDetailResponse searchDrugDetail(Long drugId){
 
         SearchDrugsDetailDto drugDetail = drugQRepository.findDrugDetail(drugId);
+        if(drugDetail==null){
+            throw new NotFoundException(Member.class, drugId);
+        }
         SearchDrugDetailResponse searchDrugDetailResponse = drugDetail.toSearchDrugDetailResponse();
 
         return searchDrugDetailResponse;

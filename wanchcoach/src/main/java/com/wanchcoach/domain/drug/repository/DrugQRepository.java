@@ -32,7 +32,7 @@ public class DrugQRepository {
                             drugImage.filePath.coalesce("")
                     ))
                     .from(drug)
-                    .leftJoin(drugImage).on(drug.drugImage.drug_image_id.eq(drugImage.drug_image_id))
+                    .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
                     .where(drug.itemName.contains(keyword))
                     .fetch();
             System.out.println(drugList.size());
@@ -45,7 +45,7 @@ public class DrugQRepository {
                             drugImage.filePath.coalesce("")
                     ))
                     .from(drug)
-                    .leftJoin(drugImage).on(drug.drugImage.drug_image_id.eq(drugImage.drug_image_id))
+                    .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
                     .where(drug.entpName.contains(keyword))
                     .fetch();
             System.out.println(drugList.toString());
@@ -58,7 +58,7 @@ public class DrugQRepository {
                             drugImage.filePath.coalesce("")
                     ))
                     .from(drug)
-                    .leftJoin(drugImage).on(drug.drugImage.drug_image_id.eq(drugImage.drug_image_id))
+                    .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
                     .where(drug.eeDocData.contains(keyword))
                     .fetch();
             System.out.println(drugList.toString());
@@ -85,7 +85,7 @@ public class DrugQRepository {
                         drugImage.filePath.coalesce("")
                 ))
                 .from(drug)
-                .leftJoin(drugImage).on(drug.drugImage.drug_image_id.eq(drugImage.drug_image_id))
+                .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
                 .where(drug.drugId.eq(drugId))
                 .fetchFirst();
         System.out.println(searchDrugDetailResponse.toString());

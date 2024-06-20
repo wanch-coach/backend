@@ -32,7 +32,7 @@ public class FavoriteDrugQRepository {
                 ))
                 .from(favoriteDrug)
                 .join(drug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
-                .leftJoin(drugImage).on(drug.drugImage.drug_image_id.eq(drugImage.drug_image_id))
+                .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
                 .where(favoriteDrug.member.eq(memberId))
                 .fetch();
         return favoriteList;

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.oracle.oci.sdk:oci-java-sdk-circuitbreaker:2.8.1" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="com.oracle.oci.sdk" artifactId="oci-java-sdk-circuitbreaker" version="2.8.1" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.oracle.oci.sdk/oci-java-sdk-circuitbreaker/2.8.1/c5f82a0cd9a7f48e7eebd28f824e21b5736036ee/oci-java-sdk-circuitbreaker-2.8.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.oracle.oci.sdk/oci-java-sdk-circuitbreaker/2.8.1/9075ef9e5057cf0739b6d6324abb40bf15de047a/oci-java-sdk-circuitbreaker-2.8.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

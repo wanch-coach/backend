@@ -8,13 +8,14 @@ import com.wanchcoach.domain.drug.service.DrugService;
 import com.wanchcoach.domain.drug.service.FavoriteDrugQService;
 import com.wanchcoach.domain.drug.service.FavoriteDrugService;
 import com.wanchcoach.global.api.ApiResult;
-import org.springframework.core.io.Resource;
+import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.wanchcoach.global.api.ApiResult.OK;
+import static com.wanchcoach.global.api.ApiResult.ERROR;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -50,13 +54,14 @@ public class DrugController {
         drugService.updateDrugDB();
         return OK(null);
     }
-
+    //일반/전문 의약품 Detail DB 업데이트
     @GetMapping("/update-detail-drug-info")
     public ApiResult<?> updateDetailDrugDB() throws IOException, ParseException {
         drugService.updateDrugDetailDB();
         return OK(null);
     }
 
+    //파일 ResponseEntity byte[] 반환 테스트
     @GetMapping("/files/{fileName}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable(value = "fileName") String fileName) {
 
@@ -79,6 +84,7 @@ public class DrugController {
         }
         return entity;
     }
+    //파일 ApiResult byte[] 반환 테스트
     @GetMapping("/test")
     public ApiResult<String> downloadFile() {
 
@@ -98,7 +104,6 @@ public class DrugController {
         return OK(str);
     }
 
-
     // 약품 목록 검색
     @GetMapping("/")
     public ApiResult<List<SearchDrugsResponse>> searchDrugs(@RequestParam("type") String type, @RequestParam("keyword") String keyword){
@@ -109,19 +114,21 @@ public class DrugController {
 
     //약 상세 조회
     @GetMapping("/{drugId}")
-    public ApiResult<SearchDrugDetailResponse> searchDrugDetail(@PathVariable(value = "drugId") Long drugId){
-
-        SearchDrugDetailResponse drugDetail = drugQService.searchDrugDetail(drugId);
-
-        return OK(drugDetail);
+    public ApiResult<?> searchDrugDetail(@PathVariable(value = "drugId") Long drugId){
+        try{
+            SearchDrugDetailResponse drugDetail = drugQService.searchDrugDetail(drugId);
+            return OK(drugDetail);
+        }catch(NotFoundException e){
+            return ERROR(HttpStatus.NO_CONTENT, e.getMessage());
+        }
     }
 
     // 약 즐겨찾기 목록 조회
     @GetMapping("/favorites")
-    public ApiResult<List<SearchFavoritesResponse>> searchFavorites(){
+    public ApiResult<List<SearchFavoritesResponse>> searchFavorites(@AuthenticationPrincipal User user){
 
-        // TODO: 2024-06-16 사용자 id를 입력받아야함
-        Long memberId = 1L;
+        Long memberId = Long.valueOf(user.getUsername());
+
         List<SearchFavoritesResponse> favoriteList = favoriteDrugQService.searchFavorites(memberId);
 
         return OK(favoriteList);
@@ -129,13 +136,16 @@ public class DrugController {
 
     // 약 즐겨찾기 등록
     @PostMapping("/{drugId}/favorites")
-    public ApiResult<Boolean> createFavorites(@PathVariable(value = "drugId") Long drugId){
+    public ApiResult<?> createFavorites(@AuthenticationPrincipal User user, @PathVariable(value = "drugId") Long drugId){
 
-        // TODO: 2024-06-16 사용자 id를 입력받아야함
-        Long memberId = 1L;
-        favoriteDrugService.createFavorite(memberId, drugId);
+        Long memberId = Long.valueOf(user.getUsername());
 
-        return OK(true);
+        try{
+            favoriteDrugService.createFavorite(memberId, drugId);
+            return OK(true);
+        }catch(NoSuchElementException e){
+            return ERROR(HttpStatus.NO_CONTENT, e.getMessage());
+        }
     }
 
     //약 즐겨찾기 삭제

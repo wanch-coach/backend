@@ -28,7 +28,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+//@Transactional
 @Slf4j
 public class DrugService {
 
@@ -206,7 +206,7 @@ public class DrugService {
 
     public void updateDrugDetailDB() throws IOException, ParseException{
 
-        for(int i=167; i<=480; i++) { //총 약품 47384개
+        for(int i=221; i<=480; i++) { //총 약품 47384개
 
             List<Drug> drugList = new ArrayList<>();
 
@@ -261,7 +261,6 @@ public class DrugService {
                         }
                 );
             }
-
             drugRepository.saveAll(drugList);
         }
     }
