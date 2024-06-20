@@ -52,14 +52,17 @@
     <orderEntry type="library" name="Gradle: javax.xml.bind:jaxb-api:2.3.1" level="project" />
     <orderEntry type="library" name="Gradle: javax.annotation:javax.annotation-api:1.3.2" level="project" />
     <orderEntry type="library" name="Gradle: javax.ws.rs:javax.ws.rs-api:2.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.16.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.16.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.querydsl:querydsl-codegen:5.0.0" level="project" />
     <orderEntry type="library" name="Gradle: jakarta.ws.rs:jakarta.ws.rs-api:3.1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:2.0.13" level="project" />
     <orderEntry type="library" name="Gradle: com.oracle.oci.sdk:oci-java-sdk-objectstorage-extensions:2.8.1" level="project" />
     <orderEntry type="library" name="Gradle: com.oracle.oci.sdk:oci-java-sdk-objectstorage-generated:2.8.1" level="project" />
     <orderEntry type="library" name="Gradle: com.oracle.oci.sdk:oci-java-sdk-circuitbreaker:2.8.1" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.4" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.15.4" level="project" />
     <orderEntry type="library" name="Gradle: io.github.resilience4j:resilience4j-circuitbreaker:1.2.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.guava:guava:30.1-jre" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
@@ -75,7 +78,6 @@
     <orderEntry type="library" name="Gradle: org.javassist:javassist:3.25.0-GA" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.15.4" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.15.4" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.15.4" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish.hk2:osgi-resource-locator:1.0.3" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.data:spring-data-jpa:3.2.5" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-aop:3.2.5" level="project" />
@@ -99,10 +101,11 @@
     <orderEntry type="library" name="Gradle: org.springframework.cloud:spring-cloud-config-client:4.1.2" level="project" />
     <orderEntry type="library" name="Gradle: com.querydsl:querydsl-core:5.0.0" level="project" />
     <orderEntry type="library" name="Gradle: javax.activation:javax.activation-api:1.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.woodstox:woodstox-core:6.5.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.codehaus.woodstox:stax2-api:4.2.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.querydsl:codegen-utils:5.0.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: io.github.classgraph:classgraph:4.8.108" level="project" />
-    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.15.4" level="project" />
     <orderEntry type="library" name="Gradle: io.github.resilience4j:resilience4j-core:1.2.0" level="project" />
     <orderEntry type="library" name="Gradle: io.vavr:vavr:0.10.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.guava:failureaccess:1.0.1" level="project" />

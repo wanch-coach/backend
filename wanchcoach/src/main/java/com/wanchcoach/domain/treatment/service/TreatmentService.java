@@ -1,21 +1,24 @@
 package com.wanchcoach.domain.treatment.service;
 
+import com.wanchcoach.domain.drug.entity.Drug;
+import com.wanchcoach.domain.family.entity.Family;
 import com.wanchcoach.domain.family.repository.query.FamilyQueryRepository;
+import com.wanchcoach.domain.medical.entity.Hospital;
+import com.wanchcoach.domain.medical.entity.Pharmacy;
 import com.wanchcoach.domain.medical.repository.query.HospitalQueryRepository;
 import com.wanchcoach.domain.medical.repository.query.PharmacyQueryRepository;
 import com.wanchcoach.domain.drug.repository.query.DrugQueryRepository;
-import com.wanchcoach.domain.treatment.controller.response.CreatePrescriptionResponse;
-import com.wanchcoach.domain.treatment.controller.response.CreateTreatmentResponse;
+import com.wanchcoach.domain.treatment.controller.dto.response.*;
 import com.wanchcoach.domain.treatment.entity.PrescribedDrug;
 import com.wanchcoach.domain.treatment.entity.Prescription;
 import com.wanchcoach.domain.treatment.entity.Treatment;
 import com.wanchcoach.domain.treatment.repository.command.PrescribedDrugRepository;
 import com.wanchcoach.domain.treatment.repository.command.PrescriptionRepository;
 import com.wanchcoach.domain.treatment.repository.command.TreatmentRepository;
+import com.wanchcoach.domain.treatment.repository.query.PrescribedDrugQueryRepository;
+import com.wanchcoach.domain.treatment.repository.query.PrescriptionQueryRepository;
 import com.wanchcoach.domain.treatment.repository.query.TreatmentQueryRepository;
-import com.wanchcoach.domain.treatment.service.dto.CreatePrescribedMedicineDto;
-import com.wanchcoach.domain.treatment.service.dto.CreatePrescriptionDto;
-import com.wanchcoach.domain.treatment.service.dto.CreateTreatmentDto;
+import com.wanchcoach.domain.treatment.service.dto.*;
 import com.wanchcoach.global.service.UploadFileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * 진료 서비스
@@ -50,35 +53,30 @@ public class TreatmentService {
 
     private final UploadFileService uploadFileService;
     private final TreatmentQueryRepository treatmentQueryRepository;
+    private final PrescriptionQueryRepository prescriptionQueryRepository;
+    private final PrescribedDrugQueryRepository prescribedDrugQueryRepository;
 
     /**
-     * 진료 등록 API
+     * 진료 등록 메서드
      *
      * @param dto 등록할 진료 정보
      *
      */
     public CreateTreatmentResponse createTreatment(CreateTreatmentDto dto) {
         // todo: 계정 정보 - 가족 정보 연결 확인
+
+        Family family = familyQueryRepository.findById(dto.familyId());
+        Hospital hospital = hospitalQueryRepository.findById(dto.hospitalId());
         
         // 저장
-        Treatment savedTreatment = treatmentRepository.save(Treatment.builder()
-                .family(familyQueryRepository.findById(dto.familyId()))
-                .hospital(hospitalQueryRepository.findById(dto.hospitalId()))
-                .prescription(null)
-                .department(dto.department())
-                .date(LocalDateTime.parse(dto.date()))
-                .taken(dto.taken())
-                .alarm(dto.alarm())
-                .symptom(dto.symptom())
-                .build()
-        );
+        Treatment savedTreatment = treatmentRepository.save(dto.toEntity(family, hospital));
 
         // 진료 id 반환
         return new CreateTreatmentResponse(savedTreatment.getTreatmentId(), null);
     }
 
     /**
-     * 처방전 등록 API
+     * 처방전 등록 메서드
      *
      * @param dto 등록할 처방전(복용할 약) 정보
      */
@@ -86,47 +84,24 @@ public class TreatmentService {
 
         // 남은 복약 횟수 계산
         int maxRemains = 0;
-        for (CreatePrescribedMedicineDto cpmDto: dto.prescribedMedicines()) {
+        for (CreatePrescribedDrugDto cpmDto: dto.prescribedDrugs()) {
             maxRemains = Math.max(maxRemains, cpmDto.frequency() * cpmDto.day());
         }
 
         // 처방전 저장
-        Prescription prescription = prescriptionRepository.save(Prescription.builder()
-                .pharmacy(pharmacyQueryRepository.findById(dto.pharmacyId()))
-                .remains(maxRemains)    // todo: 전체 복약횟수 계산 로직 개선
-                .taking(true)
-                .endDate(null)
-                .build()
-        );
+        // todo: 전체 복약횟수 계산 로직 개선
+        Pharmacy pharmacy = pharmacyQueryRepository.findById(dto.pharmacyId());
+        Prescription prescription = prescriptionRepository.save(dto.toEntity(pharmacy, maxRemains));
 
         // 진료 처방전 정보 저장
         Treatment treatment = treatmentQueryRepository.findById(treatmentId);
         treatment.updatePrescription(prescription);
 
-        // 처방전 이미지 저장
-        String fileName = familyQueryRepository.findNameById(dto.familyId()) +
-                "_" +
-                prescription.getPrescriptionId() +
-                "_" +
-                prescription.getModifiedDate().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +
-                "." +
-                StringUtils.getFilenameExtension(file.getOriginalFilename());
-
-        prescription.updateImageFileName(fileName);
-        fileName = "prescription/" + dto.familyId() + "/" + fileName;
-        uploadFileService.uploadPrescriptionImage(file, fileName);
 
         // 처방받은 약 저장
-        for (CreatePrescribedMedicineDto cpmDto : dto.prescribedMedicines()) {
-            prescribedDrugRepository.save(PrescribedDrug.builder()
-                    .prescription(prescription)
-                    .drug(drugQueryRepository.findById(cpmDto.drugId()))
-                    .quantity(cpmDto.quantity())
-                    .frequency(cpmDto.frequency())
-                    .day(cpmDto.day())
-                    .direction(cpmDto.direction())
-                    .build()
-            );
+        for (CreatePrescribedDrugDto cpmDto : dto.prescribedDrugs()) {
+            Drug drug = drugQueryRepository.findById(cpmDto.drugId());
+            prescribedDrugRepository.save(cpmDto.toEntity(prescription, drug));
         }
 
         // todo: 예정된 복약 기록 저장
@@ -141,7 +116,103 @@ public class TreatmentService {
             5. 알림 여부는 dto.morning, dto.noon, dto.evening, dto.beforeBed 값으로 가져오기
          */
 
+        // 처방전 이미지 저장
+        if (file != null) {
+            String fileName = familyQueryRepository.findNameById(dto.familyId()) +
+                    "_" +
+                    prescription.getPrescriptionId() +
+                    "_" +
+                    prescription.getModifiedDate().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) +
+                    "." +
+                    StringUtils.getFilenameExtension(file.getOriginalFilename());
+
+            prescription.updateImageFileName(fileName);
+            fileName = "prescription/" + dto.familyId() + "/" + fileName;
+            uploadFileService.uploadPrescriptionImage(file, fileName);
+        }
+
         // 처방전 id 반환
         return new CreatePrescriptionResponse(prescription.getPrescriptionId());
     }
+
+    /**
+     * 진료 여부 변경 메서드
+     *
+     * @param treatmentId 진료 ID
+     * @return 진료 여부 변경한 진료 ID 및 변경된 진료 여부 값
+     */
+    public TakeTreatmentResponse takeTreatment(Long treatmentId) {
+        Treatment treatment = treatmentQueryRepository.findById(treatmentId);
+        return new TakeTreatmentResponse(treatment.getTreatmentId(), treatment.updateTaken());
+    }
+
+    /**
+     * 진료 예약 알람 여부 변경 메서드
+     *
+     * @param treatmentId 진료 ID
+     * @return 진료 예약 알람 여부 변경한 진료 ID 및 변경된 진료 예약 알림 여부 값
+     */
+    public SetTreatmentAlarmResponse setTreatmentAlarm(Long treatmentId) {
+        Treatment treatment = treatmentQueryRepository.findById(treatmentId);
+        return new SetTreatmentAlarmResponse(treatment.getTreatmentId(), treatment.updateAlarm());
+    }
+
+    /**
+     * 진료 정보 수정 메서드
+     *
+     * @param dto 수정할 진료 정보
+     * @return 수정한 진료 ID
+     *
+     */
+    public UpdateTreatmentResponse modifyTreatment(UpdateTreatmentDto dto) {
+
+        Treatment treatment = treatmentQueryRepository.findById(dto.treatmentId());
+        Family family = familyQueryRepository.findById(dto.familyId());
+        Hospital hospital = hospitalQueryRepository.findById(dto.hospitalId());
+        treatment.update(dto.toEntity(family, hospital));
+
+        if (dto.prescription() != null) {
+            // 처방전 수정
+            Long prescriptionId = treatment.getPrescription().getPrescriptionId();
+            Prescription prescription = prescriptionQueryRepository.findById(prescriptionId);
+            Pharmacy pharmacy = pharmacyQueryRepository.findById(dto.prescription().pharmacyId());
+            prescription.update(dto.prescription().toEntity(pharmacy));
+
+            if (dto.prescription().prescribedDrugs() != null) {
+                List<PrescribedDrug> prescribedDrugs = prescribedDrugQueryRepository.findByPrescriptionId(prescriptionId);
+
+                prescribedDrugRepository.deleteAll(prescribedDrugs);
+
+                List<UpdatePrescribedDrugDto> prescribedDrugDtoList = dto.prescription().prescribedDrugs();
+                for (UpdatePrescribedDrugDto prescribedDrugDto : prescribedDrugDtoList) {
+                    Drug drug = drugQueryRepository.findById(prescribedDrugDto.drugId());
+                    prescribedDrugRepository.save(prescribedDrugDto.toEntity(prescription, drug));
+                    // todo: morning, noon, evening, beforeBed 값에 따라 복약 예정 다시 만들어야 함
+                }
+            }
+        }
+
+        return new UpdateTreatmentResponse(dto.treatmentId(), dto.prescription() == null ? null : dto.prescription().prescriptionId());
+    }
+
+    /**
+     * 진료 정보 삭제 메서드
+     *
+     * @param dto 삭제할 진료 ID
+     * @return 삭제한 진료 ID
+     */
+    public DeleteTreatmentResponse deleteTreatment(DeleteTreatmentDto dto) {
+        Treatment treatment = treatmentQueryRepository.findById(dto.treatmentId());
+        treatment.delete();
+
+        Prescription prescription = prescriptionQueryRepository.findById(treatment.getPrescription().getPrescriptionId());
+        // todo: 현재 처방전 active = false: 진료 처방전 삭제 로직 완성 시 수정
+        if (prescription != null) prescription.delete();
+
+        // todo: 해당 진료와 연관된 복약 예정 건 삭제
+
+        return new DeleteTreatmentResponse(treatment.getTreatmentId());
+    }
+
+
 }
