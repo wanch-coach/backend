@@ -49,4 +49,9 @@ public class FamilyService {
                 .orElseThrow(() -> new NotFoundException(Family.class, familyId));
         return ApiResult.OK(FamilyInfoResponse.from(family));
     }
+
+    public ApiResult<Void> deleteFamily(Long familyId) {
+        familyRepository.deleteById(familyId);
+        return ApiResult.OK(null);
+    }
 }

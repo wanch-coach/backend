@@ -48,5 +48,9 @@ public class FamilyController {
         return familyService.updateFamily(FamilyUpdateDto.of(familyUpdateRequest));
     }
 
+    @DeleteMapping("/{familyId}")
+    public ApiResult<Void> deleteFamily(@PathVariable("familyId") String familyId){
+        return familyService.deleteFamily(Long.valueOf(familyId));
+    }
 
 }
