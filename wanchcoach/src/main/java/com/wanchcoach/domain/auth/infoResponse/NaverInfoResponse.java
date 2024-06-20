@@ -21,6 +21,17 @@ public class NaverInfoResponse implements OAuthInfoResponse {
     static class Response {
         private String email;
         private String name;
+        private String gender;
+        private String birthday;
+        private String birthyear;
+        private String mobile;
+        private String profile_image;
+    }
+
+
+    @Override
+    public String getMobile(){
+        return response.mobile;
     }
 
     @Override
@@ -35,19 +46,22 @@ public class NaverInfoResponse implements OAuthInfoResponse {
 
     @Override
     public String getGender() {
-        return "null";
+        return response.gender;
     }
 
 
     @Override
     public LocalDate getBirthday() {
-        LocalDate localDate = LocalDate.of(2020, 1, 1);
-        return localDate;
+        String[] parts = response.birthday.split("-");
+        int dayOfMonth = Integer.parseInt(parts[1]);
+        int monthValue = Integer.parseInt(parts[0]);
+        int year = Integer.parseInt(response.birthyear);
+        return LocalDate.of(year, monthValue, dayOfMonth);
     }
 
     @Override
     public String getProfile_Image() {
-        return "null";
+        return response.getProfile_image();
     }
 
     @Override
