@@ -13,11 +13,11 @@ public record FamilyUpdateDto (
 ){
     public static FamilyUpdateDto of(FamilyUpdateRequest familyUpdateRequest){
         return new FamilyUpdateDto(
-                familyUpdateRequest.familyId(),
-                familyUpdateRequest.name(),
-                familyUpdateRequest.birthDate(),
-                familyUpdateRequest.gender(),
-                familyUpdateRequest.imageFileName()
+                familyUpdateRequest.getFamilyId(),
+                familyUpdateRequest.getName(),
+                familyUpdateRequest.getBirthDate(),
+                familyUpdateRequest.getGender(),
+                familyUpdateRequest.getImageFileName()
         );
     }
 }

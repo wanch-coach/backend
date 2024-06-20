@@ -43,4 +43,10 @@ public class FamilyService {
         family.update(familyUpdateDto);
         return ApiResult.OK(FamilyInfoResponse.from(family));
     }
+
+    public ApiResult<FamilyInfoResponse> selectFamily(Long familyId) {
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new NotFoundException(Family.class, familyId));
+        return ApiResult.OK(FamilyInfoResponse.from(family));
+    }
 }

@@ -32,13 +32,19 @@ public class FamilyController {
         log.info(String.valueOf(memberId));
         return familyService.selectFamilies(memberId);
     }
+    @GetMapping("/{familyId}")
+    public ApiResult<FamilyInfoResponse> selectFamily(@PathVariable("familyId") String familyId){
+        return familyService.selectFamily(Long.valueOf(familyId));
+    }
+
     @PostMapping
     public ApiResult<Family> addFamily(@RequestBody FamilyAddRequest familyAddRequest, @AuthenticationPrincipal User user){
         Long memberId = Long.valueOf(user.getUsername());
         return familyService.addFamily(FamilyAddDto.of(familyAddRequest, memberId));
     }
     @PatchMapping("/{familyId}")
-    public ApiResult<FamilyInfoResponse> updateFamily(@RequestBody FamilyUpdateRequest familyUpdateRequest){
+    public ApiResult<FamilyInfoResponse> updateFamily(@PathVariable("familyId") String familyId,@RequestBody FamilyUpdateRequest familyUpdateRequest){
+        familyUpdateRequest.setFamilyId(Long.valueOf(familyId));
         return familyService.updateFamily(FamilyUpdateDto.of(familyUpdateRequest));
     }
 
