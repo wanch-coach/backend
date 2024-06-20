@@ -1,12 +1,12 @@
 package com.wanchcoach.domain.treatment.controller;
 
-import com.wanchcoach.domain.treatment.controller.request.CreatePrescriptionRequest;
-import com.wanchcoach.domain.treatment.controller.request.CreateTreatmentRequest;
-import com.wanchcoach.domain.treatment.controller.response.*;
+import com.wanchcoach.domain.treatment.controller.dto.request.CreatePrescriptionRequest;
+import com.wanchcoach.domain.treatment.controller.dto.request.CreateTreatmentRequest;
+import com.wanchcoach.domain.treatment.controller.dto.request.UpdateTreatmentRequest;
+import com.wanchcoach.domain.treatment.controller.dto.response.*;
 import com.wanchcoach.domain.treatment.service.TreatmentQueryService;
 import com.wanchcoach.domain.treatment.service.TreatmentService;
-import com.wanchcoach.domain.treatment.service.dto.CreatePrescriptionDto;
-import com.wanchcoach.domain.treatment.service.dto.CreateTreatmentDto;
+import com.wanchcoach.domain.treatment.service.dto.*;
 import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class TreatmentController {
 
     private final TreatmentService treatmentService;
-    private final String urlPrefix = "https://objectstorage.ap-chuncheon-1.oraclecloud.com";
     private final TreatmentQueryService treatmentQueryService;
+    private final String urlPrefix = "https://objectstorage.ap-chuncheon-1.oraclecloud.com";
 
     /**
      * 진료 등록 API
@@ -41,41 +41,26 @@ public class TreatmentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResult<CreateTreatmentResponse> createTreatment(@RequestPart CreateTreatmentRequest treatmentRequest,
-                                                              @RequestPart MultipartFile file) throws Exception {
+                                                              @RequestPart(required = false) MultipartFile file) throws Exception {
 
         log.info("TreatmentController#createTreatment called");
         // todo: 토큰 정보 가져와서 회원 ID 가져오기, 계정-가족 정보 유효한지 확인
 
 
         // 진료 정보 저장
-        CreateTreatmentResponse treatmentResponse = treatmentService.createTreatment(CreateTreatmentDto.of(
-                treatmentRequest.familyId(),
-                treatmentRequest.hospitalId(),
-                treatmentRequest.department(),
-                treatmentRequest.date(),
-                treatmentRequest.taken(),
-                treatmentRequest.alarm(),
-                treatmentRequest.symptom())
-        );
+        CreateTreatmentResponse treatmentResponse = treatmentService.createTreatment(CreateTreatmentDto.of(treatmentRequest));
 
         // 처방전(복약) 정보 저장
         CreatePrescriptionRequest prescriptionRequest = treatmentRequest.prescription();
 
         if (prescriptionRequest != null) {
-            CreatePrescriptionResponse prescriptionResponse = treatmentService.createPrescription(CreatePrescriptionDto.of(
-                    treatmentRequest.familyId(),
-                    prescriptionRequest.pharmacyId(),
-                    prescriptionRequest.morning(),
-                    prescriptionRequest.noon(),
-                    prescriptionRequest.evening(),
-                    prescriptionRequest.beforeBed(),
-                    prescriptionRequest.prescribedMedicines()), treatmentResponse.treatmentId(), file
+            CreatePrescriptionResponse prescriptionResponse = treatmentService.createPrescription(
+                    CreatePrescriptionDto.of(prescriptionRequest), treatmentResponse.treatmentId(), file
             );
 
             treatmentResponse = new CreateTreatmentResponse(treatmentResponse.treatmentId(), prescriptionResponse.prescriptionId());
         }
 
-        // response로 변환
         return ApiResult.OK(treatmentResponse);
     }
 
@@ -96,16 +81,7 @@ public class TreatmentController {
 
         // todo: todo: 토큰 정보 가져와서 회원 ID 가져오기, 계정-가족 정보 유효한지 확인
 
-
-        CreatePrescriptionResponse response = treatmentService.createPrescription(CreatePrescriptionDto.of(
-                prescriptionRequest.familyId(),
-                prescriptionRequest.pharmacyId(),
-                prescriptionRequest.morning(),
-                prescriptionRequest.noon(),
-                prescriptionRequest.evening(),
-                prescriptionRequest.beforeBed(),
-                prescriptionRequest.prescribedMedicines()), treatmentId, file
-        );
+        CreatePrescriptionResponse response = treatmentService.createPrescription(CreatePrescriptionDto.of(prescriptionRequest), treatmentId, file);
 
         return ApiResult.OK(response);
     }
@@ -200,6 +176,7 @@ public class TreatmentController {
         Long memberId = 1L;
 
         TreatmentDateResponse response = treatmentQueryService.getTreatmentsByDate(memberId, year, month);
+
         return ApiResult.OK(response);
     }
 
@@ -220,7 +197,99 @@ public class TreatmentController {
         Long memberId = 1L;
 
         TreatmentDateResponse response = treatmentQueryService.getFamilyTreatmentsByDate(familyId, year, month);
+
         return ApiResult.OK(response);
     }
 
+    /** 진료 상세 조회 API
+     *
+     * @param treatmentId 조회할 진료 ID
+     * @return 조회할 진료 정보
+     */
+    @GetMapping("/{treatmentId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ApiResult<TreatmentDetailResponse> getTreatmentDetail(@PathVariable Long treatmentId) {
+        log.info("TreatmentController#getTreatmentDetail called");
+
+        // todo: 토큰 정보 가져와서 회원 가져오기, 계정-가족 정보 유효한지 확인
+        Long memberId = 1L;
+
+        TreatmentDetailResponse response = treatmentQueryService.getTreatmentDetail(treatmentId);
+
+        return ApiResult.OK(response);
+    }
+
+    /**
+     * 진료 알림 여부 변경
+     * @param treatmentId 진료 ID
+     * @return 알림 변경한 진료 ID 및 변경된 값
+     */
+    @PatchMapping("/alarm/{treatmentId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ApiResult<SetTreatmentAlarmResponse> setTreatmentAlarm(@PathVariable Long treatmentId) {
+        log.info("TreatmentController#setTreatmentAlarm called");
+
+        // todo: 토큰 정보 가져와서 회원 가져오기, 계정-가족 정보 유효한지 확인
+        Long memberId = 1L;
+
+        SetTreatmentAlarmResponse response = treatmentService.setTreatmentAlarm(treatmentId);
+
+        return ApiResult.OK(response);
+    }
+
+    /**
+     * 진료 여부 변경
+     * @param treatmentId 진료 ID
+     * @return 변경한 진료 ID 및 변경된 값
+     */
+    @PatchMapping("/taken/{treatmentId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ApiResult<TakeTreatmentResponse> takeTreatment(@PathVariable Long treatmentId) {
+        log.info("TreatmentController#takeTreatment called");
+
+        // todo: 토큰 정보 가져와서 회원 가져오기, 계정-가족 정보 유효한지 확인
+        Long memberId = 1L;
+
+        TakeTreatmentResponse response = treatmentService.takeTreatment(treatmentId);
+
+        return ApiResult.OK(response);
+    }
+
+    /**
+     * 진료 정보 수정 API
+     * @param treatmentId 수정할 진료 ID
+     * @param treatmentRequest 수정할 정보
+     * @return 수정한 진료 ID
+     */
+    @PatchMapping("/{treatmentId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ApiResult<UpdateTreatmentResponse> updateTreatment(@PathVariable Long treatmentId,
+                                                              @RequestBody UpdateTreatmentRequest treatmentRequest) {
+        log.info("TreatmentController#updateTreatment called");
+
+        // todo: 토큰 정보 가져와서 회원ID 가져오기, 계정-가족-진료 정보 유효한지 확인
+        Long memberId = 1L;
+        System.out.println(treatmentRequest);
+        UpdateTreatmentResponse response = treatmentService.modifyTreatment(UpdateTreatmentDto.of(treatmentId, treatmentRequest));
+
+        return ApiResult.OK(response);
+    }
+
+    /**
+     * 진료 정보 삭제 API
+     * @param treatmentId 삭제할 진료 ID
+     * @return 삭제한 진료 ID
+     */
+    @DeleteMapping("/{treatmentId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ApiResult<DeleteTreatmentResponse> deleteTreatment(@PathVariable Long treatmentId) {
+        log.info("TreatmentController#deleteTreatment called");
+
+        // todo: 토큰 정보 가져와서 회원ID 가져오기, 계정-가족-진료 정보 유효한지 확인
+        Long memberId = 1L;
+
+        DeleteTreatmentResponse response = treatmentService.deleteTreatment(DeleteTreatmentDto.of(treatmentId));
+
+        return ApiResult.OK(response);
+    }
 }
