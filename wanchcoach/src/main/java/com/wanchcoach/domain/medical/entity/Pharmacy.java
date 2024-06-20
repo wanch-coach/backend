@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 public class Pharmacy extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pharmacy_id")
     private Long pharmacyId;
 
@@ -35,12 +34,15 @@ public class Pharmacy extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(precision = 15, scale = 12, nullable = false)
+    @Column(precision = 15, scale = 12)
     private BigDecimal longitude;
 
-    @Column(precision = 15, scale = 13, nullable = false)
+    @Column(precision = 15, scale = 13)
     private BigDecimal latitude;
 
-    @Column(nullable = false)
+    @Column
     private String postCdn;
+
+    @Column(nullable = false)
+    private String hpid;
 }

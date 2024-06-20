@@ -22,9 +22,14 @@ import java.math.BigDecimal;
 public class Hospital extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long hospitalId;
+
+    @Column
+    private Integer typeId;
+
+    @Column
+    private String type;
 
     @Column(nullable = false)
     private String name;
@@ -35,12 +40,39 @@ public class Hospital extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
-    @Column(precision = 15, scale = 12, nullable = false)
+    @Column(precision = 15, scale = 12)
     private BigDecimal longitude;
 
-    @Column(precision = 15, scale = 13, nullable = false)
+    @Column(precision = 15, scale = 13)
     private BigDecimal latitude;
 
-    @Column(nullable = false)
+    @Column
+    private Integer hasEmergencyRoom;
+
+    @Column
     private String postCdn;
+
+    @Column
+    private String etc;
+
+    @Column(nullable = false)
+    private String hpid;
+
+    @Override
+    public String toString() {
+        return "Hospital{" +
+                "hospitalId=" + hospitalId +
+                ", typeId=" + typeId +
+                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", hasEmergencyRoom=" + hasEmergencyRoom +
+                ", postCdn='" + postCdn + '\'' +
+                ", etc='" + etc + '\'' +
+                ", hpid='" + hpid + '\'' +
+                '}';
+    }
 }
