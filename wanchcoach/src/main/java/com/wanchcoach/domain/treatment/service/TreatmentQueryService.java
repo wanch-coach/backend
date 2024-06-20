@@ -1,7 +1,11 @@
 package com.wanchcoach.domain.treatment.service;
 
 import com.wanchcoach.domain.family.repository.query.FamilyQueryRepository;
-import com.wanchcoach.domain.treatment.controller.response.*;
+import com.wanchcoach.domain.treatment.controller.dto.response.*;
+import com.wanchcoach.domain.treatment.entity.Prescription;
+import com.wanchcoach.domain.treatment.entity.Treatment;
+import com.wanchcoach.domain.treatment.entity.PrescribedDrug;
+import com.wanchcoach.domain.treatment.repository.query.PrescribedDrugQueryRepository;
 import com.wanchcoach.domain.treatment.repository.query.TreatmentQueryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +32,10 @@ public class TreatmentQueryService {
 
     private final TreatmentQueryRepository treatmentQueryRepository;
     private final FamilyQueryRepository familyQueryRepository;
+    private final PrescribedDrugQueryRepository prescribedDrugQueryRepository;
 
     /**
-     * 회원 진료 조회 API
+     * 회원 진료 조회 메서드
      *
      * @param memberId 회원 ID
      * @return 계정에 등록된 모든 가족의 진료 정보
@@ -42,7 +47,7 @@ public class TreatmentQueryService {
     }
 
     /**
-     * 가족 진료 조회 API
+     * 가족 진료 조회 메서드
      *
      * @param familyId 가족 ID
      * @return 계정에 등록된 모든 가족의 진료 정보
@@ -54,7 +59,7 @@ public class TreatmentQueryService {
     }
 
     /**
-     * 회원 진료 병원별 조회 API
+     * 회원 진료 병원별 조회 메서드
      *
      * @param memberId 회원 ID
      * @return 계정에 등록된 모든 가족의 병원별 진료 정보
@@ -69,7 +74,7 @@ public class TreatmentQueryService {
     }
 
     /**
-     * 가족 진료 병원별 조회 API
+     * 가족 진료 병원별 조회 메서드
      *
      * @param familyId 가족 ID
      * @return 가족의 병원별 진료 정보
@@ -83,7 +88,7 @@ public class TreatmentQueryService {
     }
 
     /**
-     * 진료 목록 병원별로 변환
+     * 진료 목록 병원별로 변환 메서드
      * 
      * @param items 진료 목록
      * @return 병원별로 그룹화한 진료 목록
@@ -105,12 +110,12 @@ public class TreatmentQueryService {
     }
 
     /**
-     * 회원 진료 월별 조회 API
+     * 회원 진료 월별 조회 메서드
      *
      * @param memberId 회원 ID
      * @return 계정에 등록된 모든 가족의 월별 진료 정보
      */
-    public TreatmentDateResponse getTreatmentsByDate(Long memberId, int year, int month) {
+    public TreatmentDateResponse getTreatmentsByDate(Long memberId, Integer year, Integer month) {
 
         List<Long> familyIds = familyQueryRepository.findFamilyIdsByMemberId(memberId);
         List<TreatmentItem> items = treatmentQueryRepository.findTreatmentsByDate(familyIds, year, month);
@@ -120,12 +125,12 @@ public class TreatmentQueryService {
     }
 
     /**
-     * 가족 진료 월별 조회 API
+     * 가족 진료 월별 조회 메서드
      *
      * @param familyId 가족 ID
      * @return 가족의 월별 진료 정보
      */
-    public TreatmentDateResponse getFamilyTreatmentsByDate(Long familyId, int year, int month) {
+    public TreatmentDateResponse getFamilyTreatmentsByDate(Long familyId, Integer year, Integer month) {
 
         List<TreatmentItem> items = treatmentQueryRepository.findFamilyTreatmentsByDate(familyId, year, month);
         List<TreatmentDateItem> dateItems = refineTreatmentItemsByDate(items);
@@ -149,5 +154,20 @@ public class TreatmentQueryService {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * 진료 상세 조회 메서드
+     *
+     * @param treatmentId 상세 조회할 진료 ID
+     * @return 진료 상세 정보
+     */
+    public TreatmentDetailResponse getTreatmentDetail(Long treatmentId) {
+        Treatment treatment = treatmentQueryRepository.findById(treatmentId);
+        Prescription prescription = treatment.getPrescription();
+        if (prescription == null) return TreatmentDetailResponse.of(treatment);
+
+        List<PrescribedDrug> prescribedDrugs = prescribedDrugQueryRepository.findByPrescriptionId(prescription.getPrescriptionId());
+        return TreatmentDetailResponse.of(treatment, prescription, prescribedDrugs);
+    }
 
 }

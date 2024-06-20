@@ -5,7 +5,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.wanchcoach.domain.treatment.controller.response.TreatmentItem;
+import com.wanchcoach.domain.treatment.controller.dto.response.TreatmentItem;
 import com.wanchcoach.domain.treatment.entity.Treatment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +66,8 @@ public class TreatmentQueryRepository {
                             treatment.symptom))
                     .from(treatment)
                     .where(treatment.family.member.memberId.eq(memberId),
-                            treatment.date.goe(LocalDateTime.now())
+                            treatment.date.goe(LocalDateTime.now()),
+                            treatment.active.eq(true)
                     )
                     .orderBy(treatment.date.desc())
                     .fetch();
@@ -86,7 +87,8 @@ public class TreatmentQueryRepository {
                             treatment.symptom))
                     .from(treatment)
                     .where(treatment.family.member.memberId.eq(memberId),
-                            treatment.date.lt(LocalDateTime.now())
+                            treatment.date.lt(LocalDateTime.now()),
+                            treatment.active.eq(true)
                     )
                     .orderBy(treatment.date.desc())
                     .fetch();
@@ -117,7 +119,8 @@ public class TreatmentQueryRepository {
                             treatment.symptom))
                     .from(treatment)
                     .where(treatment.family.familyId.eq(familyId),
-                            treatment.date.goe(LocalDateTime.now())
+                            treatment.date.goe(LocalDateTime.now()),
+                            treatment.active.eq(true)
                     )
                     .orderBy(treatment.date.desc())
                     .fetch();
@@ -137,7 +140,8 @@ public class TreatmentQueryRepository {
                             treatment.symptom))
                     .from(treatment)
                     .where(treatment.family.familyId.eq(familyId),
-                            treatment.date.lt(LocalDateTime.now())
+                            treatment.date.lt(LocalDateTime.now()),
+                            treatment.active.eq(true)
                     )
                     .orderBy(treatment.date.desc())
                     .fetch();
@@ -165,7 +169,8 @@ public class TreatmentQueryRepository {
                         treatment.alarm,
                         treatment.symptom))
                 .from(treatment)
-                .where(treatment.family.familyId.in(familyIds))
+                .where(treatment.family.familyId.in(familyIds),
+                        treatment.active.eq(true))
                 .fetch();
     }
 
@@ -190,7 +195,8 @@ public class TreatmentQueryRepository {
                         treatment.alarm,
                         treatment.symptom))
                 .from(treatment)
-                .where(treatment.family.familyId.eq(familyId))
+                .where(treatment.family.familyId.eq(familyId),
+                        treatment.active.eq(true))
                 .fetch();
     }
 
@@ -200,7 +206,7 @@ public class TreatmentQueryRepository {
      * @param familyIds 가족 ID 목록
      * @return 모든 진료 정보
      */
-    public List<TreatmentItem> findTreatmentsByDate(List<Long> familyIds, int year, int month) {
+    public List<TreatmentItem> findTreatmentsByDate(List<Long> familyIds, Integer year, Integer month) {
 
         DateTemplate<String> dateTemplate = Expressions.dateTemplate(String.class, "DATE_FORMAT({0}, '%Y-%m')", treatment.date);
 
@@ -219,6 +225,7 @@ public class TreatmentQueryRepository {
                         treatment.symptom))
                 .from(treatment)
                 .where(treatment.family.familyId.in(familyIds),
+                        treatment.active.eq(true),
                         dateTemplate.eq(String.format("%d-%02d", year, month)))
                 // treatment.date.year().eq(year),
                 // treatment.date.month().eq(month)
@@ -231,7 +238,7 @@ public class TreatmentQueryRepository {
      * @param familyId 가족 ID
      * @return 모든 진료 정보
      */
-    public List<TreatmentItem> findFamilyTreatmentsByDate(Long familyId, int year, int month) {
+    public List<TreatmentItem> findFamilyTreatmentsByDate(Long familyId, Integer year, Integer month) {
 
         DateTemplate<String> dateTemplate = Expressions.dateTemplate(String.class, "DATE_FORMAT({0}, '%Y-%m')", treatment.date);
 
@@ -250,6 +257,7 @@ public class TreatmentQueryRepository {
                         treatment.symptom))
                 .from(treatment)
                 .where(treatment.family.familyId.eq(familyId),
+                        treatment.active.eq(true),
                         dateTemplate.eq(String.format("%d-%02d", year, month)))
                 // treatment.date.year().eq(year),
                 // treatment.date.month().eq(month)
