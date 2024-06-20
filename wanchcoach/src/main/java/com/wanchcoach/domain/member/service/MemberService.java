@@ -1,9 +1,13 @@
 package com.wanchcoach.domain.member.service;
 
+import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
+import com.wanchcoach.domain.auth.tokens.AuthTokens;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.MemberRepository;
+import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
 import com.wanchcoach.domain.member.service.dto.MemberSignupDto;
 import com.wanchcoach.global.api.ApiResult;
+import com.wanchcoach.global.error.NotFoundException;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -20,6 +24,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private DefaultMessageService messageService;
+    private final AuthTokenGenerator authTokenGenerator;
 
     @Value("${sms.api-key}")
     private String apiKey;
@@ -30,8 +35,9 @@ public class MemberService {
     @Value("${sms.domain}")
     private String smsDomain;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, AuthTokenGenerator authTokenGenerator) {
         this.memberRepository = memberRepository;
+        this.authTokenGenerator = authTokenGenerator;
     }
     @PostConstruct
     private void initializeMessageService(){
@@ -46,7 +52,7 @@ public class MemberService {
         return ApiResult.OK(memberRepository.findByLoginId(id) == null);
     }
 
-    public ApiResult<String> sendsms(String phoneNumber) {
+    public ApiResult<String> sendSMS(String phoneNumber) {
         Message message = new Message();
         message.setFrom("01072260214");
         message.setTo(phoneNumber);
@@ -56,5 +62,13 @@ public class MemberService {
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 
         return ApiResult.OK(randomCode);
+    }
+
+    public ApiResult<AuthTokens> login(MemberLoginDto memberLoginDto) {
+        Member member = memberRepository.findByLoginIdAndEncryptedPwd(memberLoginDto.id(), memberLoginDto.pwd())
+                .orElseThrow(() -> new NotFoundException(Member.class, memberLoginDto.id()));
+
+        AuthTokens authTokens = authTokenGenerator.generate(member.getMemberId());
+        return ApiResult.OK(authTokens);
     }
 }

@@ -1,8 +1,10 @@
 package com.wanchcoach.domain.family.entity;
 
+import com.wanchcoach.domain.family.service.dto.FamilyUpdateDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -42,4 +44,11 @@ public class Family extends BaseEntity {
 
     @Column
     private String imageFileName;
+
+    public void update(FamilyUpdateDto familyUpdateDto) {
+        this.name = familyUpdateDto.name();
+        this.birthDate = familyUpdateDto.birthDate();
+        this.gender = familyUpdateDto.gender();
+        this.imageFileName = familyUpdateDto.imageFileName();
+    }
 }

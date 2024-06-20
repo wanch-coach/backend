@@ -30,9 +30,9 @@ public class SecurityConfig {
 //        http.formLogin((login) -> login.disable());
 //        http.httpBasic((basic) -> basic.disable());
 
-//        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-        http.authorizeHttpRequests((auth) -> auth.requestMatchers("/api/member/**","/**").permitAll()
+        http.authorizeHttpRequests((auth) -> auth.requestMatchers("/api/member/**","/login/**","/api/drug/*").permitAll()
                 .anyRequest().authenticated());
 
         return http.build();

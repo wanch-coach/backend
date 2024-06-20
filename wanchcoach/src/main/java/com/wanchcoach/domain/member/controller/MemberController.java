@@ -1,6 +1,9 @@
 package com.wanchcoach.domain.member.controller;
 
+import com.wanchcoach.domain.auth.tokens.AuthTokens;
+import com.wanchcoach.domain.member.controller.request.MemberLoginRequest;
 import com.wanchcoach.domain.member.controller.request.MemberSignupRequest;
+import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.service.MemberService;
 import com.wanchcoach.domain.member.service.dto.MemberSignupDto;
@@ -18,6 +21,12 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @PostMapping("/login")
+    public ApiResult<AuthTokens> login(@RequestBody MemberLoginRequest memberLoginRequest){
+        log.info("login Controller");
+        return memberService.login(MemberLoginDto.of(memberLoginRequest));
+    }
+
     @PostMapping("/signup")
     public ApiResult<Member> signup(@RequestBody MemberSignupRequest memberSignupRequest){
         log.info("signupRequestController");
@@ -34,8 +43,8 @@ public class MemberController {
     }
 
     @GetMapping("/sendsms")
-    public ApiResult<String> sendsms(@RequestParam("phoneNumber") String phoneNumber){
-        return memberService.sendsms(phoneNumber);
+    public ApiResult<String> sendSMS(@RequestParam("phoneNumber") String phoneNumber){
+        return memberService.sendSMS(phoneNumber);
     }
 
 }
