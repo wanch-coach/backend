@@ -60,7 +60,7 @@ public class OAuthLoginService {
     private Member newMember(OAuthInfoResponse oAuthInfoResponse, String loginId){
         Member member = Member.builder()
                 .loginId(loginId)
-                .encryptedPwd("-----")
+                .encryptedPwd(" ")
                 .email(oAuthInfoResponse.getEmail())
                 .name(oAuthInfoResponse.getName())
                 .birthDate(oAuthInfoResponse.getBirthday())
