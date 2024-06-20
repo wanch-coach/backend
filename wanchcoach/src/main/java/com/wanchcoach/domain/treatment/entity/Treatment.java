@@ -6,6 +6,8 @@ import com.wanchcoach.domain.medical.entity.Hospital;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +20,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @SuperBuilder
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table(name = "treatment")
@@ -43,17 +47,44 @@ public class Treatment extends BaseEntity {
     @Column
     private String department;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime date;
 
-    @Column
+    @Column(nullable = false)
     private Boolean taken;
 
-    @Column
+    @Column(nullable = false)
     private Boolean alarm;
 
     @Column
     private String symptom;
+
+    @Column
+    private Boolean active;
+
+    public void update(Treatment treatment) {
+        this.family = treatment.getFamily();
+        this.hospital = treatment.getHospital();
+        this.department = treatment.getDepartment();
+        this.date = treatment.getDate();
+        this.taken = treatment.getTaken();
+        this.alarm = treatment.getAlarm();
+        this.symptom = treatment.getSymptom();
+    }
+
+    public Boolean updateTaken() {
+        this.taken = !this.taken;
+        return this.taken;
+    }
+
+    public Boolean updateAlarm() {
+        this.alarm = !this.alarm;
+        return this.alarm;
+    }
+
+    public void delete() {
+        this.active = false;
+    }
 
     public void updatePrescription(Prescription prescription) {
         this.prescription = prescription;
