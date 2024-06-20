@@ -1,9 +1,17 @@
 package com.wanchcoach.domain.medication.controller;
 
+import com.wanchcoach.domain.medication.service.MedicationService;
+import com.wanchcoach.domain.treatment.service.TreatmentService;
 import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.NoSuchElementException;
+
+import static com.wanchcoach.global.api.ApiResult.ERROR;
 import static com.wanchcoach.global.api.ApiResult.OK;
 
 @RestController
@@ -11,16 +19,15 @@ import static com.wanchcoach.global.api.ApiResult.OK;
 @RequestMapping("/api/medication")
 public class MedicationController {
 
+    private final MedicationService medicationService;
+    private final TreatmentService treatmentService;
+
     //(홈) 오늘 약 정보 조회
     @GetMapping("/today")
     public ApiResult<?> getTodayInfo(){
         return OK(null);
     }
-    //가족 PK 조회
-    @GetMapping("/families")
-    public ApiResult<?> getFamilyPk(){
-        return OK(null);
-    }
+
     //날짜 별(월,일) 가족 복약 조회
     @GetMapping("/")
     public ApiResult<?> getFamilyMedicationInfo(@RequestParam String year,@RequestParam String month,@RequestParam String day){
@@ -69,7 +76,12 @@ public class MedicationController {
     // 복약 종료
     @PatchMapping("/prescriptions/{prescriptionId}")
     public ApiResult<?> endPrescription(@PathVariable(value="prescriptionId")Long prescriptionId){
-        return OK(null);
+        try{
+            treatmentService.endPrescription(prescriptionId);
+            return OK(null);
+        }catch(NoSuchElementException e){
+            return ERROR(HttpStatus.NO_CONTENT, "해당 처방전이 존재하지 않습니다.");
+        }
     }
 
 }

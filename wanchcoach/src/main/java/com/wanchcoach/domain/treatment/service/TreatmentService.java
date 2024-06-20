@@ -215,4 +215,11 @@ public class TreatmentService {
     }
 
 
+    /**
+     * @param prescriptionId 복약 종료할 처방전 ID
+     */
+    public void endPrescription(Long prescriptionId){
+        Prescription prescription = prescriptionRepository.findByPrescriptionId(prescriptionId).orElseThrow();
+        prescription.endTaken();
+    }
 }
