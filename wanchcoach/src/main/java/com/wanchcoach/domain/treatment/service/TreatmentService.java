@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -220,6 +221,6 @@ public class TreatmentService {
      */
     public void endPrescription(Long prescriptionId){
         Prescription prescription = prescriptionRepository.findByPrescriptionId(prescriptionId).orElseThrow();
-        prescription.endTaken();
+        prescription.updateTakingAndEndDate(false, LocalDate.now());
     }
 }

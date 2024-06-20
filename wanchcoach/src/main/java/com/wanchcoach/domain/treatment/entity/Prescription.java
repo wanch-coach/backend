@@ -82,8 +82,4 @@ public class Prescription extends BaseEntity {
     public void updateImageFileName(String imageFileName) {
         this.imageFileName = imageFileName;
     }
-
-    public void endTaken(){
-        this.active=false;
-    }
 }
