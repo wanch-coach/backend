@@ -7,7 +7,7 @@ public record PrescribedDrugDetailDto(Long drugId, String name, Double quantity,
     public static PrescribedDrugDetailDto of(PrescribedDrug prescribedDrug) {
         return new PrescribedDrugDetailDto(
                 prescribedDrug.getDrug().getDrugId(),
-                prescribedDrug.getDrug().getName(),
+                prescribedDrug.getDrug().getItemName(),
                 prescribedDrug.getQuantity(),
                 prescribedDrug.getFrequency(),
                 prescribedDrug.getDay(),
