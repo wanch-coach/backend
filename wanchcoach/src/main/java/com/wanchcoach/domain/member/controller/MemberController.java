@@ -43,8 +43,8 @@ public class MemberController {
     }
 
     @GetMapping("/sendsms")
-    public ApiResult<String> sendsms(@RequestParam("phoneNumber") String phoneNumber){
-        return memberService.sendsms(phoneNumber);
+    public ApiResult<String> sendSMS(@RequestParam("phoneNumber") String phoneNumber){
+        return memberService.sendSMS(phoneNumber);
     }
 
 }
