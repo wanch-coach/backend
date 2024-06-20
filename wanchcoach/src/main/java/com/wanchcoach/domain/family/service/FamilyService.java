@@ -1,5 +1,6 @@
 package com.wanchcoach.domain.family.service;
 
+import com.wanchcoach.domain.family.controller.response.FamilyResponse;
 import com.wanchcoach.domain.family.entity.Family;
 import com.wanchcoach.domain.family.repository.command.FamilyRepository;
 import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
@@ -11,7 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,5 +26,11 @@ public class FamilyService {
         Member member = memberRepository.findById(familyAddDto.memberId())
                 .orElseThrow(() -> new NotFoundException(Member.class, familyAddDto.memberId()));
         return ApiResult.OK(familyRepository.save(familyAddDto.toEntity(member)));
+    }
+
+    public ApiResult<List<FamilyResponse>> selectFamilies(Long memberId) {
+        List<Family> families = familyRepository.findAllByMemberMemberId(memberId);
+        List<FamilyResponse> familyResponses = families.stream().map(FamilyResponse::from).collect(Collectors.toList());
+        return ApiResult.OK(familyResponses);
     }
 }

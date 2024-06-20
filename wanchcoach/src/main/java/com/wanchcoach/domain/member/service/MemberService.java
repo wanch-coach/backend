@@ -52,7 +52,7 @@ public class MemberService {
         return ApiResult.OK(memberRepository.findByLoginId(id) == null);
     }
 
-    public ApiResult<String> sendsms(String phoneNumber) {
+    public ApiResult<String> sendSMS(String phoneNumber) {
         Message message = new Message();
         message.setFrom("01072260214");
         message.setTo(phoneNumber);
