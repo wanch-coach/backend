@@ -1,4 +1,4 @@
-package com.wanchcoach.domain.treatment.controller.response;
+package com.wanchcoach.domain.treatment.controller.dto.response;
 
 public record CreateTreatmentResponse(Long treatmentId, Long prescriptionId) {
 
