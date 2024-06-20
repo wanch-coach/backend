@@ -3,321 +3,334 @@ CREATE DATABASE `wanchcoach`;
 use wanchcoach;
 
 CREATE TABLE `member` (
-	`member_id`	BIGINT 	AUTO_INCREMENT PRIMARY KEY,
-	`id`	VARCHAR(30)	NOT NULL,
-	`encrypted_pwd`	VARCHAR(255)	NOT NULL,
-	`name`	VARCHAR(30)	NOT NULL,
-	`email`	VARCHAR(100)	NOT NULL,
-	`birth_date`	DATE	NOT NULL,
-	`gender`	VARCHAR(1)	NOT NULL,
-	`phone_number`	VARCHAR(30)	NOT NULL,
-	`active`	TINYINT	NOT NULL,
-	`refresh_token`	VARCHAR(255) 	NULL,
-	`login_type`	TINYINT	NOT NULL,
-	`location_permission`	TINYINT	NOT NULL DEFAULT 0,
-	`call_permission`	TINYINT	NOT NULL DEFAULT 0,
-    `camera_permission`	TINYINT NOT NULL DEFAULT 0,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                          `member_id`	BIGINT 	AUTO_INCREMENT PRIMARY KEY,
+                          `id`	VARCHAR(30)	NOT NULL,
+                          `encrypted_pwd`	VARCHAR(255)	NOT NULL,
+                          `name`	VARCHAR(30)	NOT NULL,
+                          `email`	VARCHAR(100)	NOT NULL,
+                          `birth_date`	DATE	NOT NULL,
+                          `gender`	VARCHAR(1)	NOT NULL,
+                          `phone_number`	VARCHAR(30)	NOT NULL,
+                          `active`	BOOLEAN	NOT NULL,
+                          `refresh_token`	VARCHAR(255) 	NULL,
+                          `login_type`	TINYINT	NOT NULL,
+                          `location_permission`	BOOLEAN	NOT NULL DEFAULT 0,
+                          `call_permission`	BOOLEAN	NOT NULL DEFAULT 0,
+                          `camera_permission`	BOOLEAN NOT NULL DEFAULT 0,
+                          `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                          `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE `member_device_token` (
-	`device_token_id`	BIGINT  AUTO_INCREMENT	PRIMARY KEY,
-	`member_id`	BIGINT 	NOT NULL,
-	`device_token`	VARCHAR(255)	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+CREATE TABLE `member device token` (
+                                       `device_token_id`	BIGINT  AUTO_INCREMENT	PRIMARY KEY,
+                                       `member_id`	BIGINT 	NOT NULL,
+                                       `device_token`	VARCHAR(255)	NOT NULL,
+                                       `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                       `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `family` (
-	`family_id`	BIGINT 	AUTO_INCREMENT PRIMARY KEY,
-	`member_id`	BIGINT 	NOT NULL,
-	`name`	VARCHAR(30)	NOT NULL,
-	`birth_date`	DATE	NOT NULL,
-	`gender`	VARCHAR(1)	NOT NULL,
-	`image_file_name`	VARCHAR(255)	NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                          `family_id`	BIGINT 	AUTO_INCREMENT PRIMARY KEY,
+                          `member_id`	BIGINT 	NOT NULL,
+                          `name`	VARCHAR(30)	NOT NULL,
+                          `birth_date`	DATE	NOT NULL,
+                          `gender`	VARCHAR(1)	NOT NULL,
+                          `image_file_name`	VARCHAR(255)	NULL,
+                          `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                          `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `treatment` (
-	`treatment_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
-	`family_id`	BIGINT 	NOT NULL,
-	`hospital_id`	BIGINT 	NOT NULL,
-	`prescription_id`	BIGINT  NULL,
-	`department`	VARCHAR(30)	NULL,
-	`date`	DATETIME	NOT NULL,
-	`taken`	TINYINT	NOT NULL,
-	`alarm`	TINYINT	NOT NULL,
-	`symptom`	VARCHAR(100)	NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                             `treatment_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
+                             `family_id`	BIGINT 	NOT NULL,
+                             `hospital_id`	BIGINT 	NOT NULL,
+                             `prescription_id`	BIGINT  NULL,
+                             `department`	VARCHAR(30)	NULL,
+                             `date`	DATETIME	NOT NULL,
+                             `taken`	BOOLEAN	NOT NULL,
+                             `alarm`	BOOLEAN	NOT NULL,
+                             `symptom`	VARCHAR(100)	NULL,
+                             `active`    BOOLEAN NOT NULL DEFAULT TRUE,
+                             `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                             `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `prescription` (
-	`prescription_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
-	`pharmacy_id`	BIGINT 	NOT NULL,
-    `remains`	INT	NULL,
-	`taking`	TINYINT	NULL,
-	`end_date`	DATE	NULL,
-	`image_file_name`	VARCHAR(255)	NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                                `prescription_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
+                                `pharmacy_id`	BIGINT 	NOT NULL,
+                                `remains`	INT	NULL,
+                                `taking`	BOOLEAN	NULL,
+                                `end_date`	DATE	NULL,
+                                `morning`	BOOLEAN	    NOT NULL DEFAULT TRUE,
+                                `noon`	BOOLEAN	    NOT NULL    DEFAULT TRUE,
+                                `evening`	BOOLEAN	    NOT NULL    DEFAULT TRUE,
+                                `before_bed`	BOOLEAN	NOT NULL    DEFAULT TRUE,
+                                `image_file_name`	VARCHAR(255)	NULL,
+                                `active`    BOOLEAN NOT NULL DEFAULT TRUE,
+                                `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `prescribed drug` (
-	`prescription_id`	BIGINT  NOT NULL,
-	`drug_id`	BIGINT 	NOT NULL,
-	`quantity`	FLOAT	NULL,
-	`frequency`	INT	NULL,
-	`day`	INT	NULL,
-	`direction`	VARCHAR(200)	NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (`prescription_id`, `drug_id`)
+                                   `prescription_id`	BIGINT  NOT NULL,
+                                   `drug_id`	BIGINT 	NOT NULL,
+                                   `quantity`	FLOAT	NULL,
+                                   `frequency`	INT	NULL,
+                                   `day`	INT	NULL,
+                                   `direction`	VARCHAR(200)	NULL,
+                                   `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                   `modified_date` DATETIME NOT NULL DEFAULT NOW(),
+                                   PRIMARY KEY (`prescription_id`, `drug_id`)
 );
 
 CREATE TABLE `treatment alarm` (
-	`treatment_alarm_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
-	`treatment_id`	BIGINT 	NOT NULL,
-	`time`	DATETIME	NOT NULL,
-	`content`	VARCHAR(50)	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                                   `treatment_alarm_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
+                                   `treatment_id`	BIGINT 	NOT NULL,
+                                   `time`	DATETIME	NOT NULL,
+                                   `content`	VARCHAR(50)	NOT NULL,
+                                   `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                   `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `drug record` (
-	`mr_id`	BIGINT 	PRIMARY KEY,
-	`family_id`	BIGINT 	NOT NULL,
-	`prescription_id`	BIGINT 	NOT NULL,
-	`time`	DATETIME	NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                               `mr_id`	BIGINT 	PRIMARY KEY,
+                               `family_id`	BIGINT 	NOT NULL,
+                               `prescription_id`	BIGINT 	NOT NULL,
+                               `time`	DATETIME	NULL,
+                               `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                               `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `scheduled drug record` (
-	`mr_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
-	`family_id`	BIGINT 	NOT NULL,
-	`prescription_id`	BIGINT 	NOT NULL,
-	`estimated_time`	DATETIME	NOT NULL,
-	`alarm`	TINYINT	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                                         `mr_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
+                                         `family_id`	BIGINT 	NOT NULL,
+                                         `prescription_id`	BIGINT 	NOT NULL,
+                                         `estimated_time`	DATETIME	NOT NULL,
+                                         `alarm`	BOOLEAN	NOT NULL,
+                                         `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                         `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `drug administration time` (
-	`family_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
-	`morning`	TIME	NULL,
-	`noon`	TIME	NULL,
-	`evening`	TIME	NULL,
-	`before_bed`	TIME	NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                                            `family_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
+                                            `morning`	TIME	NULL,
+                                            `noon`	TIME	NULL,
+                                            `evening`	TIME	NULL,
+                                            `before_bed`	TIME	NULL,
+                                            `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                            `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `drug` (
-	`drug_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
-	`drug_cat_id`	BIGINT 	NOT NULL,
-	`manufacturer`	VARCHAR(30)	NOT NULL,
-	`name`	VARCHAR(30)	NOT NULL,
-	`efficacy`	VARCHAR(255)	NOT NULL,
-	`ingredient`	VARCHAR(100)	NOT NULL,
-	`image_file_name`	VARCHAR(255)	NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                        `drug_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
+                        `drug_cat_id`	BIGINT 	NOT NULL,
+                        `manufacturer`	VARCHAR(30)	NOT NULL,
+                        `name`	VARCHAR(30)	NOT NULL,
+                        `efficacy`	VARCHAR(255)	NOT NULL,
+                        `ingredient`	VARCHAR(100)	NOT NULL,
+                        `image_file_name`	VARCHAR(255)	NULL,
+                        `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                        `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `drug category` (
-	`drug_cat_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
-	`name`	VARCHAR(30)	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                                 `drug_cat_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
+                                 `name`	VARCHAR(30)	NOT NULL,
+                                 `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                 `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `pharmacy` (
-	`pharmacy_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
-	`name`	VARCHAR(30)	NOT NULL,
-	`address`	VARCHAR(100)	NOT NULL,
-	`phone_number`	VARCHAR(30)	NOT NULL,
-	`longitude`	DECIMAL(15, 12)	NOT NULL,
-	`latitude`	DECIMAL(15, 13)	NOT NULL,
-	`post_cdn`	VARCHAR(5)	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                            `pharmacy_id`	BIGINT  PRIMARY KEY,
+                            `name`	VARCHAR(60)	NOT NULL,
+                            `address`	VARCHAR(100)	NOT NULL,
+                            `phone_number`	VARCHAR(30)	NOT NULL,
+                            `longitude`	DECIMAL(15, 12)	NULL,
+                            `latitude`	DECIMAL(15, 13)	NULL,
+                            `post_cdn`	VARCHAR(6) NULL,
+                            `etc` VARCHAR(2000) NULL,
+                            `hpid` VARCHAR(10) NOT NULL,
+                            `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                            `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `pharmacy opening hour` (
-	`pharmacy_oh_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
-	`pharmacy_id`	BIGINT 	NOT NULL,
-	`day_of_week`	TINYINT	NOT NULL,
-	`start_time`	TIME	NOT NULL,
-	`end_time`	TIME	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                                         `pharmacy_oh_id`	BIGINT  AUTO_INCREMENT  PRIMARY KEY,
+                                         `pharmacy_id`	BIGINT 	NOT NULL,
+                                         `day_of_week`	TINYINT	NOT NULL,
+                                         `start_time`	TIME	NOT NULL,
+                                         `end_time`	TIME	NOT NULL,
+                                         `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                         `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `hospital` (
-	`hospital_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
-	`name`	VARCHAR(30)	NOT NULL,
-	`address`	VARCHAR(100)	NOT NULL,
-	`phone_number`	VARCHAR(30)	NOT NULL,
-	`longitude`	DECIMAL(15, 12)	NOT NULL,
-	`latitude`	DECIMAL(15, 13)	NOT NULL,
-    `post_cdn`	VARCHAR(5)	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                            `hospital_id`	BIGINT  PRIMARY KEY,
+                            `type_id` TINYINT NOT NULL,
+                            `type` VARCHAR(50) NOT NULL,
+                            `name`	VARCHAR(60)	NOT NULL,
+                            `address`	VARCHAR(100)	NOT NULL,
+                            `phone_number`	VARCHAR(30)	NOT NULL,
+                            `longitude`	DECIMAL(15, 12)	NULL,
+                            `latitude`	DECIMAL(15, 13)	NULL,
+                            `has_emergency_room` TINYINT NULL,
+                            `post_cdn`	VARCHAR(6)	NULL,
+                            `etc` VARCHAR(2000) NULL,
+                            `hpid` VARCHAR(10) NOT NULL,
+                            `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                            `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `hospital opening hour` (
-	`hospital_oh_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
-	`hospital_id`	BIGINT 	NOT NULL,
-	`day_of_week`	TINYINT	NOT NULL,
-	`start_time`	TIME	NOT NULL,
-	`end_time`	TIME	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW()
+                                         `hospital_oh_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
+                                         `hospital_id`	BIGINT 	NOT NULL,
+                                         `day_of_week`	TINYINT	NOT NULL,
+                                         `start_time`	TIME	NOT NULL,
+                                         `end_time`	TIME	NOT NULL,
+                                         `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                         `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE `favorite drug` (
-	`member_id`	BIGINT 	NOT NULL,
-	`drug_id`	BIGINT 	NOT NULL,
-    `created_date`  DATETIME NOT NULL DEFAULT NOW(),
-    `modified_date` DATETIME NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (`member_id`, `drug_id`)
+                                 `member_id`	BIGINT 	NOT NULL,
+                                 `drug_id`	BIGINT 	NOT NULL,
+                                 `created_date`  DATETIME NOT NULL DEFAULT NOW(),
+                                 `modified_date` DATETIME NOT NULL DEFAULT NOW(),
+                                 PRIMARY KEY (`member_id`, `drug_id`)
 );
 
 ALTER TABLE `family` ADD CONSTRAINT `FK_member_TO_family_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
+                                                                         `member_id`
+    )
+    REFERENCES `member` (
+                         `member_id`
+        );
 
-ALTER TABLE `member_device_token` ADD CONSTRAINT `FK_member_TO_member_device_token_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
+ALTER TABLE `member device token` ADD CONSTRAINT `FK_member_TO_member_device_token_1` FOREIGN KEY (
+                                                                                                   `member_id`
+    )
+    REFERENCES `member` (
+                         `member_id`
+        );
 
 ALTER TABLE `drug administration time` ADD CONSTRAINT `FK_family_TO_drug administration time_1` FOREIGN KEY (
-	`family_id`
-)
-REFERENCES `family` (
-	`family_id`
-);
+                                                                                                             `family_id`
+    )
+    REFERENCES `family` (
+                         `family_id`
+        );
 
 ALTER TABLE `treatment` ADD CONSTRAINT `FK_family_TO_treatment_1` FOREIGN KEY (
-	`family_id`
-)
-REFERENCES `family` (
-	`family_id`
-);
+                                                                               `family_id`
+    )
+    REFERENCES `family` (
+                         `family_id`
+        );
 
 ALTER TABLE `treatment` ADD CONSTRAINT `FK_hospital_TO_treatment_1` FOREIGN KEY (
-	`hospital_id`
-)
-REFERENCES `hospital` (
-	`hospital_id`
-);
+                                                                                 `hospital_id`
+    )
+    REFERENCES `hospital` (
+                           `hospital_id`
+        );
 
 ALTER TABLE `treatment` ADD CONSTRAINT `FK_prescription_TO_treatment_1` FOREIGN KEY (
-	`prescription_id`
-)
-REFERENCES `prescription` (
-	`prescription_id`
-);
+                                                                                     `prescription_id`
+    )
+    REFERENCES `prescription` (
+                               `prescription_id`
+        );
 
 ALTER TABLE `treatment alarm` ADD CONSTRAINT `FK_treatment_TO_treatment alarm_1` FOREIGN KEY (
-	`treatment_id`
-)
-REFERENCES `treatment` (
-	`treatment_id`
-);
+                                                                                              `treatment_id`
+    )
+    REFERENCES `treatment` (
+                            `treatment_id`
+        );
 
 ALTER TABLE `prescription` ADD CONSTRAINT `FK_pharmacy_TO_prescription_1` FOREIGN KEY (
-	`pharmacy_id`
-)
-REFERENCES `pharmacy` (
-	`pharmacy_id`
-);
+                                                                                       `pharmacy_id`
+    )
+    REFERENCES `pharmacy` (
+                           `pharmacy_id`
+        );
 
 ALTER TABLE `drug` ADD CONSTRAINT `FK_drug category_TO_drug_1` FOREIGN KEY (
-	`drug_cat_id`
-)
-REFERENCES `drug category` (
-	`drug_cat_id`
-);
+                                                                            `drug_cat_id`
+    )
+    REFERENCES `drug category` (
+                                `drug_cat_id`
+        );
 
 ALTER TABLE `prescribed drug` ADD CONSTRAINT `FK_prescription_TO_prescribed drug_1` FOREIGN KEY (
-	`prescription_id`
-)
-REFERENCES `prescription` (
-	`prescription_id`
-);
+                                                                                                 `prescription_id`
+    )
+    REFERENCES `prescription` (
+                               `prescription_id`
+        );
 
 ALTER TABLE `prescribed drug` ADD CONSTRAINT `FK_drug_TO_prescribed drug_1` FOREIGN KEY (
-	`drug_id`
-)
-REFERENCES `drug` (
-	`drug_id`
-);
+                                                                                         `drug_id`
+    )
+    REFERENCES `drug` (
+                       `drug_id`
+        );
 
 ALTER TABLE `drug record` ADD CONSTRAINT `FK_family_TO_drug record_1` FOREIGN KEY (
-	`family_id`
-)
-REFERENCES `family` (
-	`family_id`
-);
+                                                                                   `family_id`
+    )
+    REFERENCES `family` (
+                         `family_id`
+        );
 
 ALTER TABLE `drug record` ADD CONSTRAINT `FK_prescription_TO_drug record_1` FOREIGN KEY (
-	`prescription_id`
-)
-REFERENCES `prescription` (
-	`prescription_id`
-);
+                                                                                         `prescription_id`
+    )
+    REFERENCES `prescription` (
+                               `prescription_id`
+        );
 
 ALTER TABLE `scheduled drug record` ADD CONSTRAINT `FK_family_TO_scheduled drug record_1` FOREIGN KEY (
-	`family_id`
-)
-REFERENCES `family` (
-	`family_id`
-);
+                                                                                                       `family_id`
+    )
+    REFERENCES `family` (
+                         `family_id`
+        );
 
 ALTER TABLE `scheduled drug record` ADD CONSTRAINT `FK_prescription_TO_scheduled drug record_1` FOREIGN KEY (
-	`prescription_id`
-)
-REFERENCES `prescription` (
-	`prescription_id`
-);
+                                                                                                             `prescription_id`
+    )
+    REFERENCES `prescription` (
+                               `prescription_id`
+        );
 
 ALTER TABLE `hospital opening hour` ADD CONSTRAINT `FK_hospital_TO_hospital opening hour_1` FOREIGN KEY (
-	`hospital_id`
-)
-REFERENCES `hospital` (
-	`hospital_id`
-);
+                                                                                                         `hospital_id`
+    )
+    REFERENCES `hospital` (
+                           `hospital_id`
+        );
 
 ALTER TABLE `pharmacy opening hour` ADD CONSTRAINT `FK_pharmacy_TO_pharmacy opening hour_1` FOREIGN KEY (
-	`pharmacy_id`
-)
-REFERENCES `pharmacy` (
-	`pharmacy_id`
-);
+                                                                                                         `pharmacy_id`
+    )
+    REFERENCES `pharmacy` (
+                           `pharmacy_id`
+        );
 
 ALTER TABLE `favorite drug` ADD CONSTRAINT `FK_member_TO_favorite drug_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
+                                                                                       `member_id`
+    )
+    REFERENCES `member` (
+                         `member_id`
+        );
 
 ALTER TABLE `favorite drug` ADD CONSTRAINT `FK_drug_TO_favorite drug_1` FOREIGN KEY (
-	`drug_id`
-)
-REFERENCES `drug` (
-	`drug_id`
-);
+                                                                                     `drug_id`
+    )
+    REFERENCES `drug` (
+                       `drug_id`
+        );
 
 insert into wanchcoach.member (member_id, id, encrypted_pwd, name, email, birth_date, gender, phone_number, active, refresh_token, login_type, location_permission, call_permission, camera_permission, created_date, modified_date)
 values  (1, '1', 'test_pwd', '유호재', 'ho_0214@naver.com', '2024-06-13', 'M', '010-7226-0214', 1, 'test_token', 1, 0, 0, 0, '2024-06-13 22:25:06', '2024-06-13 22:25:06'),
@@ -331,16 +344,6 @@ values  (1, 1, '유호재', '2024-06-13', 'M', 'test_image_file_name', '2024-06-
         (5, 1, '곽강한', '1995-01-01', 'F', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59'),
         (6, 2, '신호인', '1997-01-01', 'M', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59'),
         (7, 2, '홍진식', '2024-06-15', 'F', null, '2024-06-15 05:22:59', '2024-06-15 05:22:59');
-
-insert into wanchcoach.hospital (hospital_id, name, address, phone_number, longitude, latitude, post_cdn, created_date, modified_date)
-values  (1, '세브란스병원', '광주광역시 광산구 첨단과기로', '010-2638-5572', 126.833009748716, 35.2271203871567, '62253', '2024-06-13 22:25:06', '2024-06-13 22:25:06'),
-        (2, '가톨릭대학교 성빈센트병원', '경기도 수원시 팔달구 중부대로 93, (지동)', '031-1577-8588', 127.027427100000, 37.2779855000000, '16247', '2024-06-15 04:42:45', '2024-06-15 04:42:45'),
-        (3, '강릉아산병원', '강원특별자치도 강릉시 사천면 방동길 38', '033-610-3114', 128.857841100000, 37.8184325000000, '25440', '2024-06-15 04:42:45', '2024-06-15 04:42:45'),
-        (4, '강북삼성병원', '서울특별시 종로구 새문안로 29', '02-2001-2001', 126.967750000000, 37.5684083000000, '03181', '2024-06-15 04:42:45', '2024-06-15 04:42:45'),
-        (5, '건국대학교병원', '서울특별시 광진구 능동로 120-1', '1588-1533', 127.071827600000, 37.5403764000000, '05030', '2024-06-15 04:42:45', '2024-06-15 04:42:45');
-
-insert into wanchcoach.pharmacy (pharmacy_id, name, address, phone_number, longitude, latitude, post_cdn, created_date, modified_date)
-values  (1, '나종현국', '서울특별시 관악구 봉천동', '010-9876-5432', 132.000000000000, 37.0000000000000, '01234', '2024-06-15 05:26:59', '2024-06-15 05:26:59');
 
 insert into `drug category` (drug_cat_id, name, created_date, modified_date) values (1, '진통제', '2024-06-13 20:42:32', '2024-06-13 20:42:32');
 insert into `drug category` (drug_cat_id, name, created_date, modified_date) values (2, '소염제', '2024-06-13 20:42:32', '2024-06-13 20:42:32');
