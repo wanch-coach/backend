@@ -69,9 +69,9 @@ public class OAuthLoginService {
                 .active(true) // 예시로 true로 설정
                 .loginType(true) // 예시로 true로 설정
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
-                .locationPermission(true) // 예시로 true로 설정
-                .callPermission(true) // 예시로 true로 설정
-                .cameraPermission(true) // 예시로 true로 설정
+                .locationPermission(false) // 예시로 true로 설정
+                .callPermission(false) // 예시로 true로 설정
+                .cameraPermission(false) // 예시로 true로 설정
                 .build();
         return memberRepository.save(member);
     }

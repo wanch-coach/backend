@@ -2,6 +2,8 @@ package com.wanchcoach.domain.member.service;
 
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
+import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
+import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.MemberRepository;
 import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
@@ -70,5 +72,10 @@ public class MemberService {
 
         AuthTokens authTokens = authTokenGenerator.generate(member.getMemberId());
         return ApiResult.OK(authTokens);
+    }
+
+    public ApiResult<AlarmSeleteResponse> selectAlarm(Long memberId) {
+        DrugAdministrationTime drugAdministrationTime = memberRepository.findByMemberId(memberId);
+        return ApiResult.OK(AlarmSeleteResponse.of(drugAdministrationTime));
     }
 }

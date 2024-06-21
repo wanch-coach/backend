@@ -3,6 +3,7 @@ package com.wanchcoach.domain.member.controller;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
 import com.wanchcoach.domain.member.controller.request.MemberLoginRequest;
 import com.wanchcoach.domain.member.controller.request.MemberSignupRequest;
+import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
 import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.service.MemberService;
@@ -11,6 +12,8 @@ import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.message.model.Message;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -45,6 +48,12 @@ public class MemberController {
     @GetMapping("/sendsms")
     public ApiResult<String> sendSMS(@RequestParam("phoneNumber") String phoneNumber){
         return memberService.sendSMS(phoneNumber);
+    }
+
+    @GetMapping("/alarm")
+    public ApiResult<AlarmSeleteResponse> selectAlarm(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.selectAlarm(memberId);
     }
 
 }
