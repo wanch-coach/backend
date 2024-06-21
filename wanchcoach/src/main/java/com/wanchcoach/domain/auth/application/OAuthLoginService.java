@@ -73,6 +73,7 @@ public class OAuthLoginService {
                 .callPermission(false) // 예시로 true로 설정
                 .cameraPermission(false) // 예시로 true로 설정
                 .build();
+
         return memberRepository.save(member);
     }
 

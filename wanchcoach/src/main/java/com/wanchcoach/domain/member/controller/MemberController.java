@@ -1,9 +1,11 @@
 package com.wanchcoach.domain.member.controller;
 
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
+import com.wanchcoach.domain.member.controller.request.AlarmUpdateRequest;
 import com.wanchcoach.domain.member.controller.request.MemberLoginRequest;
 import com.wanchcoach.domain.member.controller.request.MemberSignupRequest;
 import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
+import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
 import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.service.MemberService;
@@ -56,4 +58,9 @@ public class MemberController {
         return memberService.selectAlarm(memberId);
     }
 
+    @PutMapping("/alarm")
+    public ApiResult<AlarmSeleteResponse> updateAlarm(@RequestBody AlarmUpdateRequest alarmUpdateRequest, @AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.updateAlarm(AlarmUpdateDto.of(memberId, alarmUpdateRequest));
+    }
 }

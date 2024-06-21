@@ -6,6 +6,7 @@ import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
 import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.MemberRepository;
+import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
 import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
 import com.wanchcoach.domain.member.service.dto.MemberSignupDto;
 import com.wanchcoach.global.api.ApiResult;
@@ -76,6 +77,12 @@ public class MemberService {
 
     public ApiResult<AlarmSeleteResponse> selectAlarm(Long memberId) {
         DrugAdministrationTime drugAdministrationTime = memberRepository.findByMemberId(memberId);
+        return ApiResult.OK(AlarmSeleteResponse.of(drugAdministrationTime));
+    }
+
+    public ApiResult<AlarmSeleteResponse> updateAlarm(AlarmUpdateDto alarmUpdateDto) {
+        DrugAdministrationTime drugAdministrationTime = memberRepository.findByMemberId(alarmUpdateDto.memberId());
+        drugAdministrationTime.update(alarmUpdateDto);
         return ApiResult.OK(AlarmSeleteResponse.of(drugAdministrationTime));
     }
 }
