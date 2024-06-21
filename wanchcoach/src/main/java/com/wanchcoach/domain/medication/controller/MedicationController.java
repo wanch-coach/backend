@@ -40,8 +40,12 @@ public class MedicationController {
     //복약 상세 조회
     @GetMapping("/prescriptions/{prescriptionId}")
     public ApiResult<?> getMedicationDetail(@PathVariable(value="prescriptionId") Long prescriptionId){
-        List<SearchDrugsResponse> prescriptionDrugs = medicationQService.getMedicationDetail(prescriptionId);
-        return OK(prescriptionDrugs);
+        try {
+            List<SearchDrugsResponse> prescriptionDrugs = medicationQService.getMedicationDetail(prescriptionId);
+            return OK(prescriptionDrugs);
+        }catch(RuntimeException e){
+            return ERROR(HttpStatus.NOT_FOUND,"등록된 처방전 혹은 약이 없습니다.");
+        }
     }
     //복약 실행(약 먹기)
     @PatchMapping("/taken/{medicineRecordId}")
