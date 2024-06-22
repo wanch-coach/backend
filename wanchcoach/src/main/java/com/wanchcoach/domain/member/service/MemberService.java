@@ -128,5 +128,9 @@ public class MemberService {
     }
 
 
-
+    public ApiResult<CameraPermissionResponse> updateCameraPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        member.updateCamera();
+        return ApiResult.OK(CameraPermissionResponse.of(member));
+    }
 }

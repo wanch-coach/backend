@@ -107,9 +107,9 @@ public class MemberController {
         return memberService.selectCameraPermission(memberId);
     }
 
-//    @PostMapping("/camera-permission")
-//    public ApiResult<CameraPermissionResponse> updateCameraPermission(@AuthenticationPrincipal User user){
-//        Long memberId = Long.valueOf(user.getUsername());
-//        return memberService.updateCameraPermission(memberId);
-//    }
+    @PostMapping("/camera-permission")
+    public ApiResult<CameraPermissionResponse> updateCameraPermission(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.updateCameraPermission(memberId);
+    }
 }

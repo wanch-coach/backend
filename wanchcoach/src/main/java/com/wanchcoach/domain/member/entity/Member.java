@@ -93,6 +93,10 @@ public class Member extends BaseEntity {
         this.callPermission = true;
     }
 
+    public void updateCamera() {
+        this.cameraPermission = true;
+    }
+
 
 //    public void modify(MemberModifyRequest memberModifyRequest){
 //        //getNickName으로 수정
