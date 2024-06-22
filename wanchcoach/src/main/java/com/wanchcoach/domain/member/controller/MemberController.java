@@ -93,12 +93,12 @@ public class MemberController {
         Long memberId = Long.valueOf(user.getUsername());
         return memberService.selectCallPermission(memberId);
     }
-//
-//    @PostMapping("/call-permission")
-//    public ApiResult<CallPermissionResponse> updateCallPermission(@AuthenticationPrincipal User user){
-//        Long memberId = Long.valueOf(user.getUsername());
-//        return memberService.updateCallPermission(memberId);
-//    }
+
+    @PostMapping("/call-permission")
+    public ApiResult<CallPermissionResponse> updateCallPermission(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.updateCallPermission(memberId);
+    }
 //
 //    @GetMapping("/camera-permission")
 //    public ApiResult<CameraPermissionResponse> selectCameraPermission(@AuthenticationPrincipal User user){

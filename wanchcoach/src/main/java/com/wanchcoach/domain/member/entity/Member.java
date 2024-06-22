@@ -89,6 +89,10 @@ public class Member extends BaseEntity {
         this.locationPermission = true;
     }
 
+    public void updateCall() {
+        this.callPermission = true;
+    }
+
 
 //    public void modify(MemberModifyRequest memberModifyRequest){
 //        //getNickName으로 수정

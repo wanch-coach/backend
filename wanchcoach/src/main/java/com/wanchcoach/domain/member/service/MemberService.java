@@ -114,4 +114,12 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(memberId);
         return ApiResult.OK(CallPermissionResponse.of(member));
     }
+
+    public ApiResult<CallPermissionResponse> updateCallPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        member.updateCall();
+        return ApiResult.OK(CallPermissionResponse.of(member));
+    }
+
+
 }
