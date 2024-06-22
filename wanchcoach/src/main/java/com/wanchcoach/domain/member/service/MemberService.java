@@ -101,4 +101,12 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(memberId);
         return ApiResult.OK(LocationPermissionResponse.of(member));
     }
+
+    public ApiResult<LocationPermissionResponse> updateLocationPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        member.updateLocation();
+        return ApiResult.OK(LocationPermissionResponse.of(member));
+    }
+
+
 }

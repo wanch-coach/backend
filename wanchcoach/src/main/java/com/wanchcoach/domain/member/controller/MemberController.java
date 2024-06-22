@@ -6,6 +6,7 @@ import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
 import com.wanchcoach.domain.member.controller.request.AlarmUpdateRequest;
 import com.wanchcoach.domain.member.controller.request.MemberLoginRequest;
 import com.wanchcoach.domain.member.controller.request.MemberSignupRequest;
+import com.wanchcoach.domain.member.controller.request.UpdateLocationPermissionRequest;
 import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
 import com.wanchcoach.domain.member.controller.response.LocationPermissionResponse;
 import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
@@ -82,12 +83,12 @@ public class MemberController {
         return memberService.selectLocationPermission(memberId);
     }
 
-//    @PostMapping("/location-permission")
-//    public ApiResult<LocationPermissionResponse> updateLocationPermission(@AuthenticationPrincipal User user){
-//        Long memberId = Long.valueOf(user.getUsername());
-//        return memberService.updateLocationPermission(memberId);
-//    }
-//
+    @PostMapping("/location-permission")
+    public ApiResult<LocationPermissionResponse> updateLocationPermission(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.updateLocationPermission(memberId);
+    }
+
 //    @GetMapping("/call-permission")
 //    public ApiResult<CallPermissionResponse> selectCallPermission(@AuthenticationPrincipal User user){
 //        Long memberId = Long.valueOf(user.getUsername());
