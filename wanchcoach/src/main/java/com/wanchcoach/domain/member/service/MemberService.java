@@ -3,6 +3,7 @@ package com.wanchcoach.domain.member.service;
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
 import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
+import com.wanchcoach.domain.member.controller.response.CallPermissionResponse;
 import com.wanchcoach.domain.member.controller.response.LocationPermissionResponse;
 import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
@@ -109,4 +110,8 @@ public class MemberService {
     }
 
 
+    public ApiResult<CallPermissionResponse> selectCallPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        return ApiResult.OK(CallPermissionResponse.of(member));
+    }
 }

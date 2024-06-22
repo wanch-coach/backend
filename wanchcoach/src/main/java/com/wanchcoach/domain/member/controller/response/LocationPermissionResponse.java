@@ -6,6 +6,6 @@ public record LocationPermissionResponse(
         boolean locationPermission
 ) {
     public static LocationPermissionResponse of(Member member) {
-        return new LocationPermissionResponse(member.isCameraPermission());
+        return new LocationPermissionResponse(member.isLocationPermission());
     }
 }

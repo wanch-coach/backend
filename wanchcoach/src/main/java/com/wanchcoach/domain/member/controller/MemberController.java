@@ -6,8 +6,8 @@ import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
 import com.wanchcoach.domain.member.controller.request.AlarmUpdateRequest;
 import com.wanchcoach.domain.member.controller.request.MemberLoginRequest;
 import com.wanchcoach.domain.member.controller.request.MemberSignupRequest;
-import com.wanchcoach.domain.member.controller.request.UpdateLocationPermissionRequest;
 import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
+import com.wanchcoach.domain.member.controller.response.CallPermissionResponse;
 import com.wanchcoach.domain.member.controller.response.LocationPermissionResponse;
 import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
 import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
@@ -17,7 +17,6 @@ import com.wanchcoach.domain.member.service.dto.MemberSignupDto;
 import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.nurigo.sdk.message.model.Message;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
@@ -89,11 +88,11 @@ public class MemberController {
         return memberService.updateLocationPermission(memberId);
     }
 
-//    @GetMapping("/call-permission")
-//    public ApiResult<CallPermissionResponse> selectCallPermission(@AuthenticationPrincipal User user){
-//        Long memberId = Long.valueOf(user.getUsername());
-//        return memberService.selectCallPermission(memberId);
-//    }
+    @GetMapping("/call-permission")
+    public ApiResult<CallPermissionResponse> selectCallPermission(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.selectCallPermission(memberId);
+    }
 //
 //    @PostMapping("/call-permission")
 //    public ApiResult<CallPermissionResponse> updateCallPermission(@AuthenticationPrincipal User user){
