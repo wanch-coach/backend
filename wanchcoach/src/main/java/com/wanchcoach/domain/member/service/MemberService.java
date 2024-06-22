@@ -3,6 +3,7 @@ package com.wanchcoach.domain.member.service;
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
 import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
+import com.wanchcoach.domain.member.controller.response.LocationPermissionResponse;
 import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.DrugAdministrationTimeRepository;
@@ -94,5 +95,10 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(alarmUpdateDto.memberId());
         DrugAdministrationTime drugAdministrationTime = AlarmUpdateDto.toEntity(member, alarmUpdateDto);
         drugAdministrationTimeRepository.save(drugAdministrationTime);
+    }
+
+    public ApiResult<LocationPermissionResponse> selectLocationPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        return ApiResult.OK(LocationPermissionResponse.of(member));
     }
 }
