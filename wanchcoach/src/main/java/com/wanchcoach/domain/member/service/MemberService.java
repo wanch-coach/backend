@@ -4,6 +4,7 @@ import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
 import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
 import com.wanchcoach.domain.member.controller.response.CallPermissionResponse;
+import com.wanchcoach.domain.member.controller.response.CameraPermissionResponse;
 import com.wanchcoach.domain.member.controller.response.LocationPermissionResponse;
 import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
@@ -120,6 +121,12 @@ public class MemberService {
         member.updateCall();
         return ApiResult.OK(CallPermissionResponse.of(member));
     }
+
+    public ApiResult<CameraPermissionResponse> selectCameraPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        return ApiResult.OK(CameraPermissionResponse.of(member));
+    }
+
 
 
 }

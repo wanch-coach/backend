@@ -8,6 +8,7 @@ import com.wanchcoach.domain.member.controller.request.MemberLoginRequest;
 import com.wanchcoach.domain.member.controller.request.MemberSignupRequest;
 import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
 import com.wanchcoach.domain.member.controller.response.CallPermissionResponse;
+import com.wanchcoach.domain.member.controller.response.CameraPermissionResponse;
 import com.wanchcoach.domain.member.controller.response.LocationPermissionResponse;
 import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
 import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
@@ -99,13 +100,13 @@ public class MemberController {
         Long memberId = Long.valueOf(user.getUsername());
         return memberService.updateCallPermission(memberId);
     }
-//
-//    @GetMapping("/camera-permission")
-//    public ApiResult<CameraPermissionResponse> selectCameraPermission(@AuthenticationPrincipal User user){
-//        Long memberId = Long.valueOf(user.getUsername());
-//        return memberService.selectCameraPermission(memberId);
-//    }
-//
+
+    @GetMapping("/camera-permission")
+    public ApiResult<CameraPermissionResponse> selectCameraPermission(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.selectCameraPermission(memberId);
+    }
+
 //    @PostMapping("/camera-permission")
 //    public ApiResult<CameraPermissionResponse> updateCameraPermission(@AuthenticationPrincipal User user){
 //        Long memberId = Long.valueOf(user.getUsername());
