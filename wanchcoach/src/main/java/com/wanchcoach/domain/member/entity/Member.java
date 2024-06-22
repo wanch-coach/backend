@@ -54,7 +54,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private String gender;
 
     @Column(nullable = false)
@@ -77,6 +77,8 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private boolean cameraPermission;
+
+    @Transient
     private OAuthProvider oAuthProvider;
 
     public void updateRefreshToken(String refreshToken){

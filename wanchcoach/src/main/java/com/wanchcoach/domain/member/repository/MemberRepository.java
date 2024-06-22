@@ -12,6 +12,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByLoginId(String loginId);
     Optional<Member> findByLoginIdAndEncryptedPwd(String id, String pwd);
 
-    DrugAdministrationTime findByMemberId(Long memberId);
-
+    Member findByMemberId(Long memberId);
 }

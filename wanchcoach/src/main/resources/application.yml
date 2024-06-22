@@ -9,7 +9,7 @@ spring:
   cloud:
     config:
       name: application
-      profile: local
+      profile: hojae
 
 encrypt:
   key: ${ENCRYPT-KEY}

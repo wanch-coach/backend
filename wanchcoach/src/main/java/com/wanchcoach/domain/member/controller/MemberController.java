@@ -1,6 +1,8 @@
 package com.wanchcoach.domain.member.controller;
 
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
+import com.wanchcoach.domain.family.service.FamilyService;
+import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
 import com.wanchcoach.domain.member.controller.request.AlarmUpdateRequest;
 import com.wanchcoach.domain.member.controller.request.MemberLoginRequest;
 import com.wanchcoach.domain.member.controller.request.MemberSignupRequest;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final FamilyService familyService;
 
     @PostMapping("/login")
     public ApiResult<AuthTokens> login(@RequestBody MemberLoginRequest memberLoginRequest){
@@ -36,8 +39,16 @@ public class MemberController {
     public ApiResult<Member> signup(@RequestBody MemberSignupRequest memberSignupRequest){
         log.info("signupRequestController");
         log.info(memberSignupRequest.toString());
+        ApiResult<Member> response = memberService.signup(MemberSignupDto.of(memberSignupRequest));
 
-        return memberService.signup(MemberSignupDto.of(memberSignupRequest));
+        Long memberId = response.getData().getMemberId();
+        FamilyAddDto familyAddDto = FamilyAddDto.of(memberSignupRequest, memberId);
+        familyService.addFamily(familyAddDto);
+
+        memberService.addDefaultAlarm(AlarmUpdateDto.defaultAlarmOf(memberId));
+
+
+        return response;
     }
 
     @GetMapping("/idcheck/{id}")
