@@ -163,4 +163,20 @@ public class MemberService {
         member.updateMemberInfo(memberUpdateInfoDto);
         return ApiResult.OK(MemberInfoResponse.of(member));
     }
+
+    public ApiResult<AuthTokens> changePwdAuth(ChangePwdInfoDto changePwdInfoDto) {
+        Member member = memberRepository.findByNameAndLoginIdAndPhoneNumberAndBirthDate(
+                changePwdInfoDto.name(), changePwdInfoDto.loginId(), changePwdInfoDto.phoneNumber(),
+                changePwdInfoDto.birthDate()
+        );
+
+        AuthTokens authTokens = authTokenGenerator.generate(member.getMemberId());
+        return ApiResult.OK(authTokens);
+    }
+
+    @Transactional
+    public void changePwd(ChangePwdDto changePwdDto) {
+        Member member = memberRepository.findByMemberId(changePwdDto.MemberId());
+        member.updatePwd(changePwdDto.pwd());
+    }
 }

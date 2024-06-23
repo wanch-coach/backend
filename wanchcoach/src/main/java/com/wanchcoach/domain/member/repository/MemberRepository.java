@@ -20,4 +20,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByLoginId(String loginId);
 
     Member findByNameAndPhoneNumberAndBirthDate(String name, String s, LocalDate localDate);
+
+    Member findByNameAndLoginIdAndPhoneNumberAndBirthDate(String name, String loginId, String phoneNumber, LocalDate birthDate);
 }

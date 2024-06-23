@@ -111,6 +111,10 @@ public class Member extends BaseEntity {
         this.phoneNumber = memberUpdateInfoDto.phoneNumber();
     }
 
+    public void updatePwd(String pwd) {
+        this.encryptedPwd = pwd;
+    }
+
 
 //    public void modify(MemberModifyRequest memberModifyRequest){
 //        //getNickName으로 수정

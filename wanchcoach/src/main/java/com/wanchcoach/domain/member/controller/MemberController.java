@@ -15,6 +15,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.PATCH;
+
+/**
+ * TO DO 비밀번호 현재와 다른지 검증 필요
+ */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +39,19 @@ public class MemberController {
         Long memberId = Long.valueOf(user.getUsername());
         return memberService.getMemberInfo(memberId);
     }
+    @GetMapping("/changepwdauth")
+    public ApiResult<AuthTokens> changePwdAuth(@RequestBody ChangePwdInfoRequest changePwdInfoRequest){
+        ChangePwdInfoDto changePwdInfoDto = ChangePwdInfoDto.of(changePwdInfoRequest);
+        return memberService.changePwdAuth(changePwdInfoDto);
+    }
+    @PatchMapping("/changepwdauth")
+    public ApiResult<Void> changePwd(@RequestBody ChangePwdRequest changePwdRequest, @AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        ChangePwdDto changePwdDto = ChangePwdDto.of(memberId, changePwdRequest);
+        memberService.changePwd(changePwdDto);
+        return ApiResult.OK(null);
+    }
+
     @PatchMapping("/memberInfo")
     public ApiResult<MemberInfoResponse> updateMemberInfo(@RequestBody MemberUpdateInfoRequest memberUpdateInfoRequest , @AuthenticationPrincipal User user){
         Long memberId = Long.valueOf(user.getUsername());
