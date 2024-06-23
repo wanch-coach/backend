@@ -6,6 +6,6 @@ public record CallPermissionResponse(
         boolean callPermission
 ) {
     public static CallPermissionResponse of(Member member) {
-        return new CallPermissionResponse(member.isCameraPermission());
+        return new CallPermissionResponse(member.isCallPermission());
     }
 }

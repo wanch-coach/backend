@@ -24,6 +24,10 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+/**
+ * TODO
+ * 회원가입 데이터 생성 시 Permission관련 데이터를 false로 생성하는 것이 아닌, default를 false로설정
+ */
 public class OAuthLoginService {
 
     private final MemberRepository memberRepository;

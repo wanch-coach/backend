@@ -2,19 +2,17 @@ package com.wanchcoach.domain.member.service;
 
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
-import com.wanchcoach.domain.member.controller.response.AlarmSeleteResponse;
-import com.wanchcoach.domain.member.controller.response.CallPermissionResponse;
-import com.wanchcoach.domain.member.controller.response.CameraPermissionResponse;
-import com.wanchcoach.domain.member.controller.response.LocationPermissionResponse;
+import com.wanchcoach.domain.member.controller.request.MemberUpdateInfoRequest;
+import com.wanchcoach.domain.member.controller.response.*;
 import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.DrugAdministrationTimeRepository;
 import com.wanchcoach.domain.member.repository.MemberRepository;
-import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
-import com.wanchcoach.domain.member.service.dto.MemberLoginDto;
-import com.wanchcoach.domain.member.service.dto.MemberSignupDto;
+import com.wanchcoach.domain.member.service.dto.*;
 import com.wanchcoach.global.api.ApiResult;
 import com.wanchcoach.global.error.NotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -27,6 +25,7 @@ import javax.annotation.PostConstruct;
 import java.util.Random;
 
 @Service
+@Slf4j
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -53,10 +52,17 @@ public class MemberService {
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, secretKey, smsDomain);
     }
 
-    public ApiResult<Member> signup(MemberSignupDto memberSignupDto) {
-        return ApiResult.OK(memberRepository.save(memberSignupDto.toEntity()));
+    public ApiResult<MemberInfoResponse> signup(MemberSignupDto memberSignupDto) {
+        Member member = memberRepository.save(memberSignupDto.toEntity());
+        MemberInfoResponse response = MemberInfoResponse.of(member);
+        return ApiResult.OK(response);
     }
 
+    public ApiResult<MemberInfoResponse> getMemberInfo(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        return ApiResult.OK(MemberInfoResponse.of(member));
+    }
+    @Transactional
     public ApiResult<Void> leaveMember(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId);
         member.updateLeave();
@@ -64,7 +70,9 @@ public class MemberService {
     }
     public ApiResult<Boolean> idDuplicateCheck(String id) {
         String loginId = id;
-        return ApiResult.OK(memberRepository.findByLoginId(loginId) == null);
+        boolean response = !memberRepository.existsByLoginId(loginId);
+        log.info("response : {}", String.valueOf(response));
+        return ApiResult.OK(response);
     }
 
     public ApiResult<String> sendSMS(String phoneNumber) {
@@ -92,6 +100,7 @@ public class MemberService {
         return ApiResult.OK(AlarmSeleteResponse.of(drugAdministrationTime));
     }
 
+    @Transactional
     public ApiResult<AlarmSeleteResponse> updateAlarm(AlarmUpdateDto alarmUpdateDto) {
         DrugAdministrationTime drugAdministrationTime = drugAdministrationTimeRepository.findByMemberMemberId(alarmUpdateDto.memberId());
         drugAdministrationTime.update(alarmUpdateDto);
@@ -108,7 +117,7 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(memberId);
         return ApiResult.OK(LocationPermissionResponse.of(member));
     }
-
+    @Transactional
     public ApiResult<LocationPermissionResponse> updateLocationPermission(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId);
         member.updateLocation();
@@ -120,10 +129,12 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(memberId);
         return ApiResult.OK(CallPermissionResponse.of(member));
     }
-
+    @Transactional
     public ApiResult<CallPermissionResponse> updateCallPermission(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId);
         member.updateCall();
+        System.out.println(
+                member.isCallPermission());
         return ApiResult.OK(CallPermissionResponse.of(member));
     }
 
@@ -132,11 +143,24 @@ public class MemberService {
         return ApiResult.OK(CameraPermissionResponse.of(member));
     }
 
-
+    @Transactional
     public ApiResult<CameraPermissionResponse> updateCameraPermission(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId);
         member.updateCamera();
         return ApiResult.OK(CameraPermissionResponse.of(member));
     }
 
+    public ApiResult<FindIdResponse> findMemberId(FindMemberLoginIdDto findMemberLoginIdDto) {
+        Member member = memberRepository.findByNameAndPhoneNumberAndBirthDate(
+                findMemberLoginIdDto.name(), findMemberLoginIdDto.phoneNumber(), findMemberLoginIdDto.birthDate()
+        );
+        return ApiResult.OK(FindIdResponse.of(member.getLoginId()));
+    }
+
+    @Transactional
+    public ApiResult<MemberInfoResponse> updateMemberInfo(MemberUpdateInfoDto memberUpdateInfoDto) {
+        Member member = memberRepository.findByMemberId(memberUpdateInfoDto.memberId());
+        member.updateMemberInfo(memberUpdateInfoDto);
+        return ApiResult.OK(MemberInfoResponse.of(member));
+    }
 }

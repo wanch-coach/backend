@@ -3,8 +3,10 @@ package com.wanchcoach.domain.member.repository;
 
 import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
+import com.wanchcoach.domain.member.service.dto.FindMemberLoginIdDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -15,4 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByMemberId(Long memberId);
 
 
+    boolean existsByLoginId(String loginId);
+
+    Member findByNameAndPhoneNumberAndBirthDate(String name, String s, LocalDate localDate);
 }
