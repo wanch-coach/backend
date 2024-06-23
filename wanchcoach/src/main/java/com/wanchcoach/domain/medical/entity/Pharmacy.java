@@ -43,6 +43,9 @@ public class Pharmacy extends BaseEntity {
     @Column
     private String postCdn;
 
+    @Column
+    private String etc;
+
     @Column(nullable = false)
     private String hpid;
 }
