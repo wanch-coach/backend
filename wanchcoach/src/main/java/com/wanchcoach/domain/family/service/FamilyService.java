@@ -36,6 +36,12 @@ public class FamilyService {
         return ApiResult.OK(familiesRespons);
     }
 
+    public ApiResult<List<FamilyInfoResponse>> selectInfoFamilies(Long memberId) {
+        List<Family> families = familyRepository.findAllByMemberMemberId(memberId);
+        List<FamilyInfoResponse> familyInfoResponses = families.stream().map(FamilyInfoResponse::from).collect(Collectors.toList());
+        return ApiResult.OK(familyInfoResponses);
+    }
+
     @Transactional
     public ApiResult<FamilyInfoResponse> updateFamily(FamilyUpdateDto familyUpdateDto) {
         Family family = familyRepository.findById(familyUpdateDto.familyId())
@@ -54,4 +60,5 @@ public class FamilyService {
         familyRepository.deleteById(familyId);
         return ApiResult.OK(null);
     }
+
 }
