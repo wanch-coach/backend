@@ -57,6 +57,11 @@ public class MemberService {
         return ApiResult.OK(memberRepository.save(memberSignupDto.toEntity()));
     }
 
+    public ApiResult<Void> leaveMember(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        member.updateLeave();
+        return ApiResult.OK(null);
+    }
     public ApiResult<Boolean> idDuplicateCheck(String id) {
         String loginId = id;
         return ApiResult.OK(memberRepository.findByLoginId(loginId) == null);
@@ -133,4 +138,5 @@ public class MemberService {
         member.updateCamera();
         return ApiResult.OK(CameraPermissionResponse.of(member));
     }
+
 }

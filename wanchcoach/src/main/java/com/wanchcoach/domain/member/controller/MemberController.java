@@ -48,9 +48,12 @@ public class MemberController {
         familyService.addFamily(familyAddDto);
 
         memberService.addDefaultAlarm(AlarmUpdateDto.defaultAlarmOf(memberId));
-
-
         return response;
+    }
+    @PostMapping("/leave")
+    public ApiResult<Void> leaveMember(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.leaveMember(memberId);
     }
 
     @GetMapping("/idcheck/{id}")
