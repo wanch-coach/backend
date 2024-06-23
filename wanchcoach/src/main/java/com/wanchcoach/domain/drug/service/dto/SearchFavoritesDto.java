@@ -37,8 +37,8 @@ public class SearchFavoritesDto {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return new SearchFavoritesResponse(this.favoriteId, this.drugId, this.spcltyPblc, Base64.getEncoder().encodeToString(result));
+            return new SearchFavoritesResponse(this.favoriteId, this.drugId, this.itemName, this.spcltyPblc, Base64.getEncoder().encodeToString(result));
         }
-        return new SearchFavoritesResponse(this.favoriteId, this.drugId, this.spcltyPblc, null);
+        return new SearchFavoritesResponse(this.favoriteId, this.drugId, this.itemName, this.spcltyPblc, null);
     }
 }
