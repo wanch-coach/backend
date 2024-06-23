@@ -217,7 +217,6 @@ public class MedicalService {
     }
 
     public GetPharmacyDataResponse getPharmacyData() {
-        String serviceKey = "16fZL%2B8eTFQLjZIgHjTFioQnSWOWSQH0DHQQEptoPyLratGWMhKa%2FRLAZ25s3Ta0gvEr4clGBbe78nexVyFmpg%3D%3D";
         int numOfRows = 100;
         int numOfPages = (24545/numOfRows)+1;
         int savedPharmacies = 0;
@@ -254,6 +253,7 @@ public class MedicalService {
                                         getTagValue("postCdn1", element) == null || getTagValue("postCdn2", element) == null ? null :
                                                 (getTagValue("postCdn1", element)+getTagValue("postCdn2", element)).strip()
                                 )
+                                .etc(getTagValue("dutyEtc", element))
                                 .hpid(getTagValue("hpid", element))
                                 .build();
 
