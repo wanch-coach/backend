@@ -14,4 +14,7 @@ public interface OAuthInfoResponse {
     String getProfile_Image();
     OAuthProvider getOAuthProvider();
 
+    default String getMobile() {
+        return null;
+    }
 }
