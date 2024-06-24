@@ -2,6 +2,7 @@ package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
+import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import com.wanchcoach.domain.medication.service.MedicationQService;
 import com.wanchcoach.domain.medication.service.MedicationService;
 import com.wanchcoach.domain.medication.service.dto.TakingMedicineDto;
@@ -30,8 +31,10 @@ public class MedicationController {
 
     //(홈) 오늘 약 정보 조회
     @GetMapping("/today")
-    public ApiResult<?> getTodayInfo(){
-        return OK(null);
+    public ApiResult<TodayMedicationResponse> getTodayInfo(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        TodayMedicationResponse todayMedicationResponse = medicationQService.getTodayMedication(memberId);
+        return OK(todayMedicationResponse);
     }
 
     //날짜 별(월,일) 가족 복약 조회
