@@ -9,6 +9,7 @@ public record PrescriptionTakingRecord(
         String hospitalName,
         String department,
         String start,
+        Long prescriptionId,
         List<SearchDrugsResponse> drugs
 ) {
 }

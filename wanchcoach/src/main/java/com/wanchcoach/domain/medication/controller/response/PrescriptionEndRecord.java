@@ -10,6 +10,7 @@ public record PrescriptionEndRecord(
         String department,
         String start,
         String end,
+        Long prescriptionId,
         List<SearchDrugsResponse> drugs
 ) {
 }

@@ -57,22 +57,4 @@ public class Hospital extends BaseEntity {
 
     @Column(nullable = false)
     private String hpid;
-
-    @Override
-    public String toString() {
-        return "Hospital{" +
-                "hospitalId=" + hospitalId +
-                ", typeId=" + typeId +
-                ", type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", longitude=" + longitude +
-                ", latitude=" + latitude +
-                ", hasEmergencyRoom=" + hasEmergencyRoom +
-                ", postCdn='" + postCdn + '\'' +
-                ", etc='" + etc + '\'' +
-                ", hpid='" + hpid + '\'' +
-                '}';
-    }
 }
