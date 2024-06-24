@@ -32,7 +32,7 @@ public class FamilyController {
         log.info(String.valueOf(memberId));
         return familyService.selectFamilies(memberId);
     }
-    @GetMapping("/familesInfo")
+    @GetMapping("/familiesInfo")
     public ApiResult<List<FamilyInfoResponse>> selectInfoFamilies(@AuthenticationPrincipal User user){
         Long memberId = Long.valueOf(user.getUsername());
         return familyService.selectInfoFamilies(memberId);

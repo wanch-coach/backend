@@ -7,6 +7,12 @@ import com.wanchcoach.domain.member.entity.Member;
 
 import java.time.LocalDate;
 
+/**
+ *
+ * @param imageFileName
+ * TO DO
+ * filename을 어떤식으로 정할것인지 협의 필요
+ */
 public record FamilyAddDto (
         Long memberId,
         String name,
