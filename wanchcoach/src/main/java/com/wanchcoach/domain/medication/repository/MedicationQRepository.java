@@ -4,10 +4,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
 
-
+import com.wanchcoach.domain.medication.service.dto.PrescriptionListDto;
 import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
+import com.wanchcoach.domain.medication.service.dto.PrescriptionRecordDto;
 import com.wanchcoach.domain.medication.service.dto.TodayMedicationDto;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -88,5 +88,45 @@ public class MedicationQRepository {
         }
         TodayMedicationResponse todayMedicationResponse = new TodayMedicationResponse(morning, noon, evening, beforeBed);
         return todayMedicationResponse;
+    }
+
+
+    public List<PrescriptionRecordDto> getPrescriptionRecord(Long familyId){
+
+        List<PrescriptionRecordDto> prescriptions = new ArrayList<>();
+
+        List<PrescriptionListDto> prescriptionList = queryFactory.select(Projections.constructor(PrescriptionListDto.class,
+                        hospital.hospitalId,
+                        hospital.name,
+                        treatment.department,
+                        prescription.createdDate,
+                        prescription.endDate,
+                        prescription.prescriptionId,
+                        prescription.taking
+                ))
+                .from(treatment)
+                .join(hospital).on(treatment.hospital.hospitalId.eq(hospital.hospitalId))
+                .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
+                .where(treatment.family.familyId.eq(familyId))
+                .fetch();
+
+        for(PrescriptionListDto prl : prescriptionList){
+            List<SearchDrugsDto> drugList  = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
+                            drug.drugId,
+                            drug.itemName,
+                            drug.spcltyPblc,
+                            drugImage.filePath.coalesce("")
+                    ))
+                    .from(prescribedDrug)
+                    .join(drug).on(drug.drugId.eq(prescribedDrug.drug.drugId))
+                    .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
+                    .where(prescribedDrug.prescription.prescriptionId.eq(prl.prescriptionId()))
+                    .fetch();
+
+            prescriptions.add(new PrescriptionRecordDto(prl.hospitalId(), prl.hospitalName(), prl.department(), prl.start(), prl.end(), prl.prescriptionId(), prl.taking(), drugList));
+
+        }
+
+        return prescriptions;
     }
 }
