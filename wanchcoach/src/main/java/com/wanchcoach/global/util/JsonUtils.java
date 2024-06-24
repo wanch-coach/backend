@@ -33,14 +33,9 @@ public class JsonUtils {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         if (jsonArray != null) {
-
-            int jsonSize = jsonArray.size();
-
-            for (int i = 0; i < jsonSize; i++) {
-
-                Map<String, Object> map = getMapFromJsonObject((JSONObject)jsonArray.get(i));
+            for (Object o : jsonArray) {
+                Map<String, Object> map = getMapFromJsonObject((JSONObject) o);
                 list.add(map);
-
             }
         }
         return list;
