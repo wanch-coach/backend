@@ -1,6 +1,7 @@
 package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
+import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
 import com.wanchcoach.domain.medication.service.MedicationQService;
 import com.wanchcoach.domain.medication.service.MedicationService;
 import com.wanchcoach.domain.treatment.service.TreatmentService;
@@ -77,7 +78,13 @@ public class MedicationController {
     //복약 이력 조회(처방전)
     @GetMapping("/records/families/{familyId} ")
     public ApiResult<?> getRecords(@PathVariable(value="familyId")Long familyId){
-        return OK(null);
+
+        try {
+            PrescriptionRecordResponse prescriptionRecordResponse = medicationQService.getPrescriptionRecord(familyId);
+            return OK(prescriptionRecordResponse);
+        }catch(RuntimeException e){
+            return ERROR(HttpStatus.NOT_FOUND, "잘못된 가족 정보입니다.");
+        }
     }
 
     //내 약 정보 조회(지금까지 먹은 약)
