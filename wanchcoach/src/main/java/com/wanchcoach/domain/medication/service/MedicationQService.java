@@ -2,6 +2,7 @@ package com.wanchcoach.domain.medication.service;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
+import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import com.wanchcoach.domain.medication.repository.MedicationQRepository;
 import com.wanchcoach.domain.treatment.entity.Prescription;
 import com.wanchcoach.global.error.NotFoundException;
@@ -33,5 +34,10 @@ public class MedicationQService {
             drugList.add(searchDrugsDto.toSearchDrugsResponse());
         }
         return drugList;
+    }
+
+    public TodayMedicationResponse getTodayMedication(Long memberId){
+        TodayMedicationResponse todayMedicationResponse = medicationQRepository.getTodayMedications(memberId);
+        return todayMedicationResponse;
     }
 }

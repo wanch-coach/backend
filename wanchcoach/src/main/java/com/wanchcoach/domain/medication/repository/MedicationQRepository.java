@@ -4,11 +4,20 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
 
+
+import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
+import com.wanchcoach.domain.medication.service.dto.TodayMedicationDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.wanchcoach.domain.medical.entity.QHospital.hospital;
+import static com.wanchcoach.domain.family.entity.QFamily.family;
+import static com.wanchcoach.domain.member.entity.QMember.member;
+import static com.wanchcoach.domain.treatment.entity.QTreatment.treatment;
 import static com.wanchcoach.domain.treatment.entity.QPrescribedDrug.prescribedDrug;
 import static com.wanchcoach.domain.treatment.entity.QPrescription.prescription;
 import static com.wanchcoach.domain.drug.entity.QDrug.drug;
@@ -37,4 +46,47 @@ public class MedicationQRepository {
         return drugList;
     }
 
+    public TodayMedicationResponse getTodayMedications(Long memberId){
+
+
+        List<TodayMedicationDto> today = queryFactory.select(Projections.constructor(TodayMedicationDto.class,
+                        family.familyId,
+                        family.name,
+                        hospital.name,
+                        treatment.department,
+                        prescription.morning,
+                        prescription.noon,
+                        prescription.evening,
+                        prescription.beforeBed
+                        ))
+                .from(member)
+                .join(family).on(member.memberId.eq(family.member.memberId))
+                .join(treatment).on(family.familyId.eq(treatment.family.familyId))
+                .join(prescription).on(treatment.prescription.prescriptionId.eq(prescription.prescriptionId))
+                .join(hospital).on(treatment.hospital.hospitalId.eq(hospital.hospitalId))
+                .where(member.memberId.eq(memberId).and(prescription.taking.eq(true)))
+                .fetch();
+
+        List<TodayMedicationDto> morning = new ArrayList<>();
+        List<TodayMedicationDto> noon = new ArrayList<>();
+        List<TodayMedicationDto> evening = new ArrayList<>();
+        List<TodayMedicationDto> beforeBed = new ArrayList<>();
+
+        for(TodayMedicationDto val : today){
+            if(val.getMorning()){
+                morning.add(val);
+            }
+            if(val.getNoon()){
+                noon.add(val);
+            }
+            if(val.getEvening()){
+                evening.add(val);
+            }
+            if(val.getBeforeBed()){
+                beforeBed.add(val);
+            }
+        }
+        TodayMedicationResponse todayMedicationResponse = new TodayMedicationResponse(morning, noon, evening, beforeBed);
+        return todayMedicationResponse;
+    }
 }

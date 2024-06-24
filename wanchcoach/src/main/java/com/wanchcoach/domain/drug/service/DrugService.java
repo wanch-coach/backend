@@ -206,7 +206,7 @@ public class DrugService {
 
     public void updateDrugDetailDB() throws IOException, ParseException{
 
-        for(int i=221; i<=480; i++) { //총 약품 47384개
+        for(int i=367; i<=480; i++) { //총 약품 47384개
 
             List<Drug> drugList = new ArrayList<>();
 
