@@ -1,5 +1,6 @@
 package com.wanchcoach.domain.treatment.controller;
 
+import com.wanchcoach.domain.medical.service.OcrService;
 import com.wanchcoach.domain.treatment.controller.dto.request.CreatePrescriptionRequest;
 import com.wanchcoach.domain.treatment.controller.dto.request.CreateTreatmentRequest;
 import com.wanchcoach.domain.treatment.controller.dto.request.UpdateTreatmentRequest;
@@ -10,9 +11,13 @@ import com.wanchcoach.domain.treatment.service.dto.*;
 import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -29,6 +34,7 @@ public class TreatmentController {
 
     private final TreatmentService treatmentService;
     private final TreatmentQueryService treatmentQueryService;
+    private final OcrService ocrService;
     private final String urlPrefix = "https://objectstorage.ap-chuncheon-1.oraclecloud.com";
 
     /**
@@ -83,6 +89,20 @@ public class TreatmentController {
 
         CreatePrescriptionResponse response = treatmentService.createPrescription(CreatePrescriptionDto.of(prescriptionRequest), treatmentId, file);
 
+        return ApiResult.OK(response);
+    }
+
+    @GetMapping("/prescription-info")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ApiResult<PrescriptionOcrResponse> getPrescriptionInfo(@RequestPart MultipartFile file) {
+        PrescriptionOcrResponse response = null;
+        try {
+            File tempFile = File.createTempFile("temp", file.getOriginalFilename());
+            file.transferTo(tempFile);
+            response = ocrService.getPrescriptionInfo(tempFile);
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
         return ApiResult.OK(response);
     }
 
