@@ -12,11 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonUtils {
-    /**
-     * JSONObject => Map<String, String>
-     * @param {JSONObject} jsonObject
-     * @returns {Map} map
-     */
     @SuppressWarnings("unchecked")
     public static Map<String, Object> getMapFromJsonObject(JSONObject jsonObject) {
         Map<String, Object> map = null;
@@ -32,11 +27,7 @@ public class JsonUtils {
         }
         return map;
     }
-    /**
-     * JSONArray => List<Map<String, String>>
-     * @param {jsonArray} jsonArray
-     * @returns {List} list
-     */
+
     public static List<Map<String, Object>> getListMapFromJsonArray(JSONArray jsonArray) {
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
