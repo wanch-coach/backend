@@ -68,11 +68,7 @@ public class MedicationController {
     public ApiResult<?> updateAlarm(@PathVariable(value="medicineRecordId")Long medicineRecordId){
         return OK(null);
     }
-    //복약 삭제
-    @DeleteMapping("/prescriptions/{prescriptionId}")
-    public ApiResult<?> deletePrescription(@PathVariable(value="prescriptionId")Long prescriptionId){
-        return OK(null);
-    }
+
     //월별 가족 복약 조회(복약 이력/달력)
     @GetMapping("/families/{familyId}/year/{year}/month/{month}")
     public ApiResult<?> getMonthMedication(@PathVariable(value="familyId")Long familyId, @PathVariable(value="year")int year,@PathVariable(value="month")int month){
