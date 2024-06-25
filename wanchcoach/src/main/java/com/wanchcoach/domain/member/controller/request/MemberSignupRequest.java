@@ -16,14 +16,14 @@ public record MemberSignupRequest(
         String email,
         LocalDate birthDate,
         String gender,
-        String phoneNumber,
-        boolean active,
-        boolean loginType,
-        String refreshToken,
-        boolean locationPermission,
-        boolean callPermission,
-        boolean cameraPermission,
-        OAuthProvider oAuthProvider
+        String phoneNumber
+//        boolean active,
+//        boolean loginType,
+//        String refreshToken,
+//        boolean locationPermission,
+//        boolean callPermission,
+//        boolean cameraPermission,
+//        OAuthProvider oAuthProvider
 ) {
 
 //    public static MemberSignupRequest of(String loginId,

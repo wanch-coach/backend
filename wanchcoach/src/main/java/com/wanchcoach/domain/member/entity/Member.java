@@ -1,6 +1,7 @@
 package com.wanchcoach.domain.member.entity;
 
 import com.wanchcoach.domain.auth.application.OAuthProvider;
+import com.wanchcoach.domain.member.service.dto.MemberUpdateInfoDto;
 import com.wanchcoach.global.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -90,11 +91,28 @@ public class Member extends BaseEntity {
     }
 
     public void updateCall() {
+        System.out.println("전화 수락 완료");
         this.callPermission = true;
     }
 
     public void updateCamera() {
         this.cameraPermission = true;
+    }
+
+    public void updateLeave() {
+        this.active = false;
+    }
+
+    public void updateMemberInfo(MemberUpdateInfoDto memberUpdateInfoDto) {
+        this.name = memberUpdateInfoDto.name();
+        this.email = memberUpdateInfoDto.email();
+        this.birthDate = memberUpdateInfoDto.birthDate();
+        this.gender = memberUpdateInfoDto.gender();
+        this.phoneNumber = memberUpdateInfoDto.phoneNumber();
+    }
+
+    public void updatePwd(String pwd) {
+        this.encryptedPwd = pwd;
     }
 
 

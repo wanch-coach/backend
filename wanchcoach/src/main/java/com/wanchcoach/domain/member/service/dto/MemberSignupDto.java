@@ -27,12 +27,12 @@ public record MemberSignupDto(String loginId,
                 memberSignupRequest.birthDate(),
                 memberSignupRequest.gender(),
                 memberSignupRequest.phoneNumber(),
-                memberSignupRequest.active(),
-                memberSignupRequest.loginType(),
-                memberSignupRequest.refreshToken(),
-                memberSignupRequest.locationPermission(),
-                memberSignupRequest.callPermission(),
-                memberSignupRequest.cameraPermission());
+                true,
+                false,
+                "",
+                false,
+                false,
+                false);
     }
 
     public Member toEntity() {
