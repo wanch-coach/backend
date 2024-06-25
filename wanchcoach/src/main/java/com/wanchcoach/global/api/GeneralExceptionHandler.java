@@ -1,5 +1,7 @@
 package com.wanchcoach.global.api;
 
+import com.wanchcoach.global.error.AlreadyExistException;
+import com.wanchcoach.global.error.InvalidJWTException;
 import com.wanchcoach.global.error.InvalidAccessException;
 import com.wanchcoach.global.error.NotFoundException;
 import com.wanchcoach.global.error.ServiceRuntimeException;
@@ -25,7 +27,11 @@ public class GeneralExceptionHandler {
     public ResponseEntity<?> handleServiceRuntimeException(ServiceRuntimeException e){
         if (e instanceof NotFoundException){
             return newResponse(HttpStatus.NOT_FOUND, e);
-        } else if (e instanceof InvalidAccessException) {
+        }else if(e instanceof InvalidJWTException){
+            return newResponse(HttpStatus.UNAUTHORIZED, e);
+        }else if(e instanceof AlreadyExistException){
+            return newResponse(HttpStatus.ALREADY_REPORTED, e);
+        }else if (e instanceof InvalidAccessException) {
             return newResponse(HttpStatus.FORBIDDEN, e);
         }
 
