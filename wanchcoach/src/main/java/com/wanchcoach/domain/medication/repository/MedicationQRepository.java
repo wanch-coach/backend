@@ -4,10 +4,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
 
-import com.wanchcoach.domain.medication.service.dto.PrescriptionListDto;
+import com.wanchcoach.domain.medication.service.dto.*;
 import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
-import com.wanchcoach.domain.medication.service.dto.PrescriptionRecordDto;
-import com.wanchcoach.domain.medication.service.dto.TodayMedicationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +14,7 @@ import java.util.List;
 
 import static com.wanchcoach.domain.medical.entity.QHospital.hospital;
 import static com.wanchcoach.domain.family.entity.QFamily.family;
+import static com.wanchcoach.domain.medication.entity.QMedicineRecord.medicineRecord;
 import static com.wanchcoach.domain.member.entity.QMember.member;
 import static com.wanchcoach.domain.treatment.entity.QTreatment.treatment;
 import static com.wanchcoach.domain.treatment.entity.QPrescribedDrug.prescribedDrug;
@@ -105,9 +104,10 @@ public class MedicationQRepository {
                         prescription.taking
                 ))
                 .from(treatment)
+                .join(family).on(treatment.family.familyId.eq(family.familyId))
                 .join(hospital).on(treatment.hospital.hospitalId.eq(hospital.hospitalId))
                 .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
-                .where(treatment.family.familyId.eq(familyId))
+                .where(family.familyId.eq(familyId))
                 .fetch();
 
         for(PrescriptionListDto prl : prescriptionList){
@@ -128,5 +128,43 @@ public class MedicationQRepository {
         }
 
         return prescriptions;
+    }
+
+    public List<CalendarRecordDto> getCalendarRecord(Long familyId, int year, int month){
+
+        List<CalendarRecordDto> recordWithDrugs = new ArrayList<>();
+
+        List<MedicineRecordPrescriptionDto> prescriptionList = queryFactory.select(Projections.constructor(MedicineRecordPrescriptionDto.class,
+                        hospital.hospitalId,
+                        hospital.name,
+                        treatment.department,
+                        prescription.prescriptionId,
+                        prescription.createdDate,
+                        medicineRecord.time
+                ))
+                .from(treatment)
+                .join(family).on(treatment.family.familyId.eq(family.familyId))
+                .join(hospital).on(treatment.hospital.hospitalId.eq(hospital.hospitalId))
+                .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
+                .join(medicineRecord).on(medicineRecord.prescription.prescriptionId.eq(prescription.prescriptionId))
+                .where(family.familyId.eq(familyId).and(medicineRecord.createdDate.year().eq(year).and(medicineRecord.createdDate.month().eq(month))))
+                .fetch();
+
+        for(MedicineRecordPrescriptionDto dto : prescriptionList) {
+            List<SearchDrugsDto> drugList = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
+                            drug.drugId,
+                            drug.itemName,
+                            drug.spcltyPblc,
+                            drugImage.filePath.coalesce("")
+                    ))
+                    .from(prescribedDrug)
+                    .join(prescription).on(prescription.prescriptionId.eq(prescribedDrug.prescription.prescriptionId))
+                    .join(drug).on(drug.drugId.eq(prescribedDrug.drug.drugId))
+                    .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
+                    .where(prescription.prescriptionId.eq(dto.prescriptionId()))
+                    .fetch();
+            recordWithDrugs.add(new CalendarRecordDto(dto,drugList));
+        }
+        return recordWithDrugs;
     }
 }
