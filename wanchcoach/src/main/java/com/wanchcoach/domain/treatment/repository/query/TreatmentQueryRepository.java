@@ -30,15 +30,28 @@ public class TreatmentQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     /**
-     * 처방전 ID로 처방전 조회 쿼리
+     * 진료 ID로 진료 조회 쿼리
      *
      * @param treatmentId 진료 ID
-     * @return 해당 처방전
+     * @return 해당 진료
      */
     public Treatment findById(Long treatmentId) {
         return queryFactory
                 .selectFrom(treatment)
                 .where(treatment.treatmentId.eq(treatmentId))
+                .fetchOne();
+    }
+
+    /**
+     * 처방전 ID로 진료 조회 쿼리
+     *
+     * @param prescriptionId 처방전 ID
+     * @return 해당 진료
+     */
+    public Treatment findByPrescriptionId(Long prescriptionId) {
+        return queryFactory
+                .selectFrom(treatment)
+                .where(treatment.prescription.prescriptionId.eq(prescriptionId))
                 .fetchOne();
     }
 
