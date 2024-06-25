@@ -5,9 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public class InvalidJWTException extends ServiceRuntimeException{
 
-    static final String MESSAGE_KEY = "error.InvalidJWTToken";
+    static final String MESSAGE_KEY = "error.InvalidJWT";
 
-    static final String MESSAGE_DETAILS = "error.InvalidJWTToken.datails";
+    static final String MESSAGE_DETAILS = "error.InvalidJWT.details";
 
     public InvalidJWTException(Class cls, Object... values) {
         this(cls.getSimpleName(), values);

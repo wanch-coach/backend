@@ -67,17 +67,6 @@ public class OAuthLoginService {
             return authSignupResponse;
         }
 
-
-
-
-
-//        Long memberId = member.getMemberId();
-//        FamilyAddDto familyAddDto = FamilyAddDto.of(member);
-//        familyService.addFamily(familyAddDto);
-//        memberService.addDefaultAlarm(AlarmUpdateDto.defaultAlarmOf(memberId));
-//
-//        log.info(member.toString());
-
     }
 
     private Family toEntity(Member member) {
