@@ -11,6 +11,8 @@ import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,21 +43,21 @@ public class TreatmentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResult<CreateTreatmentResponse> createTreatment(@RequestPart CreateTreatmentRequest treatmentRequest,
-                                                              @RequestPart(required = false) MultipartFile file) throws Exception {
-
+                                                              @RequestPart(required = false) MultipartFile file,
+                                                              @AuthenticationPrincipal User user) throws Exception {
         log.info("TreatmentController#createTreatment called");
-        // todo: 토큰 정보 가져와서 회원 ID 가져오기, 계정-가족 정보 유효한지 확인
 
+        Long memberId = Long.valueOf(user.getUsername());
 
         // 진료 정보 저장
-        CreateTreatmentResponse treatmentResponse = treatmentService.createTreatment(CreateTreatmentDto.of(treatmentRequest));
+        CreateTreatmentResponse treatmentResponse = treatmentService.createTreatment(memberId, CreateTreatmentDto.of(treatmentRequest));
 
         // 처방전(복약) 정보 저장
         CreatePrescriptionRequest prescriptionRequest = treatmentRequest.prescription();
 
         if (prescriptionRequest != null) {
             CreatePrescriptionResponse prescriptionResponse = treatmentService.createPrescription(
-                    CreatePrescriptionDto.of(prescriptionRequest), treatmentResponse.treatmentId(), file
+                    memberId, CreatePrescriptionDto.of(prescriptionRequest), treatmentResponse.treatmentId(), file
             );
 
             treatmentResponse = new CreateTreatmentResponse(treatmentResponse.treatmentId(), prescriptionResponse.prescriptionId());
@@ -75,13 +77,13 @@ public class TreatmentController {
     @PostMapping("/{treatmentId}/prescription")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResult<CreatePrescriptionResponse> createPrescription(@PathVariable Long treatmentId,
-                                                                    @RequestPart CreatePrescriptionRequest prescriptionRequest,
-                                                                    @RequestPart(required = false) MultipartFile file) throws Exception {
+                                        @RequestPart CreatePrescriptionRequest prescriptionRequest,
+                                        @RequestPart(required = false) MultipartFile file,
+                                        @AuthenticationPrincipal User user) throws Exception {
         log.info("TreatmentController#createPrescription called");
 
-        // todo: todo: 토큰 정보 가져와서 회원 ID 가져오기, 계정-가족 정보 유효한지 확인
-
-        CreatePrescriptionResponse response = treatmentService.createPrescription(CreatePrescriptionDto.of(prescriptionRequest), treatmentId, file);
+        Long memberId = Long.valueOf(user.getUsername());
+        CreatePrescriptionResponse response = treatmentService.createPrescription(memberId, CreatePrescriptionDto.of(prescriptionRequest), treatmentId, file);
 
         return ApiResult.OK(response);
     }
@@ -93,12 +95,10 @@ public class TreatmentController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentResponse> getTreatments() {
+    public ApiResult<TreatmentResponse> getTreatments(@AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatments called");
 
-        // todo: 토큰 정보 가져와서 회원 ID 가져오기
-        Long memberId = 1L;
-
+        Long memberId = Long.valueOf(user.getUsername());
         TreatmentResponse response = treatmentQueryService.getTreatments(memberId);
 
         return ApiResult.OK(response);
@@ -112,13 +112,11 @@ public class TreatmentController {
      */
     @GetMapping("/families/{familyId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentResponse> getFamilyTreatments(@PathVariable Long familyId) {
+    public ApiResult<TreatmentResponse> getFamilyTreatments(@PathVariable Long familyId, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatmentByFamilyId called");
 
-        // todo: 토큰 정보 가져와서 회원 ID 가져오기, 계정-가족 정보 유효한지 확인
-        Long memberId = 1L;
-
-        TreatmentResponse response = treatmentQueryService.getFamilyTreatments(familyId);
+        Long memberId = Long.valueOf(user.getUsername());
+        TreatmentResponse response = treatmentQueryService.getFamilyTreatments(memberId, familyId);
 
         return ApiResult.OK(response);
     }
@@ -130,12 +128,10 @@ public class TreatmentController {
      */
     @GetMapping("/hospitals")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentHospitalResponse> getTreatmentsByHospital() {
+    public ApiResult<TreatmentHospitalResponse> getTreatmentsByHospital(@AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatmentsByHospital called");
 
-        // todo: 토큰 정보 가져와서 회원 ID 가져오기
-        Long memberId = 1L;
-
+        Long memberId = Long.valueOf(user.getUsername());
         TreatmentHospitalResponse response = treatmentQueryService.getTreatmentsByHospital(memberId);
 
         return ApiResult.OK(response);
@@ -149,13 +145,11 @@ public class TreatmentController {
      */
     @GetMapping("/hospitals/families/{familyId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentHospitalResponse> getFamilyTreatmentsByHospital(@PathVariable Long familyId) {
+    public ApiResult<TreatmentHospitalResponse> getFamilyTreatmentsByHospital(@PathVariable Long familyId, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getFamilyTreatmentsByHospital called");
 
-        // todo: 토큰 정보 가져와서 회원 ID 가져오기, 계정-가족 정보 유효한지 확인
-        Long memberId = 1L;
-
-        TreatmentHospitalResponse response = treatmentQueryService.getFamilyTreatmentsByHospital(familyId);
+        Long memberId = Long.valueOf(user.getUsername());
+        TreatmentHospitalResponse response = treatmentQueryService.getFamilyTreatmentsByHospital(memberId, familyId);
 
         return ApiResult.OK(response);
     }
@@ -169,12 +163,10 @@ public class TreatmentController {
      */
     @GetMapping("/date")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentDateResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month) {
+    public ApiResult<TreatmentDateResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatmentsByDate called");
 
-        // todo: 토큰 정보 가져와서 회원 ID 가져오기
-        Long memberId = 1L;
-
+        Long memberId = Long.valueOf(user.getUsername());
         TreatmentDateResponse response = treatmentQueryService.getTreatmentsByDate(memberId, year, month);
 
         return ApiResult.OK(response);
@@ -190,13 +182,12 @@ public class TreatmentController {
      */
     @GetMapping("/date/families/{familyId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentDateResponse> getFamilyTreatmentsByDate(@PathVariable Long familyId, @RequestParam Integer year, @RequestParam Integer month) {
+    public ApiResult<TreatmentDateResponse> getFamilyTreatmentsByDate(@PathVariable Long familyId, @RequestParam Integer year, @RequestParam Integer month,
+                                                                      @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getFamilyTreatmentsByDate called");
 
-        // todo: 토큰 정보 가져와서 회원 ID 가져오기, 계정-가족 정보 유효한지 확인
-        Long memberId = 1L;
-
-        TreatmentDateResponse response = treatmentQueryService.getFamilyTreatmentsByDate(familyId, year, month);
+        Long memberId = Long.valueOf(user.getUsername());
+        TreatmentDateResponse response = treatmentQueryService.getFamilyTreatmentsByDate(memberId, familyId, year, month);
 
         return ApiResult.OK(response);
     }
@@ -208,13 +199,11 @@ public class TreatmentController {
      */
     @GetMapping("/{treatmentId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentDetailResponse> getTreatmentDetail(@PathVariable Long treatmentId) {
+    public ApiResult<TreatmentDetailResponse> getTreatmentDetail(@PathVariable Long treatmentId, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatmentDetail called");
 
-        // todo: 토큰 정보 가져와서 회원 가져오기, 계정-가족 정보 유효한지 확인
-        Long memberId = 1L;
-
-        TreatmentDetailResponse response = treatmentQueryService.getTreatmentDetail(treatmentId);
+        Long memberId = Long.valueOf(user.getUsername());
+        TreatmentDetailResponse response = treatmentQueryService.getTreatmentDetail(memberId, treatmentId);
 
         return ApiResult.OK(response);
     }
@@ -226,13 +215,11 @@ public class TreatmentController {
      */
     @PatchMapping("/alarm/{treatmentId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<SetTreatmentAlarmResponse> setTreatmentAlarm(@PathVariable Long treatmentId) {
+    public ApiResult<SetTreatmentAlarmResponse> setTreatmentAlarm(@PathVariable Long treatmentId, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#setTreatmentAlarm called");
 
-        // todo: 토큰 정보 가져와서 회원 가져오기, 계정-가족 정보 유효한지 확인
-        Long memberId = 1L;
-
-        SetTreatmentAlarmResponse response = treatmentService.setTreatmentAlarm(treatmentId);
+        Long memberId = Long.valueOf(user.getUsername());
+        SetTreatmentAlarmResponse response = treatmentService.setTreatmentAlarm(memberId, treatmentId);
 
         return ApiResult.OK(response);
     }
@@ -244,13 +231,11 @@ public class TreatmentController {
      */
     @PatchMapping("/taken/{treatmentId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TakeTreatmentResponse> takeTreatment(@PathVariable Long treatmentId) {
+    public ApiResult<TakeTreatmentResponse> takeTreatment(@PathVariable Long treatmentId, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#takeTreatment called");
 
-        // todo: 토큰 정보 가져와서 회원 가져오기, 계정-가족 정보 유효한지 확인
-        Long memberId = 1L;
-
-        TakeTreatmentResponse response = treatmentService.takeTreatment(treatmentId);
+        Long memberId = Long.valueOf(user.getUsername());
+        TakeTreatmentResponse response = treatmentService.takeTreatment(memberId, treatmentId);
 
         return ApiResult.OK(response);
     }
@@ -264,13 +249,12 @@ public class TreatmentController {
     @PatchMapping("/{treatmentId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ApiResult<UpdateTreatmentResponse> updateTreatment(@PathVariable Long treatmentId,
-                                                              @RequestBody UpdateTreatmentRequest treatmentRequest) {
+                                                              @RequestBody UpdateTreatmentRequest treatmentRequest,
+                                                              @AuthenticationPrincipal User user) {
         log.info("TreatmentController#updateTreatment called");
 
-        // todo: 토큰 정보 가져와서 회원ID 가져오기, 계정-가족-진료 정보 유효한지 확인
-        Long memberId = 1L;
-        System.out.println(treatmentRequest);
-        UpdateTreatmentResponse response = treatmentService.modifyTreatment(UpdateTreatmentDto.of(treatmentId, treatmentRequest));
+        Long memberId = Long.valueOf(user.getUsername());
+        UpdateTreatmentResponse response = treatmentService.modifyTreatment(memberId, UpdateTreatmentDto.of(treatmentId, treatmentRequest));
 
         return ApiResult.OK(response);
     }
@@ -282,13 +266,11 @@ public class TreatmentController {
      */
     @DeleteMapping("/{treatmentId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<DeleteTreatmentResponse> deleteTreatment(@PathVariable Long treatmentId) {
+    public ApiResult<DeleteTreatmentResponse> deleteTreatment(@PathVariable Long treatmentId, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#deleteTreatment called");
 
-        // todo: 토큰 정보 가져와서 회원ID 가져오기, 계정-가족-진료 정보 유효한지 확인
-        Long memberId = 1L;
-
-        DeleteTreatmentResponse response = treatmentService.deleteTreatment(DeleteTreatmentDto.of(treatmentId));
+        Long memberId = Long.valueOf(user.getUsername());
+        DeleteTreatmentResponse response = treatmentService.deleteTreatment(memberId, DeleteTreatmentDto.of(treatmentId));
 
         return ApiResult.OK(response);
     }
