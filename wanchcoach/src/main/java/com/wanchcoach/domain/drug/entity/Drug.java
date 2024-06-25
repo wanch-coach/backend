@@ -52,7 +52,7 @@ public class Drug extends BaseEntity {
     private String itemIngrName; //약품 재료
 
     @Lob
-    @Column(name="big_prdt_img_url")
+    @Column(columnDefinition = "TINYTEXT", name="big_prdt_img_url")
     private String bigPrdtImgUrl; //약품 이미지
 
     //여기부터 특화 상세 API 조회
