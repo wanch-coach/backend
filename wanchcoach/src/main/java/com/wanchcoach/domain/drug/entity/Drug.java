@@ -66,11 +66,11 @@ public class Drug extends BaseEntity {
     private String changeDate; //정보 변경일 yyyymmdd
 
     @Lob
-    @Column(name="ee_doc_data")
+    @Column(columnDefinition = "LONGTEXT",name="ee_doc_data")
     private String eeDocData; //효능 효과 DATA
 
     @Lob
-    @Column(name="ud_doc_data")
+    @Column(columnDefinition = "LONGTEXT", name="ud_doc_data")
     private String udDocData; //용법 용량 DATA
 
     @Lob

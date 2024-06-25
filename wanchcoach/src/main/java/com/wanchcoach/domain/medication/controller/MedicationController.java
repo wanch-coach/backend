@@ -1,8 +1,12 @@
 package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
+import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
+import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
+import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import com.wanchcoach.domain.medication.service.MedicationQService;
 import com.wanchcoach.domain.medication.service.MedicationService;
+import com.wanchcoach.domain.medication.service.dto.TakingMedicineDto;
 import com.wanchcoach.domain.treatment.service.TreatmentService;
 import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +32,10 @@ public class MedicationController {
 
     //(홈) 오늘 약 정보 조회
     @GetMapping("/today")
-    public ApiResult<?> getTodayInfo(){
-        return OK(null);
+    public ApiResult<TodayMedicationResponse> getTodayInfo(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        TodayMedicationResponse todayMedicationResponse = medicationQService.getTodayMedication(memberId);
+        return OK(todayMedicationResponse);
     }
 
     //날짜 별(월,일) 가족 복약 조회
@@ -48,9 +54,14 @@ public class MedicationController {
         }
     }
     //복약 실행(약 먹기)
-    @PatchMapping("/taken/{medicineRecordId}")
-    public ApiResult<?> takenMedication(@PathVariable(value="medicineRecordId")Long medicineRecordId){
-        return OK(null);
+    @PostMapping("/taken/{prescriptionId}")
+    public ApiResult<?> takenMedication(@PathVariable(value="prescriptionId")Long prescriptionId, @RequestBody TakingMedicineRequest takingMedicineRequest){
+        try{
+            medicationService.takenMedicine(TakingMedicineDto.of(prescriptionId, takingMedicineRequest));
+            return OK(null);
+        }catch(RuntimeException e){
+            return ERROR(HttpStatus.NO_CONTENT, "복용중이지 않거나 잘못된 처방전 정보입니다.");
+        }
     }
     //복약 알림 여부 수정(처방전 On, Off)
     @PatchMapping("/alarm/{medicineRecordId}")
@@ -77,7 +88,13 @@ public class MedicationController {
     //복약 이력 조회(처방전)
     @GetMapping("/records/families/{familyId} ")
     public ApiResult<?> getRecords(@PathVariable(value="familyId")Long familyId){
-        return OK(null);
+
+        try {
+            PrescriptionRecordResponse prescriptionRecordResponse = medicationQService.getPrescriptionRecord(familyId);
+            return OK(prescriptionRecordResponse);
+        }catch(RuntimeException e){
+            return ERROR(HttpStatus.NOT_FOUND, "잘못된 가족 정보입니다.");
+        }
     }
 
     //내 약 정보 조회(지금까지 먹은 약)
@@ -88,9 +105,10 @@ public class MedicationController {
 
     // 복약 종료
     @PatchMapping("/prescriptions/{prescriptionId}")
-    public ApiResult<?> endPrescription(@PathVariable(value="prescriptionId")Long prescriptionId){
+    public ApiResult<?> endPrescription(@PathVariable(value="prescriptionId")Long prescriptionId, @AuthenticationPrincipal User user){
         try{
-            treatmentService.endPrescription(prescriptionId);
+            Long memberId = Long.valueOf(user.getUsername());
+            treatmentService.endPrescription(memberId, prescriptionId);
             return OK(null);
         }catch(NoSuchElementException e){
             return ERROR(HttpStatus.NO_CONTENT, "해당 처방전이 존재하지 않습니다.");

@@ -8,6 +8,8 @@ import com.wanchcoach.domain.medical.entity.Pharmacy;
 import com.wanchcoach.domain.medical.repository.query.HospitalQueryRepository;
 import com.wanchcoach.domain.medical.repository.query.PharmacyQueryRepository;
 import com.wanchcoach.domain.drug.repository.query.DrugQueryRepository;
+import com.wanchcoach.domain.member.entity.Member;
+import com.wanchcoach.domain.member.repository.MemberRepository;
 import com.wanchcoach.domain.treatment.controller.dto.response.*;
 import com.wanchcoach.domain.treatment.entity.PrescribedDrug;
 import com.wanchcoach.domain.treatment.entity.Prescription;
@@ -19,6 +21,7 @@ import com.wanchcoach.domain.treatment.repository.query.PrescribedDrugQueryRepos
 import com.wanchcoach.domain.treatment.repository.query.PrescriptionQueryRepository;
 import com.wanchcoach.domain.treatment.repository.query.TreatmentQueryRepository;
 import com.wanchcoach.domain.treatment.service.dto.*;
+import com.wanchcoach.global.error.InvalidAccessException;
 import com.wanchcoach.global.service.UploadFileService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +52,7 @@ public class TreatmentService {
     private final PrescribedDrugRepository prescribedDrugRepository;
     private final HospitalQueryRepository hospitalQueryRepository;
     private final PharmacyQueryRepository pharmacyQueryRepository;
+    private final MemberRepository memberQueryRepository;
     private final FamilyQueryRepository familyQueryRepository;
     private final DrugQueryRepository drugQueryRepository;
 
@@ -63,12 +67,13 @@ public class TreatmentService {
      * @param dto 등록할 진료 정보
      *
      */
-    public CreateTreatmentResponse createTreatment(CreateTreatmentDto dto) {
-        // todo: 계정 정보 - 가족 정보 연결 확인
-
+    public CreateTreatmentResponse createTreatment(Long memberId, CreateTreatmentDto dto) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
         Family family = familyQueryRepository.findById(dto.familyId());
+        checkValidAccess(member, family);
+
         Hospital hospital = hospitalQueryRepository.findById(dto.hospitalId());
-        
+
         // 저장
         Treatment savedTreatment = treatmentRepository.save(dto.toEntity(family, hospital));
 
@@ -81,7 +86,10 @@ public class TreatmentService {
      *
      * @param dto 등록할 처방전(복용할 약) 정보
      */
-    public CreatePrescriptionResponse createPrescription(CreatePrescriptionDto dto, Long treatmentId, MultipartFile file) throws Exception {
+    public CreatePrescriptionResponse createPrescription(Long memberId, CreatePrescriptionDto dto, Long treatmentId, MultipartFile file) throws Exception {
+        Member member = memberQueryRepository.findByMemberId(memberId);
+        Treatment treatment = treatmentQueryRepository.findById(treatmentId);
+        checkValidAccess(member, treatment);
 
         // 남은 복약 횟수 계산
         int maxRemains = 0;
@@ -95,7 +103,6 @@ public class TreatmentService {
         Prescription prescription = prescriptionRepository.save(dto.toEntity(pharmacy, maxRemains));
 
         // 진료 처방전 정보 저장
-        Treatment treatment = treatmentQueryRepository.findById(treatmentId);
         treatment.updatePrescription(prescription);
 
 
@@ -119,7 +126,8 @@ public class TreatmentService {
 
         // 처방전 이미지 저장
         if (file != null) {
-            String fileName = familyQueryRepository.findNameById(dto.familyId()) +
+            Family family = familyQueryRepository.findById(dto.familyId());
+            String fileName = family.getName() +
                     "_" +
                     prescription.getPrescriptionId() +
                     "_" +
@@ -142,8 +150,11 @@ public class TreatmentService {
      * @param treatmentId 진료 ID
      * @return 진료 여부 변경한 진료 ID 및 변경된 진료 여부 값
      */
-    public TakeTreatmentResponse takeTreatment(Long treatmentId) {
+    public TakeTreatmentResponse takeTreatment(Long memberId, Long treatmentId) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
         Treatment treatment = treatmentQueryRepository.findById(treatmentId);
+        checkValidAccess(member, treatment);
+
         return new TakeTreatmentResponse(treatment.getTreatmentId(), treatment.updateTaken());
     }
 
@@ -153,8 +164,11 @@ public class TreatmentService {
      * @param treatmentId 진료 ID
      * @return 진료 예약 알람 여부 변경한 진료 ID 및 변경된 진료 예약 알림 여부 값
      */
-    public SetTreatmentAlarmResponse setTreatmentAlarm(Long treatmentId) {
+    public SetTreatmentAlarmResponse setTreatmentAlarm(Long memberId, Long treatmentId) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
         Treatment treatment = treatmentQueryRepository.findById(treatmentId);
+        checkValidAccess(member, treatment);
+
         return new SetTreatmentAlarmResponse(treatment.getTreatmentId(), treatment.updateAlarm());
     }
 
@@ -165,9 +179,11 @@ public class TreatmentService {
      * @return 수정한 진료 ID
      *
      */
-    public UpdateTreatmentResponse modifyTreatment(UpdateTreatmentDto dto) {
-
+    public UpdateTreatmentResponse modifyTreatment(Long memberId, UpdateTreatmentDto dto) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
         Treatment treatment = treatmentQueryRepository.findById(dto.treatmentId());
+        checkValidAccess(member, treatment);
+
         Family family = familyQueryRepository.findById(dto.familyId());
         Hospital hospital = hospitalQueryRepository.findById(dto.hospitalId());
         treatment.update(dto.toEntity(family, hospital));
@@ -202,8 +218,10 @@ public class TreatmentService {
      * @param dto 삭제할 진료 ID
      * @return 삭제한 진료 ID
      */
-    public DeleteTreatmentResponse deleteTreatment(DeleteTreatmentDto dto) {
+    public DeleteTreatmentResponse deleteTreatment(Long memberId, DeleteTreatmentDto dto) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
         Treatment treatment = treatmentQueryRepository.findById(dto.treatmentId());
+        checkValidAccess(member, treatment);
         treatment.delete();
 
         Prescription prescription = prescriptionQueryRepository.findById(treatment.getPrescription().getPrescriptionId());
@@ -215,12 +233,27 @@ public class TreatmentService {
         return new DeleteTreatmentResponse(treatment.getTreatmentId());
     }
 
-
     /**
      * @param prescriptionId 복약 종료할 처방전 ID
      */
-    public void endPrescription(Long prescriptionId){
-        Prescription prescription = prescriptionRepository.findByPrescriptionId(prescriptionId).orElseThrow();
+    public void endPrescription(Long memberId, Long prescriptionId){
+        Member member = memberQueryRepository.findByMemberId(memberId);
+        Treatment treatment = treatmentQueryRepository.findByPrescriptionId(prescriptionId);
+        checkValidAccess(member, treatment);
+
+        Prescription prescription = treatment.getPrescription();
         prescription.updateTakingAndEndDate(false, LocalDate.now());
+    }
+
+    private void checkValidAccess(Member member, Family family) {
+        if (!family.getMember().getMemberId().equals(member.getMemberId())) {
+            throw new InvalidAccessException("잘못된 접근입니다.");
+        }
+    }
+
+    private void checkValidAccess(Member member, Treatment treatment) {
+        if (!treatment.getFamily().getMember().getMemberId().equals(member.getMemberId())) {
+            throw new InvalidAccessException("잘못된 접근입니다.");
+        }
     }
 }

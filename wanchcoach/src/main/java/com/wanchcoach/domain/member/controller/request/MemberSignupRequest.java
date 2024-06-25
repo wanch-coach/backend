@@ -1,9 +1,14 @@
 package com.wanchcoach.domain.member.controller.request;
 
+import com.wanchcoach.domain.auth.application.OAuthProvider;
 import com.wanchcoach.domain.member.entity.Member;
 
 import java.time.LocalDate;
 
+/**
+ * TO DO
+ * 회원가입 시 요구하지 않는 값 제거 필요
+ */
 public record MemberSignupRequest(
         String loginId,
         String encryptedPwd,
@@ -11,13 +16,14 @@ public record MemberSignupRequest(
         String email,
         LocalDate birthDate,
         String gender,
-        String phoneNumber,
-        boolean active,
-        boolean loginType,
-        String refreshToken,
-        boolean locationPermission,
-        boolean callPermission,
-        boolean cameraPermission
+        String phoneNumber
+//        boolean active,
+//        boolean loginType,
+//        String refreshToken,
+//        boolean locationPermission,
+//        boolean callPermission,
+//        boolean cameraPermission,
+//        OAuthProvider oAuthProvider
 ) {
 
 //    public static MemberSignupRequest of(String loginId,

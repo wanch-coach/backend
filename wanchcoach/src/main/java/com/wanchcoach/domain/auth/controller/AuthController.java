@@ -24,8 +24,6 @@ public class AuthController {
         return ResponseEntity.ok(oAuthLoginService.login(params));
     }
 
-
-
     @GetMapping("/test")
     public String test(){
         return "test";

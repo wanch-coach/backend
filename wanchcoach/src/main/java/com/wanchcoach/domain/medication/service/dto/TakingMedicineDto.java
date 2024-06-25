@@ -1,0 +1,22 @@
+package com.wanchcoach.domain.medication.service.dto;
+
+import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
+
+public record TakingMedicineDto(
+        Long prescriptionId,
+        Long familyId,
+        int time
+) {
+    public static TakingMedicineDto of(Long prescriptionId, TakingMedicineRequest request){
+
+        if(request.time().equals("morning")){
+            return new TakingMedicineDto(prescriptionId, request.familyId(), 0);
+        }else if(request.time().equals("noon")){
+            return new TakingMedicineDto(prescriptionId, request.familyId(), 1);
+        }else if(request.time().equals("evening")){
+            return new TakingMedicineDto(prescriptionId, request.familyId(), 2);
+        }else{
+            return new TakingMedicineDto(prescriptionId, request.familyId(), 3);
+        }
+    }
+}

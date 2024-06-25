@@ -7,8 +7,13 @@ import com.wanchcoach.domain.auth.infoResponse.OAuthInfoResponse;
 import com.wanchcoach.domain.auth.params.OAuthLoginParams;
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
+import com.wanchcoach.domain.family.entity.Family;
+import com.wanchcoach.domain.family.service.FamilyService;
+import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.MemberRepository;
+import com.wanchcoach.domain.member.service.MemberService;
+import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +24,17 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+/**
+ * TODO
+ * 회원가입 데이터 생성 시 Permission관련 데이터를 false로 생성하는 것이 아닌, default를 false로설정
+ */
 public class OAuthLoginService {
 
     private final MemberRepository memberRepository;
     private final AuthTokenGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
+    private final FamilyService familyService;
+    private final MemberService memberService;
 
     @Transactional
     public AuthTokens login(OAuthLoginParams params) {
@@ -44,12 +55,28 @@ public class OAuthLoginService {
 
 
         Member member = findOrCreateMember(oAuthInfoResponse, loginId);
+
+        Long memberId = member.getMemberId();
+        FamilyAddDto familyAddDto = FamilyAddDto.of(member);
+        familyService.addFamily(familyAddDto);
+        memberService.addDefaultAlarm(AlarmUpdateDto.defaultAlarmOf(memberId));
+
         log.info(member.toString());
 
         AuthTokens authTokens = authTokensGenerator.generate(member.getMemberId());
         member.updateRefreshToken(authTokens.getRefreshToken());
 
         return authTokens;
+    }
+
+    private Family toEntity(Member member) {
+        return Family.builder()
+                .member(member)
+                .name(member.getName())
+                .birthDate(member.getBirthDate())
+                .gender(member.getGender())
+                .imageFileName(" ")
+                .build();
     }
 
     private Member findOrCreateMember(OAuthInfoResponse oAuthInfoResponse, String loginId) {
@@ -69,10 +96,11 @@ public class OAuthLoginService {
                 .active(true) // 예시로 true로 설정
                 .loginType(true) // 예시로 true로 설정
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
-                .locationPermission(true) // 예시로 true로 설정
-                .callPermission(true) // 예시로 true로 설정
-                .cameraPermission(true) // 예시로 true로 설정
+                .locationPermission(false) // 예시로 true로 설정
+                .callPermission(false) // 예시로 true로 설정
+                .cameraPermission(false) // 예시로 true로 설정
                 .build();
+
         return memberRepository.save(member);
     }
 
