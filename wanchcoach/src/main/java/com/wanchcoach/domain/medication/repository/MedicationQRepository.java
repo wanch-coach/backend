@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
 
+import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
 import com.wanchcoach.domain.medication.service.dto.*;
 import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import lombok.RequiredArgsConstructor;
@@ -166,5 +167,40 @@ public class MedicationQRepository {
             recordWithDrugs.add(new CalendarRecordDto(dto,drugList));
         }
         return recordWithDrugs;
+    }
+
+    public List<TakenPillsResponse> getTakenPills(GetPillsDto dto){
+
+        List<TakenPillsResponse> pillsDto = new ArrayList<>();
+
+        List<SearchDrugsDto> drugList = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
+                        drug.drugId,
+                        drug.itemName,
+                        drug.spcltyPblc,
+                        drugImage.filePath.coalesce("")
+                ))
+                .from(medicineRecord)
+                .join(family).on(medicineRecord.family.familyId.eq(family.familyId))
+                .join(prescription).on(prescription.prescriptionId.eq(medicineRecord.prescription.prescriptionId))
+                .join(prescribedDrug).on(prescribedDrug.prescription.prescriptionId.eq(prescription.prescriptionId))
+                .join(drug).on(prescribedDrug.drug.drugId.eq(drug.drugId))
+                .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
+                .where(family.familyId.eq(dto.familyId()).and(medicineRecord.createdDate.between(dto.startDate().atStartOfDay(), dto.endDate().plusDays(1).atStartOfDay())))
+                .groupBy(drug.drugId)
+                .fetch();
+
+        for(SearchDrugsDto drugDto : drugList){
+            List<SearchMedicineRecordDto> medicineRecordList = queryFactory.select(Projections.constructor(SearchMedicineRecordDto.class,
+                    medicineRecord.createdDate
+                    ))
+                    .from(medicineRecord)
+                    .join(prescription).on(prescription.prescriptionId.eq(medicineRecord.prescription.prescriptionId))
+                    .join(prescribedDrug).on(prescribedDrug.prescription.prescriptionId.eq(prescription.prescriptionId))
+                    .join(drug).on(drug.drugId.eq(prescribedDrug.drug.drugId))
+                    .where(drug.drugId.eq(drugDto.getDrugId()).and(medicineRecord.createdDate.between(dto.startDate().atStartOfDay(), dto.endDate().plusDays(1).atStartOfDay())))
+                    .fetch();
+            pillsDto.add(new TakenPillsResponse(drugDto.toSearchDrugsResponse(), medicineRecordList));
+        }
+        return pillsDto;
     }
 }

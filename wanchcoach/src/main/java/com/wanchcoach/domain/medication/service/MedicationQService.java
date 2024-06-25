@@ -4,9 +4,7 @@ import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
 import com.wanchcoach.domain.medication.controller.response.*;
 import com.wanchcoach.domain.medication.repository.MedicationQRepository;
-import com.wanchcoach.domain.medication.service.dto.CalendarRecordDto;
-import com.wanchcoach.domain.medication.service.dto.PrescriptionListDto;
-import com.wanchcoach.domain.medication.service.dto.PrescriptionRecordDto;
+import com.wanchcoach.domain.medication.service.dto.*;
 import com.wanchcoach.domain.treatment.entity.Prescription;
 import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -110,5 +108,11 @@ public class MedicationQService {
         }
 
         return new RecordCalendarResponse(year, month, dayRecord);
+    }
+
+
+    public List<TakenPillsResponse> getPills(GetPillsDto dto){
+        List<TakenPillsResponse> pillsRecord = medicationQRepository.getTakenPills(dto);
+        return pillsRecord;
     }
 }
