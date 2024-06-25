@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 
@@ -44,6 +45,10 @@ public class Family extends BaseEntity {
 
     @Column
     private String imageFileName;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean type;
 
     public void update(FamilyUpdateDto familyUpdateDto) {
         this.name = familyUpdateDto.name();

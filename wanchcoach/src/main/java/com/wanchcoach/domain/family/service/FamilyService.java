@@ -8,23 +8,30 @@ import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
 import com.wanchcoach.domain.family.service.dto.FamilyUpdateDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.MemberRepository;
+import com.wanchcoach.global.api.ApiError;
 import com.wanchcoach.global.api.ApiResult;
 import com.wanchcoach.global.error.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class FamilyService {
 
     private final FamilyRepository familyRepository;
     private final MemberRepository memberRepository;
 
     public ApiResult<Family> addFamily(FamilyAddDto familyAddDto) {
+        log.info("service addfamily");
+        log.info(String.valueOf(familyAddDto.type()));
         Member member = memberRepository.findById(familyAddDto.memberId())
                 .orElseThrow(() -> new NotFoundException(Member.class, familyAddDto.memberId()));
         return ApiResult.OK(familyRepository.save(familyAddDto.toEntity(member)));
@@ -57,6 +64,10 @@ public class FamilyService {
     }
 
     public ApiResult<Void> deleteFamily(Long familyId) {
+        Optional<Family> optionalFamily = familyRepository.findById(familyId);
+        Family family = optionalFamily.get();
+        if(family.isType()) return (ApiResult<Void>) ApiResult.ERROR(HttpStatus.BAD_REQUEST, "가족 구성원 중 본인은 삭제할 수 없습니다.");
+
         familyRepository.deleteById(familyId);
         return ApiResult.OK(null);
     }
