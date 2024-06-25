@@ -1,12 +1,16 @@
 package com.wanchcoach.domain.treatment.service;
 
+import com.wanchcoach.domain.family.entity.Family;
 import com.wanchcoach.domain.family.repository.query.FamilyQueryRepository;
+import com.wanchcoach.domain.member.entity.Member;
+import com.wanchcoach.domain.member.repository.MemberRepository;
 import com.wanchcoach.domain.treatment.controller.dto.response.*;
 import com.wanchcoach.domain.treatment.entity.Prescription;
 import com.wanchcoach.domain.treatment.entity.Treatment;
 import com.wanchcoach.domain.treatment.entity.PrescribedDrug;
 import com.wanchcoach.domain.treatment.repository.query.PrescribedDrugQueryRepository;
 import com.wanchcoach.domain.treatment.repository.query.TreatmentQueryRepository;
+import com.wanchcoach.global.error.InvalidAccessException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +35,7 @@ import java.util.stream.Collectors;
 public class TreatmentQueryService {
 
     private final TreatmentQueryRepository treatmentQueryRepository;
+    private final MemberRepository memberQueryRepository;
     private final FamilyQueryRepository familyQueryRepository;
     private final PrescribedDrugQueryRepository prescribedDrugQueryRepository;
 
@@ -52,9 +57,14 @@ public class TreatmentQueryService {
      * @param familyId 가족 ID
      * @return 계정에 등록된 모든 가족의 진료 정보
      */
-    public TreatmentResponse getFamilyTreatments(Long familyId) {
+    public TreatmentResponse getFamilyTreatments(Long memberId, Long familyId) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
+        Family family = familyQueryRepository.findById(familyId);
+        checkValidAccess(member, family);
+
         List<TreatmentItem> upcoming = treatmentQueryRepository.findFamilyTreatments(familyId, true);
         List<TreatmentItem> past = treatmentQueryRepository.findFamilyTreatments(familyId, false);
+
         return new TreatmentResponse(upcoming, past);
     }
 
@@ -65,7 +75,6 @@ public class TreatmentQueryService {
      * @return 계정에 등록된 모든 가족의 병원별 진료 정보
      */
     public TreatmentHospitalResponse getTreatmentsByHospital(Long memberId) {
-
         List<Long> familyIds = familyQueryRepository.findFamilyIdsByMemberId(memberId);
         List<TreatmentItem> items = treatmentQueryRepository.findTreatmentsByHospital(familyIds);
         List<TreatmentHospitalItem> hospitalItems = refineTreatmentItemsByHospital(items);
@@ -79,7 +88,10 @@ public class TreatmentQueryService {
      * @param familyId 가족 ID
      * @return 가족의 병원별 진료 정보
      */
-    public TreatmentHospitalResponse getFamilyTreatmentsByHospital(Long familyId) {
+    public TreatmentHospitalResponse getFamilyTreatmentsByHospital(Long memberId, Long familyId) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
+        Family family = familyQueryRepository.findById(familyId);
+        checkValidAccess(member, family);
 
         List<TreatmentItem> items = treatmentQueryRepository.findFamilyTreatmentsByHospital(familyId);
         List<TreatmentHospitalItem> hospitalItems = refineTreatmentItemsByHospital(items);
@@ -116,7 +128,6 @@ public class TreatmentQueryService {
      * @return 계정에 등록된 모든 가족의 월별 진료 정보
      */
     public TreatmentDateResponse getTreatmentsByDate(Long memberId, Integer year, Integer month) {
-
         List<Long> familyIds = familyQueryRepository.findFamilyIdsByMemberId(memberId);
         List<TreatmentItem> items = treatmentQueryRepository.findTreatmentsByDate(familyIds, year, month);
         List<TreatmentDateItem> dateItems = refineTreatmentItemsByDate(items);
@@ -130,7 +141,10 @@ public class TreatmentQueryService {
      * @param familyId 가족 ID
      * @return 가족의 월별 진료 정보
      */
-    public TreatmentDateResponse getFamilyTreatmentsByDate(Long familyId, Integer year, Integer month) {
+    public TreatmentDateResponse getFamilyTreatmentsByDate(Long memberId, Long familyId, Integer year, Integer month) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
+        Family family = familyQueryRepository.findById(familyId);
+        checkValidAccess(member, family);
 
         List<TreatmentItem> items = treatmentQueryRepository.findFamilyTreatmentsByDate(familyId, year, month);
         List<TreatmentDateItem> dateItems = refineTreatmentItemsByDate(items);
@@ -161,13 +175,28 @@ public class TreatmentQueryService {
      * @param treatmentId 상세 조회할 진료 ID
      * @return 진료 상세 정보
      */
-    public TreatmentDetailResponse getTreatmentDetail(Long treatmentId) {
+    public TreatmentDetailResponse getTreatmentDetail(Long memberId, Long treatmentId) {
+        Member member = memberQueryRepository.findByMemberId(memberId);
         Treatment treatment = treatmentQueryRepository.findById(treatmentId);
+        checkValidAccess(member, treatment);
+
         Prescription prescription = treatment.getPrescription();
         if (prescription == null) return TreatmentDetailResponse.of(treatment);
 
         List<PrescribedDrug> prescribedDrugs = prescribedDrugQueryRepository.findByPrescriptionId(prescription.getPrescriptionId());
         return TreatmentDetailResponse.of(treatment, prescription, prescribedDrugs);
+    }
+
+    private void checkValidAccess(Member member, Family family) {
+        if (!family.getMember().getMemberId().equals(member.getMemberId())) {
+            throw new InvalidAccessException("잘못된 접근입니다.");
+        }
+    }
+
+    private void checkValidAccess(Member member, Treatment treatment) {
+        if (!treatment.getFamily().getMember().getMemberId().equals(member.getMemberId())) {
+            throw new InvalidAccessException("잘못된 접근입니다.");
+        }
     }
 
 }

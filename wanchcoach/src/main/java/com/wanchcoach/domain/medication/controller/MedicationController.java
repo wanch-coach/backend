@@ -98,9 +98,10 @@ public class MedicationController {
 
     // 복약 종료
     @PatchMapping("/prescriptions/{prescriptionId}")
-    public ApiResult<?> endPrescription(@PathVariable(value="prescriptionId")Long prescriptionId){
+    public ApiResult<?> endPrescription(@PathVariable(value="prescriptionId")Long prescriptionId, @AuthenticationPrincipal User user){
         try{
-            treatmentService.endPrescription(prescriptionId);
+            Long memberId = Long.valueOf(user.getUsername());
+            treatmentService.endPrescription(memberId, prescriptionId);
             return OK(null);
         }catch(NoSuchElementException e){
             return ERROR(HttpStatus.NO_CONTENT, "해당 처방전이 존재하지 않습니다.");
