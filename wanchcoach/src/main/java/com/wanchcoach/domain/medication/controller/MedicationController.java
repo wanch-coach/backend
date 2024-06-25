@@ -1,11 +1,14 @@
 package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
+import com.wanchcoach.domain.medication.controller.request.GetPillsRequest;
+import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
 import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
 import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
 import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import com.wanchcoach.domain.medication.service.MedicationQService;
 import com.wanchcoach.domain.medication.service.MedicationService;
+import com.wanchcoach.domain.medication.service.dto.GetPillsDto;
 import com.wanchcoach.domain.medication.service.dto.TakingMedicineDto;
 import com.wanchcoach.domain.treatment.service.TreatmentService;
 import com.wanchcoach.global.api.ApiResult;
@@ -102,8 +105,9 @@ public class MedicationController {
 
     //내 약 정보 조회(지금까지 먹은 약)
     @GetMapping("/pills/families/{familyId}")
-    public ApiResult<?> getPills(@PathVariable(value="familyId")Long familyId){
-        return OK(null);
+    public ApiResult<?> getPills(@PathVariable(value="familyId")Long familyId, @RequestBody GetPillsRequest request){
+        List<TakenPillsResponse> takenPillsWithRecord =  medicationQService.getPills(GetPillsDto.of(familyId,request));
+        return OK(takenPillsWithRecord);
     }
 
     // 복약 종료
