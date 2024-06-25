@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -69,9 +70,15 @@ public class MedicationController {
         return OK(null);
     }
 
-    //월별 가족 복약 조회(복약 이력/달력)
+    //월별 복약 이력 조회(복약 이력/달력)
     @GetMapping("/families/{familyId}/year/{year}/month/{month}")
     public ApiResult<?> getMonthMedication(@PathVariable(value="familyId")Long familyId, @PathVariable(value="year")int year,@PathVariable(value="month")int month){
+
+        if(year> LocalDateTime.now().getYear() || !(1<=month &&month<=12)){
+            return ERROR(HttpStatus.BAD_REQUEST, "요청 날짜의 정보가 잘못되었습니다.");
+        };
+        medicationQService.getCalendarRecord(familyId, year, month);
+
         return OK(null);
     }
 

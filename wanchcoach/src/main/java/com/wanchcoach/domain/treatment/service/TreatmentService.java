@@ -114,7 +114,7 @@ public class TreatmentService {
                 LocalDateTime date = treatment.getDate();
             3. 가족 복약 시간 체크
             4. 진료 시간 기준 다음 복약 시간부터 예정된 복약에 등록
-            5. 알림 여부는 dto.morning, dto.noon, dto.evening, dto.beforeBed 값으로 가져오기
+            5. 알림 여부는 prescription.morning, prescription.noon, prescription.evening, prescription.beforeBed 값으로 가져오기
          */
 
         // 처방전 이미지 저장
