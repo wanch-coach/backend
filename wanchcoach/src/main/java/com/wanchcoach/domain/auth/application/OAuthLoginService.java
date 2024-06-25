@@ -58,7 +58,8 @@ public class OAuthLoginService {
         String loginId = oAuthInfoResponse.getOAuthProvider() + oAuthInfoResponse.getEmail();
 
         if(memberRepository.existsByLoginId(loginId)){
-            Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NotFoundException(Member.class, loginId));
+            Optional<Member> optionalMember = memberRepository.findByLoginId(loginId);
+            Member member = optionalMember.get();
             AuthTokens authTokens = authTokensGenerator.generate(member.getMemberId());
             member.updateRefreshToken(authTokens.getRefreshToken());
             return authTokens;
