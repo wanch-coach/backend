@@ -32,6 +32,7 @@ public class RequestOAuthInfoService {
         log.info(client.toString());
         String accessToken = client.requestAccessToken(params);
         System.out.println();
-        return client.requestOauthInfo(accessToken);
+        OAuthInfoResponse response = client.requestOauthInfo(accessToken);
+        return response;
     }
 }

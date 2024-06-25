@@ -3,6 +3,8 @@ package com.wanchcoach.domain.auth.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.wanchcoach.domain.auth.controller.response.AuthSignupResponse;
+import com.wanchcoach.domain.auth.controller.response.SocialResponse;
 import com.wanchcoach.domain.auth.infoResponse.OAuthInfoResponse;
 import com.wanchcoach.domain.auth.params.OAuthLoginParams;
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
@@ -14,12 +16,15 @@ import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.MemberRepository;
 import com.wanchcoach.domain.member.service.MemberService;
 import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
+import com.wanchcoach.global.api.ApiResult;
+import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +41,8 @@ public class OAuthLoginService {
     private final FamilyService familyService;
     private final MemberService memberService;
 
-    @Transactional
-    public AuthTokens login(OAuthLoginParams params) {
+
+    public SocialResponse login(OAuthLoginParams params) {
         log.info("<<< login service >>> ");
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
         log.info(oAuthInfoResponse.toString());
@@ -47,26 +52,32 @@ public class OAuthLoginService {
         try {
             // 객체를 JSON 문자열로 변환
             String json = objectMapper.writeValueAsString(oAuthInfoResponse);
-            System.out.println("test" + json);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         String loginId = oAuthInfoResponse.getOAuthProvider() + oAuthInfoResponse.getEmail();
 
+        if(memberRepository.existsByLoginId(loginId)){
+            Member member = memberRepository.findByLoginId(loginId).orElseThrow(() -> new NotFoundException(Member.class, loginId));
+            AuthTokens authTokens = authTokensGenerator.generate(member.getMemberId());
+            member.updateRefreshToken(authTokens.getRefreshToken());
+            return authTokens;
+        }else{
+            AuthSignupResponse authSignupResponse = AuthSignupResponse.of(oAuthInfoResponse);
+            return authSignupResponse;
+        }
 
-        Member member = findOrCreateMember(oAuthInfoResponse, loginId);
 
-        Long memberId = member.getMemberId();
-        FamilyAddDto familyAddDto = FamilyAddDto.of(member);
-        familyService.addFamily(familyAddDto);
-        memberService.addDefaultAlarm(AlarmUpdateDto.defaultAlarmOf(memberId));
 
-        log.info(member.toString());
 
-        AuthTokens authTokens = authTokensGenerator.generate(member.getMemberId());
-        member.updateRefreshToken(authTokens.getRefreshToken());
 
-        return authTokens;
+//        Long memberId = member.getMemberId();
+//        FamilyAddDto familyAddDto = FamilyAddDto.of(member);
+//        familyService.addFamily(familyAddDto);
+//        memberService.addDefaultAlarm(AlarmUpdateDto.defaultAlarmOf(memberId));
+//
+//        log.info(member.toString());
+
     }
 
     private Family toEntity(Member member) {

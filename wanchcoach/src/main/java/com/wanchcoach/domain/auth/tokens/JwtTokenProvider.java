@@ -1,5 +1,6 @@
 package com.wanchcoach.domain.auth.tokens;
 
+import com.wanchcoach.global.error.InvalidJWTException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -69,10 +70,12 @@ public class JwtTokenProvider {
             return true;
         }catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
+            throw new InvalidJWTException(e.getMessage());
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
+            throw new InvalidJWTException(e.getMessage());
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
         }

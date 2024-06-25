@@ -32,14 +32,14 @@ public class FamilyController {
         log.info(String.valueOf(memberId));
         return familyService.selectFamilies(memberId);
     }
-    @GetMapping("/familiesInfo")
+    @GetMapping("/familiesinfo")
     public ApiResult<List<FamilyInfoResponse>> selectInfoFamilies(@AuthenticationPrincipal User user){
         Long memberId = Long.valueOf(user.getUsername());
         return familyService.selectInfoFamilies(memberId);
 
     }
-    @GetMapping("/{familyId}")
-    public ApiResult<FamilyInfoResponse> selectFamily(@PathVariable("familyId") String familyId){
+    @GetMapping("/{familyid}")
+    public ApiResult<FamilyInfoResponse> selectFamily(@PathVariable("familyid") String familyId){
         return familyService.selectFamily(Long.valueOf(familyId));
     }
 
@@ -48,14 +48,14 @@ public class FamilyController {
         Long memberId = Long.valueOf(user.getUsername());
         return familyService.addFamily(FamilyAddDto.of(familyAddRequest, memberId));
     }
-    @PatchMapping("/{familyId}")
-    public ApiResult<FamilyInfoResponse> updateFamily(@PathVariable("familyId") String familyId,@RequestBody FamilyUpdateRequest familyUpdateRequest){
+    @PatchMapping("/{familyid}")
+    public ApiResult<FamilyInfoResponse> updateFamily(@PathVariable("familyid") String familyId,@RequestBody FamilyUpdateRequest familyUpdateRequest){
         familyUpdateRequest.setFamilyId(Long.valueOf(familyId));
         return familyService.updateFamily(FamilyUpdateDto.of(familyUpdateRequest));
     }
 
-    @DeleteMapping("/{familyId}")
-    public ApiResult<Void> deleteFamily(@PathVariable("familyId") String familyId){
+    @DeleteMapping("/{familyid}")
+    public ApiResult<Void> deleteFamily(@PathVariable("familyid") String familyId){
         return familyService.deleteFamily(Long.valueOf(familyId));
     }
 

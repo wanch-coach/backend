@@ -1,19 +1,26 @@
 package com.wanchcoach.domain.auth.tokens;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.wanchcoach.domain.auth.controller.response.SocialResponse;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class AuthTokens {
+public class AuthTokens extends SocialResponse {
     private String accessToken;
     private String refreshToken;
     private String grantType;
     private Long expiresIn;
+
+    public AuthTokens(String accessToken, String refreshToken, String grantType, Long expiresIn) {
+        super("token");
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.grantType = grantType;
+        this.expiresIn = expiresIn;
+    }
+
 
     public static AuthTokens of(String accessToken, String refreshToken, String grantType, Long expiresIn) {
         return new AuthTokens(accessToken, refreshToken, grantType, expiresIn);

@@ -1,11 +1,15 @@
 package com.wanchcoach.domain.auth.controller;
 
 import com.wanchcoach.domain.auth.application.OAuthLoginService;
+import com.wanchcoach.domain.auth.controller.response.SocialResponse;
+import com.wanchcoach.domain.auth.params.KaKaoLoginParams;
 import com.wanchcoach.domain.auth.params.NaverLoginParams;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
+import com.wanchcoach.global.api.ApiResult;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,13 +23,15 @@ public class AuthController {
 
 // https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=quIIXrYYRk1GoMBFxXNn&state=STATE_STRING&redirect_uri=http://localhost:8081/login/oauth2/code/naver
     @GetMapping("/login/oauth2/code/naver")
-    public ResponseEntity<AuthTokens> loginNaver(NaverLoginParams params, HttpServletRequest request) {
+    public ApiResult<?> loginNaver(NaverLoginParams params, HttpServletRequest request) {
         log.info(params.toString());
-        return ResponseEntity.ok(oAuthLoginService.login(params));
+        return ApiResult.OK(oAuthLoginService.login(params));
+    }
+// https://kauth.kakao.com/oauth/authorize?client_id=2c653035ff6894d470e3c832ba784f8a&redirect_uri=http://localhost:8081/login/oauth2/code/kakao&response_type=code&scope=account_email
+    @GetMapping("/login/oauth2/code/kakao")
+    public ApiResult<SocialResponse> loginKakao(KaKaoLoginParams params, HttpServletRequest request){
+        log.info(params.toString());
+        return ApiResult.OK(oAuthLoginService.login(params));
     }
 
-    @GetMapping("/test")
-    public String test(){
-        return "test";
-    }
 }
