@@ -332,7 +332,7 @@ ALTER TABLE `favorite drug` ADD CONSTRAINT `FK_drug_TO_favorite drug_1` FOREIGN 
                        `drug_id`
         );
 
-insert into wanchcoach.member (member_id, id, encrypted_pwd, name, email, birth_date, gender, phone_number, active, refresh_token, login_type, location_permission, call_permission, camera_permission, created_date, modified_date)
+insert into wanchcoach.member (member_id, member.login_id, encrypted_pwd, name, email, birth_date, gender, phone_number, active, refresh_token, login_type, location_permission, call_permission, camera_permission, created_date, modified_date)
 values  (1, '1', 'test_pwd', '유호재', 'ho_0214@naver.com', '2024-06-13', 'M', '010-7226-0214', 1, 'test_token', 1, 0, 0, 0, '2024-06-13 22:25:06', '2024-06-13 22:25:06'),
         (2, '2', 'test_pwd', '신규람', 'gyulife@naver.com', '1998-01-01', 'M', '010-1234-5678', 1, 'test_token2', 0, 1, 1, 1, '2024-06-15 04:44:55', '2024-06-15 04:44:55');
 
