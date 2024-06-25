@@ -27,7 +27,7 @@ public class AuthController {
         log.info(params.toString());
         return ApiResult.OK(oAuthLoginService.login(params));
     }
-// https://kauth.kakao.com/oauth/authorize?client_id=2c653035ff6894d470e3c832ba784f8a&redirect_uri=http://localhost:8081/login/oauth2/code/kakao&response_type=code&scope=account_email
+// https://kauth.kakao.com/oauth/authorize?client_id=370123a2ecc923df6371e651937c9038&redirect_uri=http://localhost:8081/login/oauth2/code/kakao&response_type=code&scope=account_email
     @GetMapping("/login/oauth2/code/kakao")
     public ApiResult<SocialResponse> loginKakao(KaKaoLoginParams params, HttpServletRequest request){
         log.info(params.toString());

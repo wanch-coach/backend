@@ -8,6 +8,7 @@ import com.wanchcoach.domain.auth.params.OAuthLoginParams;
 
 import com.wanchcoach.domain.auth.tokens.KakaoTokens;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,6 +21,20 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class KakaoApiClient implements OAuthApiClient{
 
+    private static final String GRANT_TYPE = "authorization_code";
+
+    @Value("${oauth.kakao.url.auth}")
+    private String authUrl;
+
+    @Value("${oauth.kakao.url.api}")
+    private String apiUrl;
+
+    @Value("${oauth.kakao.client-id}")
+    private String clientId;
+
+    @Value("${oauth.kakao.redirect-uri}")
+    private String redirectUri;
+
     private final RestTemplate restTemplate;
 
     @Override
@@ -29,15 +44,15 @@ public class KakaoApiClient implements OAuthApiClient{
 
     @Override
     public String requestAccessToken(OAuthLoginParams params) {
-        String url = "https://kauth.kakao.com/oauth/token";
+        String url = authUrl + "/oauth/token";
         HttpHeaders httpHeaders = new HttpHeaders();
 
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> body = params.makeBody();
-        body.add("grant_type", "authorization_code");
-        body.add("client_id", "5a4189cd1aa8daccb6849a1046a81cc7");
-        body.add("redirect_uri", "http://localhost:8081/login/oauth2/code/kakao");
+        body.add("grant_type", GRANT_TYPE);
+        body.add("client_id", clientId);
+        body.add("redirect_uri", redirectUri);
 
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
@@ -49,7 +64,7 @@ public class KakaoApiClient implements OAuthApiClient{
 
     @Override
     public OAuthInfoResponse requestOauthInfo(String accessToken) {
-        String url = "https://kapi.kakao.com/v2/user/me";
+        String url = apiUrl + "/v2/user/me";
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
