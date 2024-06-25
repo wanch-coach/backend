@@ -4,7 +4,7 @@ use wanchcoach;
 
 CREATE TABLE `member` (
                           `member_id`	BIGINT 	AUTO_INCREMENT PRIMARY KEY,
-                          `id`	VARCHAR(30)	NOT NULL,
+                          `login_id`	VARCHAR(30)	NOT NULL,
                           `encrypted_pwd`	VARCHAR(255)	NOT NULL,
                           `name`	VARCHAR(30)	NOT NULL,
                           `email`	VARCHAR(100)	NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE `scheduled drug record` (
                                          `modified_date` DATETIME NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE `drug administration time` (
+CREATE TABLE `drug_administration_time` (
                                             `family_id`	BIGINT  AUTO_INCREMENT 	PRIMARY KEY,
                                             `morning`	TIME	NULL,
                                             `noon`	TIME	NULL,
@@ -213,7 +213,7 @@ ALTER TABLE `member device token` ADD CONSTRAINT `FK_member_TO_member_device_tok
                          `member_id`
         );
 
-ALTER TABLE `drug administration time` ADD CONSTRAINT `FK_family_TO_drug administration time_1` FOREIGN KEY (
+ALTER TABLE `drug_administration_time` ADD CONSTRAINT `FK_family_TO_drug_administration_time_1` FOREIGN KEY (
                                                                                                              `family_id`
     )
     REFERENCES `family` (
