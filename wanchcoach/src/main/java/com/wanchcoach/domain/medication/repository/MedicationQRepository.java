@@ -2,16 +2,18 @@ package com.wanchcoach.domain.medication.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
 
-import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
+import com.wanchcoach.domain.family.entity.Family;
+import com.wanchcoach.domain.medication.controller.response.*;
 import com.wanchcoach.domain.medication.service.dto.*;
-import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.wanchcoach.domain.medical.entity.QHospital.hospital;
 import static com.wanchcoach.domain.family.entity.QFamily.family;
@@ -202,5 +204,129 @@ public class MedicationQRepository {
             pillsDto.add(new TakenPillsResponse(drugDto.toSearchDrugsResponse(), medicineRecordList));
         }
         return pillsDto;
+    }
+
+    public DailyPrescriptionResponse getDailyPrescriptions(int year, int month, int day, Long familyId){
+
+        List<DailyPrescriptionInfo> morningTaken = new ArrayList<>();
+        List<DailyPrescriptionInfo> morningUnTaken= new ArrayList<>();
+        List<DailyPrescriptionInfo> noonTaken= new ArrayList<>();
+        List<DailyPrescriptionInfo> noonUnTaken= new ArrayList<>();
+        List<DailyPrescriptionInfo> eveningTaken= new ArrayList<>();
+        List<DailyPrescriptionInfo> eveningUnTaken= new ArrayList<>();
+        List<DailyPrescriptionInfo> beforeBedTaken= new ArrayList<>();
+        List<DailyPrescriptionInfo> beforeBedUnTaken= new ArrayList<>();
+
+
+        //가족의 복용중인 처방전 목록
+        List<DailyPrescriptionDto> prescriptionList = queryFactory.select(Projections.constructor(DailyPrescriptionDto.class,
+                        prescription.remains,
+                        hospital.name,
+                        treatment.department,
+                        prescription.prescriptionId,
+                        prescription.morning,
+                        prescription.noon,
+                        prescription.evening,
+                        prescription.beforeBed
+                        ))
+                .from(family)
+                .join(treatment).on(treatment.family.familyId.eq(family.familyId))
+                .join(hospital).on(treatment.hospital.hospitalId.eq(hospital.hospitalId))
+                .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
+                .join(medicineRecord).on(medicineRecord.prescription.prescriptionId.eq(prescription.prescriptionId))
+                .where(family.familyId.eq(familyId).and(prescription.taking.eq(true)))
+                .fetch();
+
+        //가족의 오늘 복약 내역
+        List<MedicineRecordDto> recordList = queryFactory.select(Projections.constructor(MedicineRecordDto.class,
+                        prescription.prescriptionId,
+                        medicineRecord.time
+                ))
+                .from(family)
+                .join(medicineRecord).on(medicineRecord.family.familyId.eq(family.familyId))
+                .join(prescription).on(medicineRecord.prescription.prescriptionId.eq(prescription.prescriptionId))
+                .where(family.familyId.eq(familyId).and(
+                        medicineRecord.createdDate.year().eq(year).and(
+                                medicineRecord.createdDate.month().eq(month).and(
+                                        medicineRecord.createdDate.dayOfMonth().eq(day)))))
+                .fetch();
+
+        //처방전 목록 순회
+        for(DailyPrescriptionDto pst: prescriptionList){
+
+            //처방전 약 목록 조회
+            List<SearchDrugsDto> drugList = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
+                            drug.drugId,
+                            drug.itemName,
+                            drug.spcltyPblc,
+                            drugImage.filePath.coalesce("")
+                    ))
+                    .from(prescribedDrug)
+                    .join(prescription).on(prescription.prescriptionId.eq(prescribedDrug.prescription.prescriptionId))
+                    .join(drug).on(drug.drugId.eq(prescribedDrug.drug.drugId))
+                    .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
+                    .where(prescription.prescriptionId.eq(pst.prescriptionId()))
+                    .fetch();
+
+            //약 이미지 파일 조회
+            List<SearchDrugsResponse> drugResponse = new ArrayList<>();
+            for(SearchDrugsDto dto: drugList){
+                drugResponse.add(dto.toSearchDrugsResponse());
+            }
+
+            if(pst.morning()){
+                morningUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+            }
+            if(pst.noon()){
+                noonUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+            }
+            if(pst.evening()){
+                eveningUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+            }
+            if(pst.beforeBed()){
+                beforeBedUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+            }
+
+            //복용 기록
+            for(MedicineRecordDto record : recordList){
+                //복용했다면
+                if(record.prescriptionId().equals(pst.prescriptionId())){
+                    if(record.time()==0){
+                        for(DailyPrescriptionInfo info : morningUnTaken){
+                            if(info.prescriptionId().equals(record.prescriptionId())){
+                                morningTaken.add(info);
+                                morningUnTaken.remove(info);
+                            }
+                        }
+                    }else if(record.time()==1){
+                        for(DailyPrescriptionInfo info : noonUnTaken){
+                            if(info.prescriptionId().equals(record.prescriptionId())){
+                                noonTaken.add(info);
+                                noonUnTaken.remove(info);
+                            }
+                        }
+                    }else if(record.time()==2){
+                        for(DailyPrescriptionInfo info : eveningUnTaken){
+                            if(info.prescriptionId().equals(record.prescriptionId())){
+                                eveningTaken.add(info);
+                                eveningUnTaken.remove(info);
+                            }
+                        }
+                    }else{
+                        for(DailyPrescriptionInfo info : beforeBedUnTaken){
+                            if(info.prescriptionId().equals(record.prescriptionId())){
+                                beforeBedTaken.add(info);
+                                beforeBedUnTaken.remove(info);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        DailyPrescription morning = new DailyPrescription(morningUnTaken, morningTaken);
+        DailyPrescription noon = new DailyPrescription(noonUnTaken, noonTaken);
+        DailyPrescription evening = new DailyPrescription(eveningUnTaken, eveningTaken);
+        DailyPrescription beforeBed = new DailyPrescription(beforeBedUnTaken, beforeBedTaken);
+        return new DailyPrescriptionResponse(familyId, morning, noon, evening, beforeBed);
     }
 }

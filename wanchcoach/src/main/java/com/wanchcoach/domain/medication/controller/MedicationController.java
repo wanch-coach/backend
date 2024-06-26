@@ -44,7 +44,11 @@ public class MedicationController {
 
     //날짜 별(월,일) 가족 복약 조회
     @GetMapping("/")
-    public ApiResult<?> getFamilyMedicationInfo(@RequestParam String year,@RequestParam String month,@RequestParam String day){
+    public ApiResult<?> getFamilyMedicationInfo(@RequestParam int year,@RequestParam int month,@RequestParam int day, @AuthenticationPrincipal User user){
+
+        Long memberId = Long.valueOf(user.getUsername());
+        medicationQService.getDailyPrescription(year,month,day, memberId);
+
         return OK(null);
     }
     //복약 상세 조회

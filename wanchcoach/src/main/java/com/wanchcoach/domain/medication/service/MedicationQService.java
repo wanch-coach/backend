@@ -2,6 +2,8 @@ package com.wanchcoach.domain.medication.service;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
+import com.wanchcoach.domain.family.entity.Family;
+import com.wanchcoach.domain.family.repository.command.FamilyRepository;
 import com.wanchcoach.domain.medication.controller.response.*;
 import com.wanchcoach.domain.medication.repository.MedicationQRepository;
 import com.wanchcoach.domain.medication.service.dto.*;
@@ -22,6 +24,7 @@ import java.util.List;
 public class MedicationQService {
 
     private final MedicationQRepository medicationQRepository;
+    private final FamilyRepository familyRepository;
 
     public List<SearchDrugsResponse> getMedicationDetail(Long prescriptionId){
         List<SearchDrugsDto> drugInfo = medicationQRepository.findPrescriptionsDrugs(prescriptionId);
@@ -115,4 +118,15 @@ public class MedicationQService {
         List<TakenPillsResponse> pillsRecord = medicationQRepository.getTakenPills(dto);
         return pillsRecord;
     }
+
+    public List<DailyPrescriptionResponse> getDailyPrescription(int year, int month, int day, Long memberId){
+        List<Family> familyList = familyRepository.findAllByMemberMemberId(memberId);
+
+        List<DailyPrescriptionResponse> response = new ArrayList<>();
+        for(Family fam : familyList){
+            response.add(medicationQRepository.getDailyPrescriptions(year, month, day, fam.getFamilyId()));
+        }
+        return response;
+    }
+
 }
