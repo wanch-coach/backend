@@ -1,6 +1,6 @@
 package com.wanchcoach.domain.treatment.controller;
 
-import com.wanchcoach.domain.medical.service.OcrService;
+import com.wanchcoach.domain.treatment.service.OcrService;
 import com.wanchcoach.domain.treatment.controller.dto.request.CreatePrescriptionRequest;
 import com.wanchcoach.domain.treatment.controller.dto.request.CreateTreatmentRequest;
 import com.wanchcoach.domain.treatment.controller.dto.request.UpdateTreatmentRequest;

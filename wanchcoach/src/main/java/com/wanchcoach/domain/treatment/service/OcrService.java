@@ -1,5 +1,8 @@
-package com.wanchcoach.domain.medical.service;
+package com.wanchcoach.domain.treatment.service;
 
+import com.wanchcoach.domain.drug.repository.DrugQRepository;
+import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
+import com.wanchcoach.domain.treatment.service.dto.DrugOcrDto;
 import com.wanchcoach.domain.treatment.controller.dto.response.PrescriptionOcrResponse;
 import com.wanchcoach.global.util.JsonUtils;
 import jakarta.transaction.Transactional;
@@ -39,82 +42,89 @@ public class OcrService {
 
     private String boundary;
 
+    private final DrugQRepository drugQRepository;
+
     public PrescriptionOcrResponse getPrescriptionInfo(File file) throws IOException, ParseException {
-        List<String> data = Arrays.asList(
-                "병", "N300", "처방 의료인", "박희수", "(피부/비뇨기과)", "서명", "분류", "기호",
-                "면허종류", "의사", "면허번호", "제", "48607", "호", "환자의", "요구가", "있을", "때에는",
-                "질병분류기호를", "적지", "않습니다.", "처방", "의약품의", "명칭", "1회", "1일", "총",
-                "부담률", "본인", "용", "법", "투약량투여횟수투약일수", "구분코드", "[2][649900060]",
-                "무코스타정", "100mg", "(오츠카)", "1.000", "3", "3", "하루", "3회;식사", "30분", "후",
-                "복용", "[2][645401470]", "크라비트정", "100mg(제", "일)18세이하금기", "1.000", "3",
-                "3", "주사제", "처방명세([", "]원내", "조제,", "[", "]원외처방)", "조제시", "참고사항본인부담",
-                "구분기호", "V252", "사용기간", "발급일부터", "(", "3", ")", "일간", "사용기간내에",
-                "약국에", "제출하여야", "합니다.", "의", "약", "품", "조", "제", "명", "세", "조제기관의",
-                "명칭", "조제명세", "조제", "약 사", "성명", "(서명", "또는", "날인)", "조제량(조제일수)",
-                "조제년월일", "1.", "본인부담률", "구분코드:", "「국민건강보험법", "별표2", "항목설명", "여된",
-                "해당", "구분코드를", "적습니다.", "시행령"
-        );
 
-        // 리스트 문자열을 하나의 문자열로 연결
-        String dataStr = String.join(" ", data);
-        System.out.println(dataStr);
+        log.info("OcrService#getPrescriptionInfo called");
+        List<String> results;
+        try {
+            HttpURLConnection conn = createRequestHeader(new URL(CLOVA_URL));
+            createRequestBody(conn, file);
+            StringBuilder sb = new StringBuilder(getResponseData(conn));
+            results = parseResponseData(sb);
 
-        // 9자리 숫자 찾기
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+        List<DrugOcrDto> ocrItems = new ArrayList<>();
+
+        List<String> patterns = new ArrayList<>();
         Pattern pattern = Pattern.compile("\\b\\d{9}\\b");
-        Matcher matcher = pattern.matcher(dataStr);
 
-        // 필요한 정보를 저장할 리스트
-        List<Map<String, String>> drugsInfo = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            Matcher matcher = pattern.matcher(results.get(i));
+            if (matcher.find()) {
+                indices.add(i);
+            }
+        }
+        indices.add(results.size());
 
-        while (matcher.find()) {
-            String code = matcher.group();
-            // 약물 이름과 세부사항 추출을 위한 정규식 패턴
-            String regex = code + "\\s+([\\w\\(\\)]+(?:\\s+[\\w\\(\\)]+)*)\\s+(\\d+mg(?:\\s*[\\w\\(\\)]*)*)\\s+([\\d.]+)\\s+(\\d+)\\s+(\\d+)\\s+(.*?)(?=\\s*\\[\\d*\\]|\\s*\\[|\\s*\\d{9}|\\s*$)";
-            Pattern infoPattern = Pattern.compile(regex);
-            Matcher infoMatcher = infoPattern.matcher(dataStr);
+        // 정렬된 인덱스로 패턴 추출
+        for (int i = 0; i < indices.size() - 1; i++) {
+            int startIndex = indices.get(i);
+            int endIndex = indices.get(i + 1);
 
-            if (infoMatcher.find()) {
-                String drugName = infoMatcher.group(1) + " " + infoMatcher.group(2);
-                String dose = infoMatcher.group(3);
-                String freqPerDay = infoMatcher.group(4);
-                String days = infoMatcher.group(5);
-                String usage = infoMatcher.group(6).trim();
+            String substring = String.join(" ", results.subList(startIndex, endIndex));
+            patterns.add(substring);
+        }
 
-                Map<String, String> drugInfo = new HashMap<>();
-                drugInfo.put("drug_code", code);
-                drugInfo.put("drug_name", drugName);
-                drugInfo.put("dose", dose);
-                drugInfo.put("freq_per_day", freqPerDay);
-                drugInfo.put("days", days);
-                drugInfo.put("usage", usage);
+        for (String p : patterns) {
+            // 1회 투여량, 1일 투여 횟수, 투약일 추출 (숫자와 소수점만 추출하여 double 또는 int로 변환)
+            Pattern dosePattern = Pattern.compile("\\s*(.*?)\\s+(\\d*\\.?\\d+)\\s+(\\d+)\\s+(\\d+)");
+            Matcher doseMatcher = dosePattern.matcher(p);
 
-                drugsInfo.add(drugInfo);
+            if (doseMatcher.find()) {
+                String medicineName = doseMatcher.group(1);
+                String oneDose = doseMatcher.group(2); // 1회 투여량
+                String dailyDoses = doseMatcher.group(3); // 1일 투약 횟수
+                String treatmentDays = doseMatcher.group(4); // 투약일
+
+                if(medicineName.contains("주사제") || medicineName.contains("조제시")) break;
+                medicineName = medicineName.replaceFirst("^[^가-힣]*", "");
+                medicineName = medicineName.replaceFirst("\\(.*", "").trim();
+
+                // 용법 추출 (투약일 이후 문자열에서 주사제 이전까지)
+                String method = "", methodWithDetails = p.substring(doseMatcher.end()).trim();
+                if (methodWithDetails.contains("주사제")) {
+                    int index = methodWithDetails.indexOf("주사제");
+                    method = methodWithDetails.substring(0, index).trim();
+                } else if (methodWithDetails.contains("조제시")) {
+                    int index = methodWithDetails.indexOf("조제시");
+                    method = methodWithDetails.substring(0, index).trim();
+                } else {
+                    method = methodWithDetails;
+                }
+
+                List<SearchDrugsDto> searchResult = drugQRepository.findDrugsContainKeyword("itemName", medicineName);
+                if (searchResult == null) {
+                    medicineName = medicineName.replaceFirst("\\d.*", "");
+                    searchResult = drugQRepository.findDrugsContainKeyword("itemName", medicineName);
+                    if (searchResult == null) continue;
+                }
+                ocrItems.add(new DrugOcrDto(searchResult.get(0).getDrugId(),
+                                            searchResult.get(0).getItemName(),
+                                            Double.valueOf(oneDose),
+                                            Integer.valueOf(dailyDoses),
+                                            Integer.valueOf(treatmentDays),
+                                            method)
+                );
             }
         }
 
-        // 결과 출력
-        for (Map<String, String> info : drugsInfo) {
-            System.out.println(info);
-        }
-
-        return null;
+        return new PrescriptionOcrResponse(ocrItems);
     }
-
-//        log.info("OcrService#getPrescriptionInfo called");
-//        try {
-//            HttpURLConnection conn = createRequestHeader(new URL(CLOVA_URL));
-//            createRequestBody(conn, file);
-//            StringBuilder sb = new StringBuilder(getResponseData(conn));
-//            List<String> result = parseResponseData(sb);
-//            for (String s: result) {
-//                System.out.println(s);
-//            }
-//
-//            return null;
-//        } catch (IOException | ParseException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     private HttpURLConnection createRequestHeader(URL url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -217,7 +227,7 @@ public class OcrService {
         return response;
     }
 
-    private String parseResponseData(StringBuilder response) throws ParseException {
+    private List<String> parseResponseData(StringBuilder response) throws ParseException {
         JSONParser responseParser = new JSONParser();
         JSONObject parsedData = (JSONObject) responseParser.parse(response.toString());
 
@@ -232,7 +242,7 @@ public class OcrService {
             for (Map<String, Object> m: map) {
                 result.add((String) m.get("inferText"));
             }
-            return String.join(" ", result);
+            return result;
         }
         return null;
     }
