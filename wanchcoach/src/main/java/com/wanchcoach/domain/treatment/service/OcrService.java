@@ -1,7 +1,7 @@
 package com.wanchcoach.domain.treatment.service;
 
 import com.wanchcoach.domain.drug.repository.DrugQRepository;
-import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
+import com.wanchcoach.domain.drug.service.dto.SearchDrugsSimpleDto;
 import com.wanchcoach.domain.treatment.service.dto.DrugOcrDto;
 import com.wanchcoach.domain.treatment.controller.dto.response.PrescriptionOcrResponse;
 import com.wanchcoach.global.util.JsonUtils;
@@ -57,6 +57,8 @@ public class OcrService {
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println(results);
         List<DrugOcrDto> ocrItems = new ArrayList<>();
 
         List<String> patterns = new ArrayList<>();
@@ -81,6 +83,7 @@ public class OcrService {
         }
 
         for (String p : patterns) {
+//            System.out.println(p);
             // 1회 투여량, 1일 투여 횟수, 투약일 추출 (숫자와 소수점만 추출하여 double 또는 int로 변환)
             Pattern dosePattern = Pattern.compile("\\s*(.*?)\\s+(\\d*\\.?\\d+)\\s+(\\d+)\\s+(\\d+)");
             Matcher doseMatcher = dosePattern.matcher(p);
@@ -91,43 +94,108 @@ public class OcrService {
                 String dailyDoses = doseMatcher.group(3); // 1일 투약 횟수
                 String treatmentDays = doseMatcher.group(4); // 투약일
 
-                if(medicineName.contains("주사제") || medicineName.contains("조제시")) break;
+                if (medicineName.contains("주사제") || medicineName.contains("조제시")) break;
                 medicineName = medicineName.replaceFirst("^[^가-힣]*", "");
                 medicineName = medicineName.replaceFirst("\\(.*", "").trim();
+                String[] splitedName = medicineName.split("/");
 
                 // 용법 추출 (투약일 이후 문자열에서 주사제 이전까지)
                 String method = "", methodWithDetails = p.substring(doseMatcher.end()).trim();
                 if (methodWithDetails.contains("조제시")) {
                     int index = methodWithDetails.indexOf("조제시");
                     method = methodWithDetails.substring(0, index).trim();
-                } else if (methodWithDetails.contains("주사제")) {
-                    int index = methodWithDetails.indexOf("주사제");
-                    method = methodWithDetails.substring(0, index).trim();
-                } else {
-                    method = methodWithDetails;
+                } else method = methodWithDetails;
+                if (method.contains("주사제")) {
+                    int index = method.indexOf("주사제");
+                    method = method.substring(0, index).trim();
                 }
 
-                ocrItems.add(new DrugOcrDto(null,
-                            medicineName,
+                List<SearchDrugsSimpleDto> searchResult = drugQRepository.findDrugsbyItemName(medicineName);
+
+                String originalName = medicineName;
+                if (searchResult.isEmpty()) {
+                    medicineName = medicineName.replaceFirst("[\\d/].*", "").trim();
+                    searchResult = drugQRepository.findDrugsbyItemName(medicineName);
+                }
+
+                if (searchResult.size() == 1) {
+                    ocrItems.add(new DrugOcrDto(searchResult.get(0).getDrugId(),
+                            searchResult.get(0).getItemName(),
                             Double.valueOf(oneDose),
                             Integer.valueOf(dailyDoses),
                             Integer.valueOf(treatmentDays),
                             method)
-                );
+                    );
+                } else {
+                    List<String> numbers = new ArrayList<>();
+                    String regex = "\\d+\\.\\d+|\\d+";
+                    Pattern pat = Pattern.compile(regex);
+                    Matcher mat = pat.matcher(originalName);
+                    while (mat.find()) numbers.add(mat.group());
 
-//                List<SearchDrugsDto> searchResult = drugQRepository.findDrugsContainKeyword("itemName", medicineName);
-//                if (searchResult == null) {
-//                    medicineName = medicineName.replaceFirst("\\d.*", "");
+                    List<String> names = searchResult.stream().map(SearchDrugsSimpleDto::getItemName).toList();
+                    int[] score = new int[names.size()];
+                    for (String number: numbers) {
+                        for (int i = 0; i < names.size(); i++) {
+                            if (names.get(i).contains(number)) score[i]++;
+                        }
+                    }
+
+                    int maxIdx = 0, maxValue = score[0];
+                    for (int i = 1; i < names.size(); i++) {
+                        if (maxValue < score[i]) {
+                            maxIdx = i; maxValue = score[i];
+                        }
+                    }
+
+                    ocrItems.add(new DrugOcrDto(searchResult.get(maxIdx).getDrugId(),
+                            searchResult.get(maxIdx).getItemName(),
+                            Double.valueOf(oneDose),
+                            Integer.valueOf(dailyDoses),
+                            Integer.valueOf(treatmentDays),
+                            method)
+                    );
+
+                }
+
+//                if (searchResult.isEmpty()) {
+//
+//                    medicineName = medicineName.replaceFirst("\\d.*", "").trim();
 //                    searchResult = drugQRepository.findDrugsContainKeyword("itemName", medicineName);
-//                    if (searchResult == null) continue;
+//                    if (searchResult.isEmpty()) {
+//                        ocrItems.add(new DrugOcrDto(null,
+//                                medicineName,
+//                                Double.valueOf(oneDose),
+//                                Integer.valueOf(dailyDoses),
+//                                Integer.valueOf(treatmentDays),
+//                                method)
+//                        );
+//
+//                        continue;
+//                    }
+//                } else {
+//                    medicineName = medicineName.replaceFirst("\\d.*", "").trim();
+//                    searchResult = drugQRepository.findDrugsContainKeyword("itemName", medicineName);
+//                    if (searchResult.isEmpty()) {
+//                        ocrItems.add(new DrugOcrDto(null,
+//                                medicineName,
+//                                Double.valueOf(oneDose),
+//                                Integer.valueOf(dailyDoses),
+//                                Integer.valueOf(treatmentDays),
+//                                method)
+//                        );
+//
+//                        continue;
+//                    }
+//
+//                    ocrItems.add(new DrugOcrDto(searchResult.get(0).getDrugId(),
+//                            searchResult.get(0).getItemName(),
+//                            Double.valueOf(oneDose),
+//                            Integer.valueOf(dailyDoses),
+//                            Integer.valueOf(treatmentDays),
+//                            method)
+//                    );
 //                }
-//                ocrItems.add(new DrugOcrDto(searchResult.get(0).getDrugId(),
-//                                            searchResult.get(0).getItemName(),
-//                                            Double.valueOf(oneDose),
-//                                            Integer.valueOf(dailyDoses),
-//                                            Integer.valueOf(treatmentDays),
-//                                            method)
-//                );
             }
         }
 
