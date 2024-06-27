@@ -116,6 +116,16 @@ public class OcrService {
                 if (searchResult.isEmpty()) {
                     medicineName = medicineName.replaceFirst("[\\d/].*", "").trim();
                     searchResult = drugQRepository.findDrugsbyItemName(medicineName);
+                    if (searchResult.isEmpty()) {
+                        ocrItems.add(new DrugOcrDto(null,
+                                medicineName,
+                                Double.valueOf(oneDose),
+                                Integer.valueOf(dailyDoses),
+                                Integer.valueOf(treatmentDays),
+                                method)
+                        );
+                        continue;
+                    }
                 }
 
                 if (searchResult.size() == 1) {
