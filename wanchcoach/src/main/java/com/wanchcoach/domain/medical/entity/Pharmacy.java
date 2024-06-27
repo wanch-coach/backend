@@ -43,7 +43,7 @@ public class Pharmacy extends BaseEntity {
     @Column
     private String postCdn;
 
-    @Column(length = 2000)
+    @Column(length=2000)
     private String etc;
 
     @Column(nullable = false)
