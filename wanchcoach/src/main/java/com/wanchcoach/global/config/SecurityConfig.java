@@ -32,8 +32,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-        http.authorizeHttpRequests((auth) -> auth.requestMatchers("/api/member/**","/login/**","/api/drug/*", "/api/treatment/**", "/api/medical/**").permitAll()
-                .anyRequest().authenticated());
+        http.authorizeHttpRequests((auth) -> auth.requestMatchers("/api/member/**","/login/**","/api/drug/*", "/api/treatment/**", "/api/medical/**", "/signin/**").permitAll());
 
         return http.build();
     }

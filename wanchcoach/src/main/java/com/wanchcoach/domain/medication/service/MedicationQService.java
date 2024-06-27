@@ -2,13 +2,11 @@ package com.wanchcoach.domain.medication.service;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
-import com.wanchcoach.domain.medication.controller.response.PrescriptionEndRecord;
-import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
-import com.wanchcoach.domain.medication.controller.response.PrescriptionTakingRecord;
-import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
+import com.wanchcoach.domain.family.entity.Family;
+import com.wanchcoach.domain.family.repository.command.FamilyRepository;
+import com.wanchcoach.domain.medication.controller.response.*;
 import com.wanchcoach.domain.medication.repository.MedicationQRepository;
-import com.wanchcoach.domain.medication.service.dto.PrescriptionListDto;
-import com.wanchcoach.domain.medication.service.dto.PrescriptionRecordDto;
+import com.wanchcoach.domain.medication.service.dto.*;
 import com.wanchcoach.domain.treatment.entity.Prescription;
 import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +24,7 @@ import java.util.List;
 public class MedicationQService {
 
     private final MedicationQRepository medicationQRepository;
+    private final FamilyRepository familyRepository;
 
     public List<SearchDrugsResponse> getMedicationDetail(Long prescriptionId){
         List<SearchDrugsDto> drugInfo = medicationQRepository.findPrescriptionsDrugs(prescriptionId);
@@ -63,4 +62,71 @@ public class MedicationQService {
 
         return new PrescriptionRecordResponse(prescriptionTaking, prescriptionEnd);
     }
+
+    public RecordCalendarResponse getCalendarRecord(Long familyId, int year, int month){
+
+        //모든 복약 기록
+        List<CalendarRecordDto> records = medicationQRepository.getCalendarRecord(familyId, year, month);
+
+        // 반환 값
+        List<RecordCalendarDay> dayRecord = new ArrayList<>();
+
+        //그 달의 모든 복약 기록
+        for(CalendarRecordDto record : records){
+
+            boolean insert = false;
+
+            for(RecordCalendarDay dayInfo : dayRecord){
+                //이미 일자 정보가 있는 경우
+                if(dayInfo.day()==record.prescription().takenDay().getDayOfMonth()){
+                    //복약 시기에 따라 변환 후 추가
+                    if(record.prescription().time().equals("morning")){
+                        dayInfo.morning().add(record.toRecordCalendarDayInfo());
+                    }else if(record.prescription().time().equals("noon")){
+                        dayInfo.noon().add(record.toRecordCalendarDayInfo());
+                    }else if(record.prescription().time().equals("evening")){
+                        dayInfo.evening().add(record.toRecordCalendarDayInfo());
+                    }else{
+                        dayInfo.beforeBed().add(record.toRecordCalendarDayInfo());
+                    }
+                    insert = true;
+                    break;
+                }
+            }
+            if(!insert){
+
+                RecordCalendarDay rcd = new RecordCalendarDay(record.prescription().takenDay().getDayOfMonth(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+
+                if(record.prescription().time().equals("morning")){
+                    rcd.morning().add(record.toRecordCalendarDayInfo());
+                }else if(record.prescription().time().equals("noon")){
+                    rcd.noon().add(record.toRecordCalendarDayInfo());
+                }else if(record.prescription().time().equals("evening")){
+                    rcd.evening().add(record.toRecordCalendarDayInfo());
+                }else{
+                    rcd.beforeBed().add(record.toRecordCalendarDayInfo());
+                }
+                dayRecord.add(rcd);
+            }
+        }
+
+        return new RecordCalendarResponse(year, month, dayRecord);
+    }
+
+
+    public List<TakenPillsResponse> getPills(GetPillsDto dto){
+        List<TakenPillsResponse> pillsRecord = medicationQRepository.getTakenPills(dto);
+        return pillsRecord;
+    }
+
+    public List<DailyPrescriptionResponse> getDailyPrescription(int year, int month, int day, Long memberId){
+        List<Family> familyList = familyRepository.findAllByMemberMemberId(memberId);
+
+        List<DailyPrescriptionResponse> response = new ArrayList<>();
+        for(Family fam : familyList){
+            response.add(medicationQRepository.getDailyPrescriptions(year, month, day, fam.getFamilyId()));
+        }
+        return response;
+    }
+
 }

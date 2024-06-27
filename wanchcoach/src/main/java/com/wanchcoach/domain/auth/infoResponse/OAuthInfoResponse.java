@@ -7,11 +7,26 @@ import java.time.LocalDate;
 
 public interface OAuthInfoResponse {
 
-    String getEmail();
-    String getName();
-    String getGender();
-    LocalDate getBirthday();
-    String getProfile_Image();
+    default String getEmail() {
+        return null;
+    }
+
+    default String getName() {
+        return null;
+    }
+
+    default String getGender() {
+        return null;
+    }
+
+    default LocalDate getBirthday() {
+        return null;
+    }
+
+    default String getProfile_Image() {
+        return null;
+    }
+
     OAuthProvider getOAuthProvider();
 
     default String getMobile() {

@@ -1,11 +1,14 @@
 package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
+import com.wanchcoach.domain.medication.controller.request.GetPillsRequest;
+import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
 import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
 import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
 import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import com.wanchcoach.domain.medication.service.MedicationQService;
 import com.wanchcoach.domain.medication.service.MedicationService;
+import com.wanchcoach.domain.medication.service.dto.GetPillsDto;
 import com.wanchcoach.domain.medication.service.dto.TakingMedicineDto;
 import com.wanchcoach.domain.treatment.service.TreatmentService;
 import com.wanchcoach.global.api.ApiResult;
@@ -15,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -40,7 +44,11 @@ public class MedicationController {
 
     //날짜 별(월,일) 가족 복약 조회
     @GetMapping("/")
-    public ApiResult<?> getFamilyMedicationInfo(@RequestParam String year,@RequestParam String month,@RequestParam String day){
+    public ApiResult<?> getFamilyMedicationInfo(@RequestParam int year,@RequestParam int month,@RequestParam int day, @AuthenticationPrincipal User user){
+
+        Long memberId = Long.valueOf(user.getUsername());
+        medicationQService.getDailyPrescription(year,month,day, memberId);
+
         return OK(null);
     }
     //복약 상세 조회
@@ -68,14 +76,16 @@ public class MedicationController {
     public ApiResult<?> updateAlarm(@PathVariable(value="medicineRecordId")Long medicineRecordId){
         return OK(null);
     }
-    //복약 삭제
-    @DeleteMapping("/prescriptions/{prescriptionId}")
-    public ApiResult<?> deletePrescription(@PathVariable(value="prescriptionId")Long prescriptionId){
-        return OK(null);
-    }
-    //월별 가족 복약 조회(복약 이력/달력)
+
+    //월별 복약 이력 조회(복약 이력/달력)
     @GetMapping("/families/{familyId}/year/{year}/month/{month}")
     public ApiResult<?> getMonthMedication(@PathVariable(value="familyId")Long familyId, @PathVariable(value="year")int year,@PathVariable(value="month")int month){
+
+        if(year> LocalDateTime.now().getYear() || !(1<=month &&month<=12)){
+            return ERROR(HttpStatus.BAD_REQUEST, "요청 날짜의 정보가 잘못되었습니다.");
+        };
+        medicationQService.getCalendarRecord(familyId, year, month);
+
         return OK(null);
     }
 
@@ -99,8 +109,9 @@ public class MedicationController {
 
     //내 약 정보 조회(지금까지 먹은 약)
     @GetMapping("/pills/families/{familyId}")
-    public ApiResult<?> getPills(@PathVariable(value="familyId")Long familyId){
-        return OK(null);
+    public ApiResult<?> getPills(@PathVariable(value="familyId")Long familyId, @RequestBody GetPillsRequest request){
+        List<TakenPillsResponse> takenPillsWithRecord =  medicationQService.getPills(GetPillsDto.of(familyId,request));
+        return OK(takenPillsWithRecord);
     }
 
     // 복약 종료

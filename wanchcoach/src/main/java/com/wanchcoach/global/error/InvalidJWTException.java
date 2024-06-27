@@ -3,20 +3,21 @@ package com.wanchcoach.global.error;
 import com.wanchcoach.global.util.MessageUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class AlreadyExistException extends ServiceRuntimeException{
+public class InvalidJWTException extends ServiceRuntimeException{
 
-    static final String MESSAGE_KEY = "error.AlreadyExist";
+    static final String MESSAGE_KEY = "error.InvalidJWT";
 
-    static final String MESSAGE_DETAILS = "error.AlreadyExist.details";
+    static final String MESSAGE_DETAILS = "error.InvalidJWT.details";
 
-    public AlreadyExistException(Class cls, Object... values) {
+    public InvalidJWTException(Class cls, Object... values) {
         this(cls.getSimpleName(), values);
     }
 
-    public AlreadyExistException(String targetName, Object... values) {
+    public InvalidJWTException(String targetName, Object... values) {
         super(MESSAGE_KEY, MESSAGE_DETAILS, new String[]{targetName,
                 (values != null && values.length > 0) ? StringUtils.join(values, ",") : ""});
     }
+
 
     @Override
     public String getMessage() {
