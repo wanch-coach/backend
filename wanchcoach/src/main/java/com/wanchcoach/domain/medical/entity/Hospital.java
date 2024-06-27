@@ -52,7 +52,7 @@ public class Hospital extends BaseEntity {
     @Column
     private String postCdn;
 
-    @Column
+    @Column(length = 2000)
     private String etc;
 
     @Column(nullable = false)
