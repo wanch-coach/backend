@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDetailDto;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
+import com.wanchcoach.domain.drug.service.dto.SearchDrugsSimpleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,18 @@ import static com.wanchcoach.domain.drug.entity.QDrugImage.drugImage;
 public class DrugQRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public List<SearchDrugsSimpleDto> findDrugsbyItemName(String keyword) {
+
+        return queryFactory.select(Projections.constructor(SearchDrugsSimpleDto.class,
+                    drug.drugId,
+                    drug.itemName
+                ))
+                .from(drug)
+                .where(drug.itemName.contains(keyword))
+                .orderBy(drug.itemPermitDate.asc())
+                .fetch();
+    }
 
     public List<SearchDrugsDto> findDrugsContainKeyword(String type, String keyword){
 
