@@ -9,7 +9,8 @@ public record FamilyInfoResponse (
         String name,
         LocalDate birthDate,
         String gender,
-        String imageFileName
+        String imageFileName,
+        String color
 ){
     public static FamilyInfoResponse from(Family family) {
         return new FamilyInfoResponse(
@@ -17,6 +18,7 @@ public record FamilyInfoResponse (
                 family.getName(),
                 family.getBirthDate(),
                 family.getGender(),
-                family.getImageFileName());
+                family.getImageFileName(),
+                family.getColor());
     }
 }
