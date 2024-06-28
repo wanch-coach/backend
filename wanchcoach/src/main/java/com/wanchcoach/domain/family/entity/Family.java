@@ -50,10 +50,14 @@ public class Family extends BaseEntity {
     @ColumnDefault("false")
     private boolean type;
 
+    @Column(nullable = false)
+    private String color;
+
     public void update(FamilyUpdateDto familyUpdateDto) {
         this.name = familyUpdateDto.name();
         this.birthDate = familyUpdateDto.birthDate();
         this.gender = familyUpdateDto.gender();
         this.imageFileName = familyUpdateDto.imageFileName();
+        this.color = familyUpdateDto.color();
     }
 }

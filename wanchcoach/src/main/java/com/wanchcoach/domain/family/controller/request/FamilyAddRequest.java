@@ -6,7 +6,8 @@ public record FamilyAddRequest (
         String name,
         LocalDate birthDate,
         String gender,
-        String imageFileName
+        String imageFileName,
+        String color
 ){
 
 }

@@ -9,7 +9,8 @@ public record FamilyUpdateDto (
         String name,
         LocalDate birthDate,
         String gender,
-        String imageFileName
+        String imageFileName,
+        String color
 ){
     public static FamilyUpdateDto of(FamilyUpdateRequest familyUpdateRequest){
         return new FamilyUpdateDto(
@@ -17,7 +18,8 @@ public record FamilyUpdateDto (
                 familyUpdateRequest.getName(),
                 familyUpdateRequest.getBirthDate(),
                 familyUpdateRequest.getGender(),
-                familyUpdateRequest.getImageFileName()
+                familyUpdateRequest.getImageFileName(),
+                familyUpdateRequest.getColor()
         );
     }
 }

@@ -14,5 +14,6 @@ public class FamilyUpdateRequest {
     LocalDate birthDate;
     String gender;
     String imageFileName;
+    String color;
 
 }
