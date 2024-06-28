@@ -18,7 +18,8 @@ public record FamilyAddDto (
         String name,
         LocalDate birthDate,
         String gender,
-        String imageFileName
+        String imageFileName,
+        boolean type
         ){
 
     public static FamilyAddDto of(MemberSignupRequest memberSignupRequest,Long memberId) {
@@ -26,7 +27,8 @@ public record FamilyAddDto (
                 memberSignupRequest.name(),
                 memberSignupRequest.birthDate(),
                 memberSignupRequest.gender(),
-                "myImage");
+                "myImage",
+                true);
     }
     public static FamilyAddDto of(FamilyAddRequest familyAddRequest, Long memberId) {
         return new FamilyAddDto(
@@ -34,7 +36,8 @@ public record FamilyAddDto (
                 familyAddRequest.name(),
                 familyAddRequest.birthDate(),
                 familyAddRequest.gender(),
-                familyAddRequest.imageFileName());
+                familyAddRequest.imageFileName(),
+                false);
     }
 
     public static FamilyAddDto of(Member member) {
@@ -43,7 +46,8 @@ public record FamilyAddDto (
                 member.getName(),
                 member.getBirthDate(),
                 member.getGender(),
-                " "
+                " ",
+                true
         );
     }
 
@@ -54,6 +58,7 @@ public record FamilyAddDto (
                 .birthDate(this.birthDate)
                 .gender(this.gender)
                 .imageFileName(this.imageFileName)
+                .type(this.type)
                 .build();
     }
 }

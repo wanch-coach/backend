@@ -45,6 +45,7 @@ public class FamilyController {
 
     @PostMapping
     public ApiResult<Family> addFamily(@RequestBody FamilyAddRequest familyAddRequest, @AuthenticationPrincipal User user){
+        log.info("addFamily controller");
         Long memberId = Long.valueOf(user.getUsername());
         return familyService.addFamily(FamilyAddDto.of(familyAddRequest, memberId));
     }
