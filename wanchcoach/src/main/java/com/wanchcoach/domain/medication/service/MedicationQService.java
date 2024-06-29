@@ -80,11 +80,11 @@ public class MedicationQService {
                 //이미 일자 정보가 있는 경우
                 if(dayInfo.day()==record.prescription().takenDay().getDayOfMonth()){
                     //복약 시기에 따라 변환 후 추가
-                    if(record.prescription().time().equals("morning")){
+                    if(record.prescription().time()==0){
                         dayInfo.morning().add(record.toRecordCalendarDayInfo());
-                    }else if(record.prescription().time().equals("noon")){
+                    }else if(record.prescription().time()==1){
                         dayInfo.noon().add(record.toRecordCalendarDayInfo());
-                    }else if(record.prescription().time().equals("evening")){
+                    }else if(record.prescription().time()==2){
                         dayInfo.evening().add(record.toRecordCalendarDayInfo());
                     }else{
                         dayInfo.beforeBed().add(record.toRecordCalendarDayInfo());
@@ -97,11 +97,11 @@ public class MedicationQService {
 
                 RecordCalendarDay rcd = new RecordCalendarDay(record.prescription().takenDay().getDayOfMonth(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
-                if(record.prescription().time().equals("morning")){
+                if(record.prescription().time()==0){
                     rcd.morning().add(record.toRecordCalendarDayInfo());
-                }else if(record.prescription().time().equals("noon")){
+                }else if(record.prescription().time()==1){
                     rcd.noon().add(record.toRecordCalendarDayInfo());
-                }else if(record.prescription().time().equals("evening")){
+                }else if(record.prescription().time()==2){
                     rcd.evening().add(record.toRecordCalendarDayInfo());
                 }else{
                     rcd.beforeBed().add(record.toRecordCalendarDayInfo());
