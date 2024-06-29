@@ -5,7 +5,7 @@ public record SearchDrugsResponse(
         String itemName,
         String prductType,
         String drugImage,
-        boolean favorite
+        Long favorite
 ) {
 
 }

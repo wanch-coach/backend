@@ -20,7 +20,7 @@ public class SearchDrugsDto {
     private String itemName;
     private String prductType;
     private String filePath;
-    private boolean favorite;
+    private Long favorite;
 
     public SearchDrugsResponse toSearchDrugsResponse(){
 

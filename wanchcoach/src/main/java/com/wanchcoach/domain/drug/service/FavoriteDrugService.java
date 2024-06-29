@@ -34,8 +34,6 @@ public class FavoriteDrugService {
     }
 
     public void deleteFavorite(Long favoriteId){
-
         favoriteDrugRepository.deleteById(favoriteId);
-
     }
 }
