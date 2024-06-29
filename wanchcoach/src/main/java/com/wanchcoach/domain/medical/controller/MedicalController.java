@@ -123,9 +123,9 @@ public class MedicalController {
      * @return 키워드를 이름에 포함하는 병의원/약국 상세 정보
      */
     @GetMapping("/detail")
-    public ApiResult<MedicalDetailResponse> searchMedicalDetails(@RequestParam String keyword,
-                                                                 @RequestParam double lng,
-                                                                 @RequestParam double lat) {
+    public ApiResult<MedicalDetailResponse> searchMedicalDetails(@RequestParam(name = "keyword") String keyword,
+                                                                 @RequestParam(name = "lng") double lng,
+                                                                 @RequestParam(name = "lat") double lat) {
         log.info("MedicalController#searchMedicalDetails called");
 
         MedicalDetailResponse response = medicalQueryService.searchMedicalDetails(keyword, lng, lat);
