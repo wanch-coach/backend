@@ -8,6 +8,7 @@ import com.wanchcoach.domain.family.entity.Family;
 import com.wanchcoach.domain.family.service.FamilyService;
 import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
 import com.wanchcoach.domain.family.service.dto.FamilyUpdateDto;
+import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.global.api.ApiResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,12 @@ public class FamilyController {
     private final FamilyService familyService;
 
 
+    @GetMapping("/findmyfamilyid")
+    public ApiResult<Long> getMemberFamilyId(@AuthenticationPrincipal User user){
+        log.info("<<< getmemberFamilyId >>>");
+        Long memberId = Long.valueOf(user.getUsername());
+        return familyService.findMyFamilyId(memberId);
+    }
     @PostMapping
     public ApiResult<Void> addFamily(@RequestBody FamilyAddRequest familyAddRequest, @AuthenticationPrincipal User user){
         log.info("addFamily controller");

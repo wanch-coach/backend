@@ -74,4 +74,9 @@ public class FamilyService {
         return ApiResult.OK(null);
     }
 
+    public ApiResult<Long> findMyFamilyId(Long memberId) {
+        Family family = familyRepository.findByMemberMemberIdAndTypeTrue(memberId);
+        System.out.println(family.toString());
+        return ApiResult.OK(family.getFamilyId());
+    }
 }
