@@ -107,6 +107,7 @@ public class Member extends BaseEntity {
         this.cameraPermission = true;
     }
 
+    public void updateAlarm() {this.alarmPermission = true;}
     public void updateLeave() {
         this.active = false;
     }
@@ -121,6 +122,10 @@ public class Member extends BaseEntity {
 
     public void updatePwd(String pwd) {
         this.encryptedPwd = pwd;
+    }
+
+    public void updateDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
 

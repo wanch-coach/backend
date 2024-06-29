@@ -141,4 +141,23 @@ public class MemberController {
         Long memberId = Long.valueOf(user.getUsername());
         return memberService.updateCameraPermission(memberId);
     }
+
+    @GetMapping("/alarm-permission")
+    public ApiResult<AlarmPermissionResponse> selectAlarmPermission(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.selectAlarmPermission(memberId);
+    }
+    @PostMapping("/alarm-permission")
+    public ApiResult<AlarmPermissionResponse> updateAlarmPermission(@AuthenticationPrincipal User user) {
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.updateAlarmPermission(memberId);
+    }
+
+    @PatchMapping("/update-device")
+    public ApiResult<Void> updateDeviceToken(@RequestBody DeviceTokenRequest request,@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        String deviceToken = request.deviceToken();
+        return memberService.updateDeviceToken(memberId, deviceToken);
+    }
+
 }
