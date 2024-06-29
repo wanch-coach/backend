@@ -96,7 +96,7 @@ public class MedicationController {
     }
 
     //복약 이력 조회(처방전)
-    @GetMapping("/records/families/{familyId} ")
+    @GetMapping("/records/families/{familyId}")
     public ApiResult<?> getRecords(@PathVariable(value="familyId")Long familyId){
 
         try {
