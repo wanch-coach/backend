@@ -65,6 +65,7 @@ public class MedicationQService {
 
     public RecordCalendarResponse getCalendarRecord(Long familyId, int year, int month){
 
+        Family family = familyRepository.findByFamilyId(familyId).orElseThrow();
         //모든 복약 기록
         List<CalendarRecordDto> records = medicationQRepository.getCalendarRecord(familyId, year, month);
 
@@ -110,7 +111,7 @@ public class MedicationQService {
             }
         }
 
-        return new RecordCalendarResponse(year, month, dayRecord);
+        return new RecordCalendarResponse(year, month, family.getColor(), dayRecord);
     }
 
 
