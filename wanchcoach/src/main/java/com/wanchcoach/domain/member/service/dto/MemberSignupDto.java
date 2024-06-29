@@ -6,7 +6,7 @@ import com.wanchcoach.domain.member.entity.Member;
 import java.time.LocalDate;
 
 public record MemberSignupDto(String loginId,
-                              String encryptedPwd,
+                              String pwd,
                               String name,
                               String email,
                               LocalDate birthDate,
@@ -21,7 +21,7 @@ public record MemberSignupDto(String loginId,
 
     public static MemberSignupDto of(MemberSignupRequest memberSignupRequest) {
         return new MemberSignupDto(memberSignupRequest.loginId(),
-                memberSignupRequest.encryptedPwd(),
+                memberSignupRequest.pwd(),
                 memberSignupRequest.name(),
                 memberSignupRequest.email(),
                 memberSignupRequest.birthDate(),
@@ -35,10 +35,10 @@ public record MemberSignupDto(String loginId,
                 false);
     }
 
-    public Member toEntity() {
+    public Member toEntity(String encryptPwd) {
         return Member.builder()
                 .loginId(loginId)
-                .encryptedPwd(encryptedPwd)
+                .encryptedPwd(encryptPwd)
                 .name(name)
                 .email(email)
                 .birthDate(birthDate)

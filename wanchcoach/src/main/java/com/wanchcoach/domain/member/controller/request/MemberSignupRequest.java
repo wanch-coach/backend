@@ -11,7 +11,7 @@ import java.time.LocalDate;
  */
 public record MemberSignupRequest(
         String loginId,
-        String encryptedPwd,
+        String pwd,
         String name,
         String email,
         LocalDate birthDate,

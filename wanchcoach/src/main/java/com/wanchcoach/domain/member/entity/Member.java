@@ -19,6 +19,7 @@ import com.wanchcoach.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 
@@ -78,6 +79,13 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private boolean cameraPermission;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean alarmPermission;
+
+    @Column
+    private String deviceToken;
 
     @Transient
     private OAuthProvider oAuthProvider;

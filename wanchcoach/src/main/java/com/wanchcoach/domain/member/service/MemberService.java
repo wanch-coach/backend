@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Random;
 
 @Service
@@ -53,10 +56,38 @@ public class MemberService {
     }
 
     public ApiResult<MemberInfoResponse> signup(MemberSignupDto memberSignupDto) {
-        Member member = memberRepository.save(memberSignupDto.toEntity());
+        String pwd = memberSignupDto.pwd();
+
+        String encryptPwd = makeEncryptPwd(pwd, memberSignupDto.loginId());
+
+
+        Member member = memberRepository.save(memberSignupDto.toEntity(encryptPwd));
         MemberInfoResponse response = MemberInfoResponse.of(member);
         return ApiResult.OK(response);
     }
+
+    private String makeEncryptPwd(String pwd, String loginId) {
+        String encryptPwd = "";
+
+        String salt = loginId + secretKey;
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update((pwd + salt).getBytes());
+            byte[] pwdsalt = md.digest();
+
+            StringBuffer sb = new StringBuffer();
+            for(byte b: pwdsalt){
+                sb.append(String.format("%02x", b));
+            }
+            encryptPwd = sb.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        return encryptPwd;
+    }
+
 
     public ApiResult<MemberInfoResponse> getMemberInfo(Long memberId) {
         Member member = memberRepository.findByMemberId(memberId);
@@ -88,8 +119,11 @@ public class MemberService {
     }
 
     public ApiResult<AuthTokens> login(MemberLoginDto memberLoginDto) {
-        Member member = memberRepository.findByLoginIdAndEncryptedPwd(memberLoginDto.id(), memberLoginDto.pwd())
-                .orElseThrow(() -> new NotFoundException(Member.class, memberLoginDto.id()));
+        String encryptedPwd = makeEncryptPwd(memberLoginDto.pwd(), memberLoginDto.loginId());
+        log.info(memberLoginDto.loginId());
+        log.info(encryptedPwd);
+        Member member = memberRepository.findByLoginIdAndEncryptedPwd(memberLoginDto.loginId(), encryptedPwd)
+                .orElseThrow(() -> new NotFoundException(Member.class, memberLoginDto.loginId()));
 
         AuthTokens authTokens = authTokenGenerator.generate(member.getMemberId());
         return ApiResult.OK(authTokens);
