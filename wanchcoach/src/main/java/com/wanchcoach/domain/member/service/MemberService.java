@@ -2,7 +2,6 @@ package com.wanchcoach.domain.member.service;
 
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
-import com.wanchcoach.domain.member.controller.request.MemberUpdateInfoRequest;
 import com.wanchcoach.domain.member.controller.response.*;
 import com.wanchcoach.domain.member.entity.DrugAdministrationTime;
 import com.wanchcoach.domain.member.entity.Member;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Random;
 
 @Service
@@ -184,6 +182,16 @@ public class MemberService {
         return ApiResult.OK(CameraPermissionResponse.of(member));
     }
 
+    public ApiResult<AlarmPermissionResponse> selectAlarmPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        return ApiResult.OK(AlarmPermissionResponse.of(member));
+    }
+
+    public ApiResult<AlarmPermissionResponse> updateAlarmPermission(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        member.updateAlarm();
+        return ApiResult.OK(AlarmPermissionResponse.of(member));
+    }
     public ApiResult<FindIdResponse> findMemberId(FindMemberLoginIdDto findMemberLoginIdDto) {
         Member member = memberRepository.findByNameAndPhoneNumberAndBirthDate(
                 findMemberLoginIdDto.name(), findMemberLoginIdDto.phoneNumber(), findMemberLoginIdDto.birthDate()
@@ -212,5 +220,12 @@ public class MemberService {
     public void changePwd(ChangePwdDto changePwdDto) {
         Member member = memberRepository.findByMemberId(changePwdDto.MemberId());
         member.updatePwd(changePwdDto.pwd());
+    }
+
+    @Transactional
+    public ApiResult<Void> updateDeviceToken(Long memberId, String deviceToken){
+        Member member = memberRepository.findByMemberId(memberId);
+        member.updateDeviceToken(deviceToken);
+        return ApiResult.OK(null);
     }
 }
