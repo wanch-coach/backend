@@ -3,8 +3,9 @@ package com.wanchcoach.domain.drug.controller.dto.response;
 public record SearchDrugsResponse(
         Long drugId,
         String itemName,
-        String spcltyPblc,
-        String drugImage
+        String prductType,
+        String drugImage,
+        boolean favorite
 ) {
 
 }

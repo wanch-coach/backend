@@ -13,6 +13,8 @@ import java.util.List;
 
 import static com.wanchcoach.domain.drug.entity.QDrug.drug;
 import static com.wanchcoach.domain.drug.entity.QDrugImage.drugImage;
+import static com.wanchcoach.domain.drug.entity.QFavoriteDrug.favoriteDrug;
+import static com.wanchcoach.domain.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class DrugQRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<SearchDrugsSimpleDto> findDrugsbyItemName(String keyword) {
+    public List<SearchDrugsSimpleDto> findDrugsByItemName(String keyword) {
 
         return queryFactory.select(Projections.constructor(SearchDrugsSimpleDto.class,
                     drug.drugId,
@@ -32,7 +34,7 @@ public class DrugQRepository {
                 .fetch();
     }
 
-    public List<SearchDrugsDto> findDrugsContainKeyword(String type, String keyword){
+    public List<SearchDrugsDto> findDrugsContainKeyword(String type, String keyword, Long memberId){
 
         System.out.println(type+" "+keyword);
 
@@ -42,10 +44,13 @@ public class DrugQRepository {
                             drug.drugId,
                             drug.itemName,
                             drug.spcltyPblc,
-                            drugImage.filePath.coalesce("")
+                            drugImage.filePath.coalesce(""),
+                            favoriteDrug.favoriteId
                     ))
                     .from(drug)
                     .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
+                    .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
+                    .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
                     .where(drug.itemName.contains(keyword))
                     .fetch();
             System.out.println(drugList.size());
@@ -55,10 +60,13 @@ public class DrugQRepository {
                             drug.drugId,
                             drug.itemName,
                             drug.spcltyPblc,
-                            drugImage.filePath.coalesce("")
+                            drugImage.filePath.coalesce(""),
+                            favoriteDrug.favoriteId
                     ))
                     .from(drug)
                     .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
+                    .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
+                    .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
                     .where(drug.entpName.contains(keyword))
                     .fetch();
             System.out.println(drugList.toString());
@@ -68,10 +76,13 @@ public class DrugQRepository {
                             drug.drugId,
                             drug.itemName,
                             drug.spcltyPblc,
-                            drugImage.filePath.coalesce("")
+                            drugImage.filePath.coalesce(""),
+                            favoriteDrug.favoriteId
                     ))
                     .from(drug)
                     .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
+                    .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
+                    .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
                     .where(drug.eeDocData.contains(keyword))
                     .fetch();
             System.out.println(drugList.toString());
