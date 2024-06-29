@@ -62,6 +62,7 @@ public class OAuthLoginService {
             Member member = optionalMember.get();
             AuthTokens authTokens = authTokensGenerator.generate(member.getMemberId());
             member.updateRefreshToken(authTokens.getRefreshToken());
+
             return authTokens;
         }else{
             AuthSignupResponse authSignupResponse = AuthSignupResponse.of(oAuthInfoResponse);

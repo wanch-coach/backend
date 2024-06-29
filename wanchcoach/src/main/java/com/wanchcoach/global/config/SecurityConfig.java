@@ -42,7 +42,7 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests((auth) -> auth.requestMatchers("/api/member/**","/api/drug/*"
-                        , "/api/treatment/**", "/api/medical/**","/api/family/**").permitAll()
+                        , "/api/treatment/**", "/api/medical/**","/api/family/**", "/api/medication/**").permitAll()
                 // 회원가입 관련
                 // /api/member/signin
                 // /api/member/signup

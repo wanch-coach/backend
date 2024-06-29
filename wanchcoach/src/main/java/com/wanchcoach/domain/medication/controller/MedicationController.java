@@ -43,7 +43,7 @@ public class MedicationController {
     }
 
     //날짜 별(월,일) 가족 복약 조회
-    @GetMapping("/")
+    @GetMapping
     public ApiResult<?> getFamilyMedicationInfo(@RequestParam int year,@RequestParam int month,@RequestParam int day, @AuthenticationPrincipal User user){
 
         Long memberId = Long.valueOf(user.getUsername());
@@ -96,9 +96,8 @@ public class MedicationController {
     }
 
     //복약 이력 조회(처방전)
-    @GetMapping("/records/families/{familyId} ")
-    public ApiResult<?> getRecords(@PathVariable(value="familyId")Long familyId){
-
+    @GetMapping("/records/families/{familyId}")
+    public ApiResult<?> getRecords(@PathVariable(name="familyId") Long familyId){
         try {
             PrescriptionRecordResponse prescriptionRecordResponse = medicationQService.getPrescriptionRecord(familyId);
             return OK(prescriptionRecordResponse);
