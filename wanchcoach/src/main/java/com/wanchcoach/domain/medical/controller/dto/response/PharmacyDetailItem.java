@@ -14,6 +14,8 @@ public class PharmacyDetailItem {
     private String address;
     private String phoneNumber;
     private BigDecimal distance;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
     private String etc;
     private List<OpeningHourItem> openingHourItems;
 }

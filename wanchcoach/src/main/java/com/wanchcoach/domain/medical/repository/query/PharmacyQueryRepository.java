@@ -68,6 +68,8 @@ public class PharmacyQueryRepository {
                                 pharmacy.address,
                                 pharmacy.phoneNumber,
                                 distance,
+                                pharmacy.latitude,
+                                pharmacy.longitude,
                                 pharmacy.etc,
                                 GroupBy.list(Projections.constructor(OpeningHourItem.class,
                                         pharmacyOpeningHour.dayOfWeek,
@@ -115,6 +117,8 @@ public class PharmacyQueryRepository {
                                 pharmacy.address,
                                 pharmacy.phoneNumber,
                                 distance,
+                                pharmacy.latitude,
+                                pharmacy.longitude,
                                 pharmacy.etc,
                                 GroupBy.list(Projections.constructor(OpeningHourItem.class,
                                         pharmacyOpeningHour.dayOfWeek,
@@ -138,7 +142,7 @@ public class PharmacyQueryRepository {
         List<Tuple> results = queryFactory
                 .select(pharmacy.pharmacyId, distance)
                 .from(pharmacy)
-                .where(distance.loe(BigDecimal.valueOf(3000)))
+                .where(distance.loe(BigDecimal.valueOf(1000)))
                 .fetch();
 
         List<Long> ids = results.stream().map(tuple -> tuple.get(pharmacy.pharmacyId)).toList();
@@ -154,6 +158,8 @@ public class PharmacyQueryRepository {
                                 pharmacy.address,
                                 pharmacy.phoneNumber,
                                 distance,
+                                pharmacy.latitude,
+                                pharmacy.longitude,
                                 pharmacy.etc,
                                 GroupBy.list(Projections.constructor(OpeningHourItem.class,
                                         pharmacyOpeningHour.dayOfWeek,
