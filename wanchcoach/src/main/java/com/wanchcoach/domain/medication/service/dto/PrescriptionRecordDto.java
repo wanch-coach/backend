@@ -5,6 +5,8 @@ import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
 import com.wanchcoach.domain.medication.controller.response.PrescriptionEndRecord;
 import com.wanchcoach.domain.medication.controller.response.PrescriptionTakingRecord;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +14,10 @@ public record PrescriptionRecordDto (
     Long hospitalId,
     String hospitalName,
     String department,
-    String start,
-    String end,
+    LocalDateTime start,
+    LocalDate end,
     Long prescriptionId,
-    boolean taking,
+    Boolean taking,
     List<SearchDrugsDto> drugs
 ){
 

@@ -7,6 +7,7 @@ import com.wanchcoach.domain.drug.service.DrugQService;
 import com.wanchcoach.domain.drug.service.DrugService;
 import com.wanchcoach.domain.drug.service.FavoriteDrugQService;
 import com.wanchcoach.domain.drug.service.FavoriteDrugService;
+import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.global.api.ApiResult;
 import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -105,9 +106,10 @@ public class DrugController {
     }
 
     // 약품 목록 검색
-    @GetMapping("/")
-    public ApiResult<List<SearchDrugsResponse>> searchDrugs(@RequestParam("type") String type, @RequestParam("keyword") String keyword){
-        List<SearchDrugsResponse> drugList = drugQService.searchDrugs(type, keyword);
+    @GetMapping
+    public ApiResult<List<SearchDrugsResponse>> searchDrugs(@RequestParam("type") String type, @RequestParam("keyword") String keyword, @AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        List<SearchDrugsResponse> drugList = drugQService.searchDrugs(type, keyword, memberId);
         return OK(drugList);
 
     }
@@ -139,7 +141,6 @@ public class DrugController {
     public ApiResult<?> createFavorites(@AuthenticationPrincipal User user, @PathVariable(value = "drugId") Long drugId){
 
         Long memberId = Long.valueOf(user.getUsername());
-
         try{
             favoriteDrugService.createFavorite(memberId, drugId);
             return OK(true);

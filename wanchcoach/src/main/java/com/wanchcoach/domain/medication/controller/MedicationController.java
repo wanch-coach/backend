@@ -2,6 +2,8 @@ package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.medication.controller.request.GetPillsRequest;
+import com.wanchcoach.domain.medication.controller.response.RecordCalendarResponse;
+import com.wanchcoach.domain.medication.controller.response.DailyPrescriptionResponse;
 import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
 import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
 import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
@@ -43,13 +45,13 @@ public class MedicationController {
     }
 
     //날짜 별(월,일) 가족 복약 조회
-    @GetMapping("/")
+    @GetMapping
     public ApiResult<?> getFamilyMedicationInfo(@RequestParam int year,@RequestParam int month,@RequestParam int day, @AuthenticationPrincipal User user){
 
         Long memberId = Long.valueOf(user.getUsername());
-        medicationQService.getDailyPrescription(year,month,day, memberId);
+        List<DailyPrescriptionResponse> response = medicationQService.getDailyPrescription(year,month,day, memberId);
 
-        return OK(null);
+        return OK(response);
     }
     //복약 상세 조회
     @GetMapping("/prescriptions/{prescriptionId}")
@@ -58,7 +60,7 @@ public class MedicationController {
             List<SearchDrugsResponse> prescriptionDrugs = medicationQService.getMedicationDetail(prescriptionId);
             return OK(prescriptionDrugs);
         }catch(RuntimeException e){
-            return ERROR(HttpStatus.NOT_FOUND,"등록된 처방전 혹은 약이 없습니다.");
+            return ERROR(HttpStatus.NO_CONTENT,"등록된 처방전 혹은 약이 없습니다.");
         }
     }
     //복약 실행(약 먹기)
@@ -84,21 +86,14 @@ public class MedicationController {
         if(year> LocalDateTime.now().getYear() || !(1<=month &&month<=12)){
             return ERROR(HttpStatus.BAD_REQUEST, "요청 날짜의 정보가 잘못되었습니다.");
         };
-        medicationQService.getCalendarRecord(familyId, year, month);
+        RecordCalendarResponse recordCalendarResponse = medicationQService.getCalendarRecord(familyId, year, month);
 
-        return OK(null);
-    }
-
-    //일별 복약 상세 조회(복약 이력/달력)
-    @GetMapping("/families/{familyId}")
-    public ApiResult<?> getDayMedication(@PathVariable(value="familyId")Long familyId, @RequestParam String year,@RequestParam String month,@RequestParam String day){
-        return OK(null);
+        return OK(recordCalendarResponse);
     }
 
     //복약 이력 조회(처방전)
-    @GetMapping("/records/families/{familyId} ")
-    public ApiResult<?> getRecords(@PathVariable(value="familyId")Long familyId){
-
+    @GetMapping("/records/families/{familyId}")
+    public ApiResult<?> getRecords(@PathVariable(name="familyId") Long familyId){
         try {
             PrescriptionRecordResponse prescriptionRecordResponse = medicationQService.getPrescriptionRecord(familyId);
             return OK(prescriptionRecordResponse);

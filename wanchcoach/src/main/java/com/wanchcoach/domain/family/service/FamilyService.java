@@ -29,12 +29,14 @@ public class FamilyService {
     private final FamilyRepository familyRepository;
     private final MemberRepository memberRepository;
 
-    public ApiResult<Family> addFamily(FamilyAddDto familyAddDto) {
+    @Transactional
+    public ApiResult<Void> addFamily(FamilyAddDto familyAddDto) {
         log.info("service addfamily");
         log.info(String.valueOf(familyAddDto.type()));
         Member member = memberRepository.findById(familyAddDto.memberId())
                 .orElseThrow(() -> new NotFoundException(Member.class, familyAddDto.memberId()));
-        return ApiResult.OK(familyRepository.save(familyAddDto.toEntity(member)));
+        Family family = familyRepository.save(familyAddDto.toEntity(member));
+        return ApiResult.OK(null);
     }
 
     public ApiResult<List<FamiliesResponse>> selectFamilies(Long memberId) {
@@ -72,4 +74,9 @@ public class FamilyService {
         return ApiResult.OK(null);
     }
 
+    public ApiResult<Long> findMyFamilyId(Long memberId) {
+        Family family = familyRepository.findByMemberMemberIdAndTypeTrue(memberId);
+        System.out.println(family.toString());
+        return ApiResult.OK(family.getFamilyId());
+    }
 }

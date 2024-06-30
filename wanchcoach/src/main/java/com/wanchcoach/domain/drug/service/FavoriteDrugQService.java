@@ -3,6 +3,8 @@ package com.wanchcoach.domain.drug.service;
 import com.wanchcoach.domain.drug.controller.dto.response.SearchFavoritesResponse;
 import com.wanchcoach.domain.drug.repository.FavoriteDrugQRepository;
 import com.wanchcoach.domain.drug.service.dto.SearchFavoritesDto;
+import com.wanchcoach.domain.member.entity.Member;
+import com.wanchcoach.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +18,10 @@ import java.util.List;
 public class FavoriteDrugQService {
 
     private final FavoriteDrugQRepository favoriteDrugQRepository;
+    private final MemberRepository memberRepository;
 
     public List<SearchFavoritesResponse> searchFavorites(Long memberId){
+
 
         List<SearchFavoritesDto> searchFavoritesList = favoriteDrugQRepository.searhFavorites(memberId);
 

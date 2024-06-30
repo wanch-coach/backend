@@ -69,6 +69,8 @@ public class HospitalQueryRepository {
                                 hospital.address,
                                 hospital.phoneNumber,
                                 distance,
+                                hospital.latitude,
+                                hospital.longitude,
                                 hospital.hasEmergencyRoom,
                                 hospital.etc,
                                 GroupBy.list(Projections.constructor(OpeningHourItem.class,
@@ -120,6 +122,8 @@ public class HospitalQueryRepository {
                                 hospital.address,
                                 hospital.phoneNumber,
                                 distance,
+                                hospital.latitude,
+                                hospital.longitude,
                                 hospital.hasEmergencyRoom,
                                 hospital.etc,
                                 GroupBy.list(Projections.constructor(OpeningHourItem.class,
@@ -143,7 +147,7 @@ public class HospitalQueryRepository {
         List<Tuple> results = queryFactory
                 .select(hospital.hospitalId, distance)
                 .from(hospital)
-                .where(distance.loe(BigDecimal.valueOf(3000)))
+                .where(distance.loe(BigDecimal.valueOf(1000)))
                 .fetch();
 
         List<Long> ids = results.stream().map(tuple -> tuple.get(hospital.hospitalId)).toList();
@@ -160,6 +164,8 @@ public class HospitalQueryRepository {
                                 hospital.address,
                                 hospital.phoneNumber,
                                 distance,
+                                hospital.latitude,
+                                hospital.longitude,
                                 hospital.hasEmergencyRoom,
                                 hospital.etc,
                                 GroupBy.list(Projections.constructor(OpeningHourItem.class,

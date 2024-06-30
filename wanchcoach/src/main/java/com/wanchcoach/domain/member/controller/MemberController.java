@@ -34,6 +34,13 @@ public class MemberController {
         log.info("login Controller");
         return memberService.login(MemberLoginDto.of(memberLoginRequest));
     }
+    @GetMapping("/signout")
+    public ApiResult<Void> signout(@AuthenticationPrincipal User user){
+        log.info("logout");
+        Long memberId = Long.valueOf(user.getUsername());
+
+        return memberService.signout(memberId);
+    }
     @GetMapping("/memberInfo")
     public ApiResult<MemberInfoResponse> getMemberInfo(@AuthenticationPrincipal User user){
         Long memberId = Long.valueOf(user.getUsername());
@@ -141,4 +148,23 @@ public class MemberController {
         Long memberId = Long.valueOf(user.getUsername());
         return memberService.updateCameraPermission(memberId);
     }
+
+    @GetMapping("/alarm-permission")
+    public ApiResult<AlarmPermissionResponse> selectAlarmPermission(@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.selectAlarmPermission(memberId);
+    }
+    @PostMapping("/alarm-permission")
+    public ApiResult<AlarmPermissionResponse> updateAlarmPermission(@AuthenticationPrincipal User user) {
+        Long memberId = Long.valueOf(user.getUsername());
+        return memberService.updateAlarmPermission(memberId);
+    }
+
+    @PatchMapping("/update-device")
+    public ApiResult<Void> updateDeviceToken(@RequestBody DeviceTokenRequest request,@AuthenticationPrincipal User user){
+        Long memberId = Long.valueOf(user.getUsername());
+        String deviceToken = request.deviceToken();
+        return memberService.updateDeviceToken(memberId, deviceToken);
+    }
+
 }

@@ -110,12 +110,12 @@ public class OcrService {
                     method = method.substring(0, index).trim();
                 }
 
-                List<SearchDrugsSimpleDto> searchResult = drugQRepository.findDrugsbyItemName(medicineName);
+                List<SearchDrugsSimpleDto> searchResult = drugQRepository.findDrugsByItemName(medicineName);
 
                 String originalName = medicineName;
                 if (searchResult.isEmpty()) {
                     medicineName = medicineName.replaceFirst("[\\d/].*", "").trim();
-                    searchResult = drugQRepository.findDrugsbyItemName(medicineName);
+                    searchResult = drugQRepository.findDrugsByItemName(medicineName);
                     if (searchResult.isEmpty()) {
                         ocrItems.add(new DrugOcrDto(null,
                                 medicineName,

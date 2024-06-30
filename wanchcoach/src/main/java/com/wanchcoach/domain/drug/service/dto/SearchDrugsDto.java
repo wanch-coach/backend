@@ -18,8 +18,9 @@ import java.util.Base64;
 public class SearchDrugsDto {
     private Long drugId;
     private String itemName;
-    private String spcltyPblc;
+    private String prductType;
     private String filePath;
+    private Long favorite;
 
     public SearchDrugsResponse toSearchDrugsResponse(){
 
@@ -34,8 +35,8 @@ public class SearchDrugsDto {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return new SearchDrugsResponse(this.drugId, this.itemName, this.spcltyPblc, Base64.getEncoder().encodeToString(result));
+            return new SearchDrugsResponse(this.drugId, this.itemName, this.prductType, Base64.getEncoder().encodeToString(result), this.favorite);
         }
-        return new SearchDrugsResponse(this.drugId, this.itemName, this.spcltyPblc, null);
+        return new SearchDrugsResponse(this.drugId, this.itemName, this.prductType, null, this.favorite);
     }
 }
