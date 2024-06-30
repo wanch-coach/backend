@@ -15,6 +15,8 @@ public class HospitalDetailItem {
     private String address;
     private String phoneNumber;
     private BigDecimal distance;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
     private Integer hasEmergencyRoom;
     private String etc;
     private List<OpeningHourItem> openingHourItems;
