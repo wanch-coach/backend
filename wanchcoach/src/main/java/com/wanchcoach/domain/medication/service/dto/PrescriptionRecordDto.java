@@ -17,7 +17,7 @@ public record PrescriptionRecordDto (
     LocalDateTime start,
     LocalDate end,
     Long prescriptionId,
-    boolean taking,
+    Boolean taking,
     List<SearchDrugsDto> drugs
 ){
 

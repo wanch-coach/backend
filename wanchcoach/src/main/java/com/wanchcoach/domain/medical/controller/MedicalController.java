@@ -127,7 +127,7 @@ public class MedicalController {
                                                                  @RequestParam(name = "lng") double lng,
                                                                  @RequestParam(name = "lat") double lat) {
         log.info("MedicalController#searchMedicalDetails called");
-
+        log.info("keyword : `{}` ", keyword);
         MedicalDetailResponse response = medicalQueryService.searchMedicalDetails(keyword, lng, lat);
         return ApiResult.OK(response);
     }

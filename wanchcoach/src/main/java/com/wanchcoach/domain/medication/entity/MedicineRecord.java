@@ -31,5 +31,5 @@ public class MedicineRecord extends BaseEntity {
     private Prescription prescription;
 
     @Column(name="time", nullable = false)
-    private int time;
+    private Integer time;
 }

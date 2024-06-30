@@ -10,7 +10,7 @@ public record PrescriptionListDto(
         LocalDateTime start,
         LocalDate end,
         Long prescriptionId,
-        boolean taking
+        Boolean taking
 
 ) {
 
