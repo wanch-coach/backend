@@ -2,6 +2,7 @@ package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.medication.controller.request.GetPillsRequest;
+import com.wanchcoach.domain.medication.controller.response.DailyPrescriptionResponse;
 import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
 import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
 import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
@@ -47,9 +48,9 @@ public class MedicationController {
     public ApiResult<?> getFamilyMedicationInfo(@RequestParam int year,@RequestParam int month,@RequestParam int day, @AuthenticationPrincipal User user){
 
         Long memberId = Long.valueOf(user.getUsername());
-        medicationQService.getDailyPrescription(year,month,day, memberId);
+        List<DailyPrescriptionResponse> response = medicationQService.getDailyPrescription(year,month,day, memberId);
 
-        return OK(null);
+        return OK(response);
     }
     //복약 상세 조회
     @GetMapping("/prescriptions/{prescriptionId}")
