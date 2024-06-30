@@ -34,6 +34,13 @@ public class MemberController {
         log.info("login Controller");
         return memberService.login(MemberLoginDto.of(memberLoginRequest));
     }
+    @GetMapping("/signout")
+    public ApiResult<Void> signout(@AuthenticationPrincipal User user){
+        log.info("logout");
+        Long memberId = Long.valueOf(user.getUsername());
+
+        return memberService.signout(memberId);
+    }
     @GetMapping("/memberInfo")
     public ApiResult<MemberInfoResponse> getMemberInfo(@AuthenticationPrincipal User user){
         Long memberId = Long.valueOf(user.getUsername());

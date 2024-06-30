@@ -116,14 +116,16 @@ public class MemberService {
         return ApiResult.OK(randomCode);
     }
 
+    @Transactional
     public ApiResult<AuthTokens> login(MemberLoginDto memberLoginDto) {
         String encryptedPwd = makeEncryptPwd(memberLoginDto.pwd(), memberLoginDto.loginId());
         log.info(memberLoginDto.loginId());
         log.info(encryptedPwd);
         Member member = memberRepository.findByLoginIdAndEncryptedPwd(memberLoginDto.loginId(), encryptedPwd)
                 .orElseThrow(() -> new NotFoundException(Member.class, memberLoginDto.loginId()));
-
         AuthTokens authTokens = authTokenGenerator.generate(member.getMemberId());
+        member.updateRefreshToken(authTokens.getRefreshToken());
+
         return ApiResult.OK(authTokens);
     }
 
@@ -226,6 +228,13 @@ public class MemberService {
     public ApiResult<Void> updateDeviceToken(Long memberId, String deviceToken){
         Member member = memberRepository.findByMemberId(memberId);
         member.updateDeviceToken(deviceToken);
+        return ApiResult.OK(null);
+    }
+
+    @Transactional
+    public ApiResult<Void> signout(Long memberId) {
+        Member member = memberRepository.findByMemberId(memberId);
+        member.clearRefreshToken();
         return ApiResult.OK(null);
     }
 }

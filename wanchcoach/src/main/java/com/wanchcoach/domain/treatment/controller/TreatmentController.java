@@ -1,5 +1,6 @@
 package com.wanchcoach.domain.treatment.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wanchcoach.domain.treatment.service.OcrService;
 import com.wanchcoach.domain.treatment.controller.dto.request.CreatePrescriptionRequest;
 import com.wanchcoach.domain.treatment.controller.dto.request.CreateTreatmentRequest;
@@ -48,18 +49,20 @@ public class TreatmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<CreateTreatmentResponse> createTreatment(@RequestPart CreateTreatmentRequest treatmentRequest,
+    public ApiResult<CreateTreatmentResponse> createTreatment(@RequestPart("treatmentRequest") String treatmentRequest,
                                                               @RequestPart(required = false) MultipartFile file,
                                                               @AuthenticationPrincipal User user) throws Exception {
         log.info("TreatmentController#createTreatment called");
-
+        ObjectMapper mapper = new ObjectMapper();
+        CreateTreatmentRequest request = mapper.readValue(treatmentRequest, CreateTreatmentRequest.class);
+        System.out.println(request);
         Long memberId = Long.valueOf(user.getUsername());
 
         // 진료 정보 저장
-        CreateTreatmentResponse treatmentResponse = treatmentService.createTreatment(memberId, CreateTreatmentDto.of(treatmentRequest));
+        CreateTreatmentResponse treatmentResponse = treatmentService.createTreatment(memberId, CreateTreatmentDto.of(request));
 
         // 처방전(복약) 정보 저장
-        CreatePrescriptionRequest prescriptionRequest = treatmentRequest.prescription();
+        CreatePrescriptionRequest prescriptionRequest = request.prescription();
 
         if (prescriptionRequest != null) {
             CreatePrescriptionResponse prescriptionResponse = treatmentService.createPrescription(
@@ -70,6 +73,7 @@ public class TreatmentController {
         }
 
         return ApiResult.OK(treatmentResponse);
+
     }
 
     /**
