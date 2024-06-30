@@ -8,6 +8,6 @@ public record MedicineRecordPrescriptionDto(
     String department,
     Long prescriptionId,
     LocalDateTime takenDay,
-    Integer time
+    int time
 ) {
 }

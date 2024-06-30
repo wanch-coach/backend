@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface FavoriteDrugRepository extends JpaRepository<FavoriteDrug, Long> {
 
+    void deleteById(Long favoriteId);
 }

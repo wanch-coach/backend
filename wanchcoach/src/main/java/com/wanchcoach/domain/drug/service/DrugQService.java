@@ -27,9 +27,9 @@ public class DrugQService {
 
     @Value("${data.drug-upload-link}")
     private String uploadLink;
-    public List<SearchDrugsResponse> searchDrugs(String type, String keyword){
+    public List<SearchDrugsResponse> searchDrugs(String type, String keyword, Long memberId){
 
-        List<SearchDrugsDto> drugInfo = drugQRepository.findDrugsContainKeyword(type, keyword);
+        List<SearchDrugsDto> drugInfo = drugQRepository.findDrugsContainKeyword(type, keyword, memberId);
         List<SearchDrugsResponse> drugList = new ArrayList<>();
 
         for(SearchDrugsDto searchDrugsDto:drugInfo){

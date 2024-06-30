@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.wanchcoach.domain.drug.entity.QFavoriteDrug.favoriteDrug;
 import static com.wanchcoach.domain.medical.entity.QHospital.hospital;
 import static com.wanchcoach.domain.family.entity.QFamily.family;
 import static com.wanchcoach.domain.medication.entity.QMedicineRecord.medicineRecord;
@@ -36,7 +37,7 @@ public class MedicationQRepository {
         List<SearchDrugsDto> drugList  = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
                         drug.drugId,
                         drug.itemName,
-                        drug.spcltyPblc,
+                        drug.prductType,
                         drugImage.filePath.coalesce("")
                 ))
                 .from(prescription)
@@ -117,7 +118,7 @@ public class MedicationQRepository {
             List<SearchDrugsDto> drugList  = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
                             drug.drugId,
                             drug.itemName,
-                            drug.spcltyPblc,
+                            drug.prductType,
                             drugImage.filePath.coalesce("")
                     ))
                     .from(prescribedDrug)
@@ -157,7 +158,7 @@ public class MedicationQRepository {
             List<SearchDrugsDto> drugList = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
                             drug.drugId,
                             drug.itemName,
-                            drug.spcltyPblc,
+                            drug.prductType,
                             drugImage.filePath.coalesce("")
                     ))
                     .from(prescribedDrug)
@@ -178,8 +179,9 @@ public class MedicationQRepository {
         List<SearchDrugsDto> drugList = queryFactory.select(Projections.constructor(SearchDrugsDto.class,
                         drug.drugId,
                         drug.itemName,
-                        drug.spcltyPblc,
-                        drugImage.filePath.coalesce("")
+                        drug.prductType,
+                        drugImage.filePath.coalesce(""),
+                        drug.drugId
                 ))
                 .from(medicineRecord)
                 .join(family).on(medicineRecord.family.familyId.eq(family.familyId))
