@@ -25,6 +25,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         log.info("in jwtFilter doFilter");
+        HttpServletRequest request1 = (HttpServletRequest) request;
+        log.info("uri : " + request1.getRequestURI());
         String token = resolveToken((HttpServletRequest) request);
 
         // 토큰 유효성 검사

@@ -41,13 +41,16 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-        http.authorizeHttpRequests((auth) -> auth.requestMatchers("/api/drug/*"
-                        , "/api/treatment/**", "/api/medical/**","/api/family/**", "/api/medication/**",
+        http.authorizeHttpRequests((auth) -> auth.requestMatchers(
+//                "/api/drug/*"
+//                        , "/api/treatment/**", "/api/medical/**","/api/family/**", "/api/medication/**",
                         "/api/member/signin",
                         "/api/member/signup",
+                        "/api/member/signout",
                         "/api/member/findLoginId",
+                        "/api/member/changepwdauth",
                         "/api/member/sendsms",
-                        "/api/member/idcheck",
+                        "/api/member/idcheck/**",
                         "/api/member/changepwdauth",
                         "/login/**").permitAll()
 
