@@ -17,6 +17,7 @@ import java.util.Base64;
 @Data
 @Builder
 public class SearchDrugsDetailDto {
+    private Long favoriteId;//즐겨찾기 여부
     private Long drugId; //약 식별자
     private String itemName; //제품명
     private String itemEngName; //제품 영문명
@@ -45,9 +46,9 @@ public class SearchDrugsDetailDto {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return new SearchDrugDetailResponse(this.drugId, this.itemName, this.itemEngName, this.entpName, this.spcltyPblc, this.prductType, this.itemIngrName, this.storageMethod, this.validTerm, this.eeDocData, this.udDocData, this.nbDocData , Base64.getEncoder().encodeToString(result));
+            return new SearchDrugDetailResponse(this.favoriteId, this.drugId, this.itemName, this.itemEngName, this.entpName, this.spcltyPblc, this.prductType, this.itemIngrName, this.storageMethod, this.validTerm, this.eeDocData, this.udDocData, this.nbDocData , Base64.getEncoder().encodeToString(result));
         }
-        return new SearchDrugDetailResponse(this.drugId, this.itemName, this.itemEngName, this.entpName, this.spcltyPblc, this.prductType, this.itemIngrName, this.storageMethod, this.validTerm, this.eeDocData, this.udDocData, this.nbDocData ,null);
+        return new SearchDrugDetailResponse(this.favoriteId, this.drugId, this.itemName, this.itemEngName, this.entpName, this.spcltyPblc, this.prductType, this.itemIngrName, this.storageMethod, this.validTerm, this.eeDocData, this.udDocData, this.nbDocData ,null);
     }
 
 }

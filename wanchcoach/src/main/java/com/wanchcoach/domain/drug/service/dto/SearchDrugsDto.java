@@ -20,7 +20,6 @@ public class SearchDrugsDto {
     private String itemName;
     private String prductType;
     private String filePath;
-    private Long favorite;
 
     public SearchDrugsResponse toSearchDrugsResponse(){
 
@@ -35,8 +34,8 @@ public class SearchDrugsDto {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return new SearchDrugsResponse(this.drugId, this.itemName, this.prductType, Base64.getEncoder().encodeToString(result), this.favorite);
+            return new SearchDrugsResponse(this.drugId, this.itemName, this.prductType, Base64.getEncoder().encodeToString(result));
         }
-        return new SearchDrugsResponse(this.drugId, this.itemName, this.prductType, null, this.favorite);
+        return new SearchDrugsResponse(this.drugId, this.itemName, this.prductType, null);
     }
 }
