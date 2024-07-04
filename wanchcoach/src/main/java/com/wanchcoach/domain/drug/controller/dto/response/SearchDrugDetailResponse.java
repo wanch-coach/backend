@@ -4,6 +4,7 @@ import com.wanchcoach.domain.drug.entity.DrugImage;
 import jakarta.persistence.*;
 
 public record SearchDrugDetailResponse(
+        Long favoriteId, //즐겨찾기 여부
         Long drugId, //약 식별자
         String itemName, //제품명
         String itemEngName, //제품 영문명

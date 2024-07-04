@@ -34,7 +34,7 @@ public class DrugQRepository {
                 .fetch();
     }
 
-    public List<SearchDrugsDto> findDrugsContainKeyword(String type, String keyword, Long memberId){
+    public List<SearchDrugsDto> findDrugsContainKeyword(String type, String keyword){
 
         System.out.println(type+" "+keyword);
 
@@ -44,13 +44,10 @@ public class DrugQRepository {
                             drug.drugId,
                             drug.itemName,
                             drug.spcltyPblc,
-                            drugImage.filePath.coalesce(""),
-                            favoriteDrug.favoriteId
+                            drugImage.filePath.coalesce("")
                     ))
                     .from(drug)
                     .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
-                    .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
-                    .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
                     .where(drug.itemName.contains(keyword))
                     .fetch();
             System.out.println(drugList.size());
@@ -60,13 +57,10 @@ public class DrugQRepository {
                             drug.drugId,
                             drug.itemName,
                             drug.spcltyPblc,
-                            drugImage.filePath.coalesce(""),
-                            favoriteDrug.favoriteId
+                            drugImage.filePath.coalesce("")
                     ))
                     .from(drug)
                     .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
-                    .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
-                    .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
                     .where(drug.entpName.contains(keyword))
                     .fetch();
             System.out.println(drugList.toString());
@@ -76,13 +70,10 @@ public class DrugQRepository {
                             drug.drugId,
                             drug.itemName,
                             drug.spcltyPblc,
-                            drugImage.filePath.coalesce(""),
-                            favoriteDrug.favoriteId
+                            drugImage.filePath.coalesce("")
                     ))
                     .from(drug)
                     .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
-                    .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
-                    .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
                     .where(drug.eeDocData.contains(keyword))
                     .fetch();
             System.out.println(drugList.toString());
@@ -91,9 +82,10 @@ public class DrugQRepository {
 
     }
 
-    public SearchDrugsDetailDto findDrugDetail(Long drugId){
+    public SearchDrugsDetailDto findDrugDetail(Long drugId, Long memberId){
 
         SearchDrugsDetailDto searchDrugDetailResponse = queryFactory.select(Projections.constructor(SearchDrugsDetailDto.class,
+                        favoriteDrug.favoriteId,
                         drug.drugId,
                         drug.itemName,
                         drug.itemEngName,
@@ -110,7 +102,9 @@ public class DrugQRepository {
                 ))
                 .from(drug)
                 .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
-                .where(drug.drugId.eq(drugId))
+                .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
+                .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
+                .where(drug.drugId.eq(drugId).and(favoriteDrug.member.memberId.eq(memberId)))
                 .fetchFirst();
         System.out.println(searchDrugDetailResponse.toString());
         return searchDrugDetailResponse;

@@ -107,18 +107,18 @@ public class DrugController {
 
     // 약품 목록 검색
     @GetMapping
-    public ApiResult<List<SearchDrugsResponse>> searchDrugs(@RequestParam("type") String type, @RequestParam("keyword") String keyword, @AuthenticationPrincipal User user){
-        Long memberId = Long.valueOf(user.getUsername());
-        List<SearchDrugsResponse> drugList = drugQService.searchDrugs(type, keyword, memberId);
+    public ApiResult<List<SearchDrugsResponse>> searchDrugs(@RequestParam("type") String type, @RequestParam("keyword") String keyword){
+        List<SearchDrugsResponse> drugList = drugQService.searchDrugs(type, keyword);
         return OK(drugList);
 
     }
 
     //약 상세 조회
     @GetMapping("/{drugId}")
-    public ApiResult<?> searchDrugDetail(@PathVariable(value = "drugId") Long drugId){
+    public ApiResult<?> searchDrugDetail(@PathVariable(value = "drugId") Long drugId, @AuthenticationPrincipal User user){
         try{
-            SearchDrugDetailResponse drugDetail = drugQService.searchDrugDetail(drugId);
+            Long memberId = Long.valueOf(user.getUsername());
+            SearchDrugDetailResponse drugDetail = drugQService.searchDrugDetail(drugId, memberId);
             return OK(drugDetail);
         }catch(NotFoundException e){
             return ERROR(HttpStatus.NO_CONTENT, e.getMessage());

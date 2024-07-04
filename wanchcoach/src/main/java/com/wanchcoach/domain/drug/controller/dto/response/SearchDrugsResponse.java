@@ -4,8 +4,7 @@ public record SearchDrugsResponse(
         Long drugId,
         String itemName,
         String prductType,
-        String drugImage,
-        Long favorite
+        String drugImage
 ) {
 
 }
