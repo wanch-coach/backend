@@ -42,8 +42,6 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         http.authorizeHttpRequests((auth) -> auth.requestMatchers(
-//                "/api/drug/*"
-//                        , "/api/treatment/**", "/api/medical/**","/api/family/**", "/api/medication/**",
                         "/api/member/signin",
                         "/api/member/signup",
                         "/api/member/signout",
@@ -52,19 +50,7 @@ public class SecurityConfig {
                         "/api/member/sendsms",
                         "/api/member/idcheck/**",
                         "/api/member/changepwdauth",
-                        "/login/**").permitAll()
-
-
-
-
-                // 회원가입 관련
-                // /api/member/signin
-                // /api/member/signup
-                // /api/member/findLoginId
-                // /api/member/sendsms
-                // /api/member/idcheck
-                // /api/member/changepwdauth
-                // /login/**
+                        "/api/login/**").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated());
 

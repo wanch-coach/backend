@@ -12,25 +12,27 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/api")
 public class AuthController {
 
     private final OAuthLoginService oAuthLoginService;
 
-// https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=quIIXrYYRk1GoMBFxXNn&state=STATE_STRING&redirect_uri=http://localhost:8081/login/oauth2/code/naver
-// https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=quIIXrYYRk1GoMBFxXNn&state=STATE_STRING&redirect_uri=https://wanch-coach.site/login/oauth2/code/naver
+// https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=quIIXrYYRk1GoMBFxXNn&state=STATE_STRING&redirect_uri=http://localhost:8081/api/login/oauth2/code/naver
+// https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=quIIXrYYRk1GoMBFxXNn&state=STATE_STRING&redirect_uri=https://wanch-coach.site/api/login/oauth2/code/naver
 
     @GetMapping("/login/oauth2/code/naver")
     public ApiResult<?> loginNaver(NaverLoginParams params, HttpServletRequest request) {
         log.info(params.toString());
         return ApiResult.OK(oAuthLoginService.login(params));
     }
-// https://kauth.kakao.com/oauth/authorize?client_id=370123a2ecc923df6371e651937c9038&redirect_uri=http://localhost:8081/login/oauth2/code/kakao&response_type=code&scope=account_email
-// https://kauth.kakao.com/oauth/authorize?client_id=370123a2ecc923df6371e651937c9038&redirect_uri=https://wanch-coach.site/login/oauth2/code/kakao&response_type=code&scope=account_email
+// https://kauth.kakao.com/oauth/authorize?client_id=370123a2ecc923df6371e651937c9038&redirect_uri=http://localhost:8081/api/login/oauth2/code/kakao&response_type=code&scope=account_email
+// https://kauth.kakao.com/oauth/authorize?client_id=370123a2ecc923df6371e651937c9038&redirect_uri=https://wanch-coach.site/api/login/oauth2/code/kakao&response_type=code&scope=account_email
 
     @GetMapping("/login/oauth2/code/kakao")
     public ApiResult<SocialResponse> loginKakao(KaKaoLoginParams params, HttpServletRequest request){
