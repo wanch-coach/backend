@@ -27,9 +27,9 @@ public class DrugQService {
 
     @Value("${data.drug-upload-link}")
     private String uploadLink;
-    public List<SearchDrugsResponse> searchDrugs(String type, String keyword, Long memberId){
+    public List<SearchDrugsResponse> searchDrugs(String type, String keyword){
 
-        List<SearchDrugsDto> drugInfo = drugQRepository.findDrugsContainKeyword(type, keyword, memberId);
+        List<SearchDrugsDto> drugInfo = drugQRepository.findDrugsContainKeyword(type, keyword);
         List<SearchDrugsResponse> drugList = new ArrayList<>();
 
         for(SearchDrugsDto searchDrugsDto:drugInfo){
@@ -39,9 +39,9 @@ public class DrugQService {
         return drugList;
     }
 
-    public SearchDrugDetailResponse searchDrugDetail(Long drugId){
+    public SearchDrugDetailResponse searchDrugDetail(Long drugId, Long memberId){
 
-        SearchDrugsDetailDto drugDetail = drugQRepository.findDrugDetail(drugId);
+        SearchDrugsDetailDto drugDetail = drugQRepository.findDrugDetail(drugId, memberId);
         if(drugDetail==null){
             throw new NotFoundException(Member.class, drugId);
         }
