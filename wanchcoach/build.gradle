@@ -38,8 +38,6 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.apache.commons:commons-lang3:3.14.0'
 
-  // 레디스
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
   // security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
