@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wanchcoach.domain.auth.controller.response.AuthSignupResponse;
+import com.wanchcoach.domain.auth.controller.response.AuthSignupTokenResponse;
 import com.wanchcoach.domain.auth.controller.response.SocialResponse;
 import com.wanchcoach.domain.auth.infoResponse.OAuthInfoResponse;
 import com.wanchcoach.domain.auth.params.OAuthLoginParams;
@@ -63,9 +64,11 @@ public class OAuthLoginService {
             AuthTokens authTokens = authTokensGenerator.generate(member.getMemberId());
             member.updateRefreshToken(authTokens.getRefreshToken());
 
-            return authTokens;
+            AuthSignupTokenResponse authSIgnupTokens = AuthSignupTokenResponse.of(authTokens);
+
+            return authSIgnupTokens;
         }else{
-            AuthSignupResponse authSignupResponse = AuthSignupResponse.of(oAuthInfoResponse);
+            AuthSignupResponse authSignupResponse = AuthSignupResponse.of(oAuthInfoResponse, loginId);
             return authSignupResponse;
         }
 
