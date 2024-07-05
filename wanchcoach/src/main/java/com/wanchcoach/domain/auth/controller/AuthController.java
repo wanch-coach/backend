@@ -9,11 +9,7 @@ import com.wanchcoach.global.api.ApiResult;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,8 +20,8 @@ public class AuthController {
     private final OAuthLoginService oAuthLoginService;
 
 // https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=quIIXrYYRk1GoMBFxXNn&state=STATE_STRING&redirect_uri=http://localhost:8081/api/login/oauth2/code/naver
-    @GetMapping("/login/oauth2/code/naver")
-    public ApiResult<?> loginNaver(NaverLoginParams params, HttpServletRequest request) {
+    @PostMapping("/login/oauth2/code/naver")
+    public ApiResult<?> loginNaver(@RequestBody NaverLoginParams params, HttpServletRequest request) {
         log.info(params.toString());
         return ApiResult.OK(oAuthLoginService.login(params));
     }
