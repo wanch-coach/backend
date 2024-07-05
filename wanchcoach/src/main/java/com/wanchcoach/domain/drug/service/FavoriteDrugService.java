@@ -1,5 +1,6 @@
 package com.wanchcoach.domain.drug.service;
 
+import com.wanchcoach.domain.drug.controller.dto.response.CreateFavoriteDrugResponse;
 import com.wanchcoach.domain.drug.entity.Drug;
 import com.wanchcoach.domain.drug.entity.FavoriteDrug;
 import com.wanchcoach.domain.drug.repository.DrugRepository;
@@ -20,7 +21,7 @@ public class FavoriteDrugService {
     private final DrugRepository drugRepository;
     private final MemberRepository memberRepository;
 
-    public void createFavorite(Long memberId, Long drugId){
+    public CreateFavoriteDrugResponse createFavorite(Long memberId, Long drugId){
 
         Member member = memberRepository.findByMemberId(memberId);
 
@@ -30,7 +31,8 @@ public class FavoriteDrugService {
                                     .member(member)
                                     .drug(drug)
                                     .build();
-        favoriteDrugRepository.save(favoriteDrug);
+        FavoriteDrug savedFavorite = favoriteDrugRepository.save(favoriteDrug);
+        return new CreateFavoriteDrugResponse(savedFavorite.getFavoriteId());
     }
 
     public void deleteFavorite(Long favoriteId){

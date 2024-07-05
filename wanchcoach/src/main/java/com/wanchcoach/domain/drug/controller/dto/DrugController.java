@@ -1,5 +1,6 @@
 package com.wanchcoach.domain.drug.controller.dto;
 
+import com.wanchcoach.domain.drug.controller.dto.response.CreateFavoriteDrugResponse;
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugDetailResponse;
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.drug.controller.dto.response.SearchFavoritesResponse;
@@ -142,8 +143,8 @@ public class DrugController {
 
         Long memberId = Long.valueOf(user.getUsername());
         try{
-            favoriteDrugService.createFavorite(memberId, drugId);
-            return OK(true);
+            CreateFavoriteDrugResponse favoriteDrugId = favoriteDrugService.createFavorite(memberId, drugId);
+            return OK(favoriteDrugId);
         }catch(NoSuchElementException e){
             return ERROR(HttpStatus.NO_CONTENT, e.getMessage());
         }
