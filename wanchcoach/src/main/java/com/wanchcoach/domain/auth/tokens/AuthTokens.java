@@ -7,14 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthTokens extends SocialResponse {
+public class AuthTokens {
     private String accessToken;
     private String refreshToken;
     private String grantType;
     private Long expiresIn;
 
     public AuthTokens(String accessToken, String refreshToken, String grantType, Long expiresIn) {
-        super("token");
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.grantType = grantType;
