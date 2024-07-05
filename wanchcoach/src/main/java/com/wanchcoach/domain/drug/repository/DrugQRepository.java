@@ -102,9 +102,9 @@ public class DrugQRepository {
                 ))
                 .from(drug)
                 .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
-                .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
-                .leftJoin(member).on(member.memberId.eq(favoriteDrug.member.memberId))
-                .where(drug.drugId.eq(drugId).and(favoriteDrug.member.memberId.eq(memberId)))
+                .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId)
+                        .and(favoriteDrug.member.memberId.eq(memberId)))
+                .where(drug.drugId.eq(drugId))
                 .fetchFirst();
         System.out.println(searchDrugDetailResponse.toString());
         return searchDrugDetailResponse;
