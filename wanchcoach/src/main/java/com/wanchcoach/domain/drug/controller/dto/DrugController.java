@@ -1,9 +1,6 @@
 package com.wanchcoach.domain.drug.controller.dto;
 
-import com.wanchcoach.domain.drug.controller.dto.response.CreateFavoriteDrugResponse;
-import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugDetailResponse;
-import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
-import com.wanchcoach.domain.drug.controller.dto.response.SearchFavoritesResponse;
+import com.wanchcoach.domain.drug.controller.dto.response.*;
 import com.wanchcoach.domain.drug.service.DrugQService;
 import com.wanchcoach.domain.drug.service.DrugService;
 import com.wanchcoach.domain.drug.service.FavoriteDrugQService;
@@ -105,6 +102,13 @@ public class DrugController {
         }
         return OK(str);
     }
+    //약 이름으로 검색(처방전 등록)
+    @GetMapping("/search")
+    public ApiResult<List<SearchDrugsByNameResponse>> searchDrugsByName(@RequestParam("keyword") String keyword){
+        List<SearchDrugsByNameResponse> drugList = drugQService.searchDrugsByName(keyword);
+        return OK(drugList);
+    }
+
 
     // 약품 목록 검색
     @GetMapping

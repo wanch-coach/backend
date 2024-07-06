@@ -1,11 +1,13 @@
 package com.wanchcoach.domain.drug.service;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugDetailResponse;
+import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsByNameResponse;
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
 import com.wanchcoach.domain.drug.entity.Drug;
 import com.wanchcoach.domain.drug.repository.DrugQRepository;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDetailDto;
 import com.wanchcoach.domain.drug.service.dto.SearchDrugsDto;
+import com.wanchcoach.domain.drug.service.dto.SearchDrugsSimpleDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,20 @@ public class DrugQService {
 
     @Value("${data.drug-upload-link}")
     private String uploadLink;
+
+    public List<SearchDrugsByNameResponse> searchDrugsByName(String keyword){
+
+        List<SearchDrugsSimpleDto> drugInfo = drugQRepository.findDrugsByItemName(keyword);
+        List<SearchDrugsByNameResponse> drugList = new ArrayList<>();
+
+        for(SearchDrugsSimpleDto searchDrugsSimpleDto:drugInfo){
+            drugList.add(SearchDrugsByNameResponse.of(searchDrugsSimpleDto));
+        }
+
+        return drugList;
+    }
+
+
     public List<SearchDrugsResponse> searchDrugs(String type, String keyword){
 
         List<SearchDrugsDto> drugInfo = drugQRepository.findDrugsContainKeyword(type, keyword);
