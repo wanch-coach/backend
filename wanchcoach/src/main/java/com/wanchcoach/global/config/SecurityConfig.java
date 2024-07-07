@@ -50,7 +50,8 @@ public class SecurityConfig {
                         "/api/member/sendsms",
                         "/api/member/idcheck/**",
                         "/api/member/changepwdauth",
-                        "/api/login/**").permitAll()
+                        "/api/login/**",
+                        "/api/auth/updatetoken").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated());
 

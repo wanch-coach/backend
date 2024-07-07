@@ -3,6 +3,7 @@ package com.wanchcoach.domain.auth.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.wanchcoach.domain.auth.controller.request.AccessTokenUpdateRequest;
 import com.wanchcoach.domain.auth.controller.response.AuthSignupResponse;
 import com.wanchcoach.domain.auth.controller.response.AuthSignupTokenResponse;
 import com.wanchcoach.domain.auth.controller.response.SocialResponse;
@@ -10,6 +11,7 @@ import com.wanchcoach.domain.auth.infoResponse.OAuthInfoResponse;
 import com.wanchcoach.domain.auth.params.OAuthLoginParams;
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
+import com.wanchcoach.domain.auth.tokens.JwtTokenProvider;
 import com.wanchcoach.domain.family.entity.Family;
 import com.wanchcoach.domain.family.service.FamilyService;
 import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
@@ -21,10 +23,14 @@ import com.wanchcoach.global.api.ApiResult;
 import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -39,6 +45,8 @@ public class OAuthLoginService {
     private final MemberRepository memberRepository;
     private final AuthTokenGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthTokenGenerator authTokenGenerator;
     private final FamilyService familyService;
     private final MemberService memberService;
 
@@ -109,4 +117,22 @@ public class OAuthLoginService {
         return memberRepository.save(member);
     }
 
+    public String updateToken(AccessTokenUpdateRequest req) {
+
+        String accessToken = null;
+        if(jwtTokenProvider.validateToken(req.refreshToken())){
+            Authentication authentication = jwtTokenProvider.getAuthentication(req.refreshToken());
+            User user = (User) authentication.getPrincipal();
+            Long memberId = Long.valueOf(user.getUsername());
+            Member member = memberRepository.findByMemberId(memberId);
+            Long memberIdTest = authTokenGenerator.extractMemberId(req.refreshToken());
+            log.info(String.valueOf(memberIdTest));
+            if(!member.getRefreshToken().equals(req.refreshToken())){
+                return null;
+            }
+            String subject = memberId.toString();
+            accessToken = authTokenGenerator.getAccessToken(subject);
+        }
+        return accessToken;
+    }
 }

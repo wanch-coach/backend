@@ -1,6 +1,7 @@
 package com.wanchcoach.domain.auth.controller;
 
 import com.wanchcoach.domain.auth.application.OAuthLoginService;
+import com.wanchcoach.domain.auth.controller.request.AccessTokenUpdateRequest;
 import com.wanchcoach.domain.auth.controller.response.SocialResponse;
 import com.wanchcoach.domain.auth.params.KaKaoLoginParams;
 import com.wanchcoach.domain.auth.params.NaverLoginParams;
@@ -9,6 +10,7 @@ import com.wanchcoach.global.api.ApiResult;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,10 +29,17 @@ public class AuthController {
     }
 
 // https://kauth.kakao.com/oauth/authorize?client_id=370123a2ecc923df6371e651937c9038&redirect_uri=http://localhost:8081/api/login/oauth2/code/kakao&response_type=code&scope=account_email
-    @GetMapping("/login/oauth2/code/kakao")
-    public ApiResult<SocialResponse> loginKakao(KaKaoLoginParams params, HttpServletRequest request){
+    @PostMapping("/login/oauth2/code/kakao")
+    public ApiResult<?> loginKakao(@RequestBody KaKaoLoginParams params, HttpServletRequest request){
         log.info(params.toString());
         return ApiResult.OK(oAuthLoginService.login(params));
+    }
+
+    @PostMapping("/auth/updatetoken")
+    public ApiResult<?> updateAccessToken(@RequestBody AccessTokenUpdateRequest req){
+        log.info("<<< update AccessToken request >>>");
+        String accessToken = oAuthLoginService.updateToken(req);
+        return ApiResult.OK(accessToken);
     }
 
 }
