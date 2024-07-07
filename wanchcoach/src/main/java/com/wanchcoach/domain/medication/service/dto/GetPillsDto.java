@@ -1,7 +1,5 @@
 package com.wanchcoach.domain.medication.service.dto;
 
-import com.wanchcoach.domain.medication.controller.request.GetPillsRequest;
-
 import java.time.LocalDate;
 
 public record GetPillsDto(
@@ -10,7 +8,7 @@ public record GetPillsDto(
         LocalDate endDate
 ) {
 
-    public static GetPillsDto of(Long familyId, GetPillsRequest request){
-        return new GetPillsDto(familyId, request.startDate(), request.endDate());
+    public static GetPillsDto of(Long familyId, LocalDate startDate, LocalDate endDate){
+        return new GetPillsDto(familyId, startDate, endDate);
     }
 }

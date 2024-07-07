@@ -1,7 +1,6 @@
 package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
-import com.wanchcoach.domain.medication.controller.request.GetPillsRequest;
 import com.wanchcoach.domain.medication.controller.response.RecordCalendarResponse;
 import com.wanchcoach.domain.medication.controller.response.DailyPrescriptionResponse;
 import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
@@ -20,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -104,8 +104,8 @@ public class MedicationController {
 
     //내 약 정보 조회(지금까지 먹은 약)
     @GetMapping("/pills/families/{familyId}")
-    public ApiResult<?> getPills(@PathVariable(value="familyId")Long familyId, @RequestBody GetPillsRequest request){
-        List<TakenPillsResponse> takenPillsWithRecord =  medicationQService.getPills(GetPillsDto.of(familyId,request));
+    public ApiResult<?> getPills(@PathVariable(value="familyId")Long familyId, @RequestParam("start-date") LocalDate startDate, @RequestParam("end-date")LocalDate endDate){
+        List<TakenPillsResponse> takenPillsWithRecord =  medicationQService.getPills(GetPillsDto.of(familyId,startDate, endDate));
         return OK(takenPillsWithRecord);
     }
 
