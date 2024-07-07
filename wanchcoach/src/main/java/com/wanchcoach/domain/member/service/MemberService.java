@@ -122,7 +122,7 @@ public class MemberService {
         log.info(memberLoginDto.loginId());
         log.info(encryptedPwd);
         Member member = memberRepository.findByLoginIdAndEncryptedPwd(memberLoginDto.loginId(), encryptedPwd)
-                .orElseThrow(() -> new NotFoundException(Member.class, memberLoginDto.loginId()));
+                .orElseThrow(() -> new NotFoundException(Member.class, (memberLoginDto.loginId())+"를 찾을 수 없습니다."));
         AuthTokens authTokens = authTokenGenerator.generate(member.getMemberId());
         member.updateRefreshToken(authTokens.getRefreshToken());
 

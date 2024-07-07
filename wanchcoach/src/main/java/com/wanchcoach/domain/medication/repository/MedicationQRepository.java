@@ -180,8 +180,7 @@ public class MedicationQRepository {
                         drug.drugId,
                         drug.itemName,
                         drug.prductType,
-                        drugImage.filePath.coalesce(""),
-                        drug.drugId
+                        drugImage.filePath.coalesce("")
                 ))
                 .from(medicineRecord)
                 .join(family).on(medicineRecord.family.familyId.eq(family.familyId))
