@@ -14,7 +14,6 @@ import java.util.List;
 import static com.wanchcoach.domain.drug.entity.QDrug.drug;
 import static com.wanchcoach.domain.drug.entity.QDrugImage.drugImage;
 import static com.wanchcoach.domain.drug.entity.QFavoriteDrug.favoriteDrug;
-import static com.wanchcoach.domain.member.entity.QMember.member;
 
 @Repository
 @RequiredArgsConstructor
@@ -84,7 +83,7 @@ public class DrugQRepository {
 
     public SearchDrugsDetailDto findDrugDetail(Long drugId, Long memberId){
 
-        SearchDrugsDetailDto searchDrugDetailResponse = queryFactory.select(Projections.constructor(SearchDrugsDetailDto.class,
+        return queryFactory.select(Projections.constructor(SearchDrugsDetailDto.class,
                         favoriteDrug.favoriteId,
                         drug.drugId,
                         drug.itemName,
@@ -102,11 +101,8 @@ public class DrugQRepository {
                 ))
                 .from(drug)
                 .leftJoin(drugImage).on(drug.drugImage.drugImageId.eq(drugImage.drugImageId))
-                .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId))
-                .leftJoin(member).on(favoriteDrug.member.memberId.eq(member.memberId))
-                .where(drug.drugId.eq(drugId).and(member.memberId.eq(memberId)))
-
+                .leftJoin(favoriteDrug).on(favoriteDrug.drug.drugId.eq(drug.drugId).and(favoriteDrug.member.memberId.eq(memberId)))
+                .where(drug.drugId.eq(drugId))
                 .fetchFirst();
-        return searchDrugDetailResponse;
     }
 }
