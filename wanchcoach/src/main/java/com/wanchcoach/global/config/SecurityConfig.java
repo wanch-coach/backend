@@ -66,7 +66,7 @@ public class SecurityConfig {
 //                "http://localhost:4040",
 //                "https://192.168.1.62:3000",
 //                "http://192.168.1.62:3000")
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTION"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "ngrok-skip-browser-warning"));
 //        configuration.setAllowCredentials(false);
 
