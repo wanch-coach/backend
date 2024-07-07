@@ -136,6 +136,20 @@ public class TreatmentQueryService {
     }
 
     /**
+     * 회원 진료 월별 조회 메서드
+     *
+     * @param memberId 회원 ID
+     * @return 계정에 등록된 모든 가족의 월별 진료 정보
+     */
+    public TreatmentDateResponse getTreatmentsByDate(Long memberId, Integer year, Integer month, Integer day) {
+        List<Long> familyIds = familyQueryRepository.findFamilyIdsByMemberId(memberId);
+        List<TreatmentItem> items = treatmentQueryRepository.findTreatmentsByDate(familyIds, year, month, day);
+        List<TreatmentDateItem> dateItems = refineTreatmentItemsByDate(items);
+
+        return new TreatmentDateResponse(dateItems);
+    }
+
+    /**
      * 가족 진료 월별 조회 메서드
      *
      * @param familyId 가족 ID
