@@ -293,31 +293,41 @@ public class MedicationQRepository {
                 //복용했다면
                 if(record.prescriptionId().equals(pst.prescriptionId())){
                     if(record.time()==0){
-                        for(DailyPrescriptionInfo info : morningUnTaken){
+                        for(int i=0;i<morningUnTaken.size(); i++){
+                            DailyPrescriptionInfo info = morningUnTaken.get(i);
                             if(info.prescriptionId().equals(record.prescriptionId())){
                                 morningTaken.add(info);
-                                morningUnTaken.remove(info);
+                                morningUnTaken.remove(i);
+                                i--;
                             }
                         }
+
                     }else if(record.time()==1){
-                        for(DailyPrescriptionInfo info : noonUnTaken){
+                        for(int i=0;i<noonUnTaken.size(); i++){
+                            DailyPrescriptionInfo info = noonUnTaken.get(i);
                             if(info.prescriptionId().equals(record.prescriptionId())){
                                 noonTaken.add(info);
-                                noonUnTaken.remove(info);
+                                noonUnTaken.remove(i);
+                                i--;
                             }
                         }
+
                     }else if(record.time()==2){
-                        for(DailyPrescriptionInfo info : eveningUnTaken){
+                        for(int i=0;i<eveningUnTaken.size(); i++){
+                            DailyPrescriptionInfo info = eveningUnTaken.get(i);
                             if(info.prescriptionId().equals(record.prescriptionId())){
                                 eveningTaken.add(info);
-                                eveningUnTaken.remove(info);
+                                eveningUnTaken.remove(i);
+                                i--;
                             }
                         }
                     }else{
-                        for(DailyPrescriptionInfo info : beforeBedUnTaken){
+                        for(int i=0;i<beforeBedUnTaken.size(); i++){
+                            DailyPrescriptionInfo info = beforeBedUnTaken.get(i);
                             if(info.prescriptionId().equals(record.prescriptionId())){
                                 beforeBedTaken.add(info);
-                                beforeBedUnTaken.remove(info);
+                                beforeBedUnTaken.remove(i);
+                                i--;
                             }
                         }
                     }
