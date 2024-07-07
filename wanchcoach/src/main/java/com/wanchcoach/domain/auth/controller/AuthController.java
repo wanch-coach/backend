@@ -38,8 +38,7 @@ public class AuthController {
     @PostMapping("/auth/updatetoken")
     public ApiResult<?> updateAccessToken(@RequestBody AccessTokenUpdateRequest req){
         log.info("<<< update AccessToken request >>>");
-        String accessToken = oAuthLoginService.updateToken(req);
-        return ApiResult.OK(accessToken);
+        return ApiResult.OK(oAuthLoginService.updateToken(req));
     }
 
 }

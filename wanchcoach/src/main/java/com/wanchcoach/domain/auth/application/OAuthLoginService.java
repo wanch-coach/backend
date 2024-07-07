@@ -7,6 +7,7 @@ import com.wanchcoach.domain.auth.controller.request.AccessTokenUpdateRequest;
 import com.wanchcoach.domain.auth.controller.response.AuthSignupResponse;
 import com.wanchcoach.domain.auth.controller.response.AuthSignupTokenResponse;
 import com.wanchcoach.domain.auth.controller.response.SocialResponse;
+import com.wanchcoach.domain.auth.controller.response.TokenResponse;
 import com.wanchcoach.domain.auth.infoResponse.OAuthInfoResponse;
 import com.wanchcoach.domain.auth.params.OAuthLoginParams;
 import com.wanchcoach.domain.auth.tokens.AuthTokenGenerator;
@@ -14,23 +15,15 @@ import com.wanchcoach.domain.auth.tokens.AuthTokens;
 import com.wanchcoach.domain.auth.tokens.JwtTokenProvider;
 import com.wanchcoach.domain.family.entity.Family;
 import com.wanchcoach.domain.family.service.FamilyService;
-import com.wanchcoach.domain.family.service.dto.FamilyAddDto;
 import com.wanchcoach.domain.member.entity.Member;
 import com.wanchcoach.domain.member.repository.MemberRepository;
 import com.wanchcoach.domain.member.service.MemberService;
-import com.wanchcoach.domain.member.service.dto.AlarmUpdateDto;
-import com.wanchcoach.global.api.ApiResult;
-import com.wanchcoach.global.error.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -117,9 +110,9 @@ public class OAuthLoginService {
         return memberRepository.save(member);
     }
 
-    public String updateToken(AccessTokenUpdateRequest req) {
+    public TokenResponse updateToken(AccessTokenUpdateRequest req) {
 
-        String accessToken = null;
+        TokenResponse response = null;
         if(jwtTokenProvider.validateToken(req.refreshToken())){
             Authentication authentication = jwtTokenProvider.getAuthentication(req.refreshToken());
             User user = (User) authentication.getPrincipal();
@@ -131,8 +124,9 @@ public class OAuthLoginService {
                 return null;
             }
             String subject = memberId.toString();
-            accessToken = authTokenGenerator.getAccessToken(subject);
+            String accessToken = authTokenGenerator.getAccessToken(subject);
+            response = TokenResponse.of(accessToken);
         }
-        return accessToken;
+        return response;
     }
 }
