@@ -98,7 +98,7 @@ public class TreatmentController {
         return ApiResult.OK(response);
     }
 
-    @GetMapping("/prescription-info")
+    @PostMapping("/prescription-info")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ApiResult<PrescriptionOcrResponse> getPrescriptionInfo(@RequestPart MultipartFile file) {
         PrescriptionOcrResponse response = null;
