@@ -224,6 +224,7 @@ public class MedicationQRepository {
 
         //가족의 복용중인 처방전 목록
         List<DailyPrescriptionDto> prescriptionList = queryFactory.select(Projections.constructor(DailyPrescriptionDto.class,
+                        treatment.alarm,
                         prescription.remains,
                         hospital.name,
                         treatment.department,
@@ -248,10 +249,7 @@ public class MedicationQRepository {
                 .from(family)
                 .join(medicineRecord).on(medicineRecord.family.familyId.eq(family.familyId))
                 .join(prescription).on(medicineRecord.prescription.prescriptionId.eq(prescription.prescriptionId))
-                .where(family.familyId.eq(familyId).and(
-                        medicineRecord.createdDate.year().eq(year).and(
-                                medicineRecord.createdDate.month().eq(month).and(
-                                        medicineRecord.createdDate.dayOfMonth().eq(day)))))
+                .where(family.familyId.eq(familyId).and(medicineRecord.createdDate.year().eq(year)).and(medicineRecord.createdDate.month().eq(month)).and(medicineRecord.createdDate.dayOfMonth().eq(day)))
                 .fetch();
 
         //처방전 목록 순회
@@ -278,16 +276,16 @@ public class MedicationQRepository {
             }
 
             if(pst.morning()){
-                morningUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                morningUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
             if(pst.noon()){
-                noonUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                noonUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
             if(pst.evening()){
-                eveningUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                eveningUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
             if(pst.beforeBed()){
-                beforeBedUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                beforeBedUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
 
             //복용 기록
@@ -332,4 +330,15 @@ public class MedicationQRepository {
         DailyPrescription beforeBed = new DailyPrescription(beforeBedUnTaken, beforeBedTaken);
         return new DailyPrescriptionResponse(familyId, morning, noon, evening, beforeBed);
     }
+
+    public Long getTreatmentIdByPrescriptionId(Long prescriptionId){
+
+
+        return queryFactory.select(treatment.treatmentId)
+                .from(treatment)
+                .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
+                .where(prescription.prescriptionId.eq(prescriptionId))
+                .fetchOne();
+    }
+
 }
