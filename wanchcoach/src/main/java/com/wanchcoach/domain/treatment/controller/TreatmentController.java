@@ -187,11 +187,11 @@ public class TreatmentController {
      */
     @GetMapping(value ="/date", params = {"year", "month"})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentDateResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month, @AuthenticationPrincipal User user) {
+    public ApiResult<TreatmentDatesResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatmentsByDate called");
 
         Long memberId = Long.valueOf(user.getUsername());
-        TreatmentDateResponse response = treatmentQueryService.getTreatmentsByDate(memberId, year, month);
+        TreatmentDatesResponse response = treatmentQueryService.getTreatmentsByDate(memberId, year, month);
 
         return ApiResult.OK(response);
     }
@@ -206,7 +206,7 @@ public class TreatmentController {
      */
     @GetMapping(value ="/date", params = {"year", "month", "day"})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentDateResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month,  @RequestParam Integer day, @AuthenticationPrincipal User user) {
+    public ApiResult<TreatmentDateResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month, @RequestParam Integer day, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatmentsByDate called");
 
         Long memberId = Long.valueOf(user.getUsername());
@@ -225,12 +225,12 @@ public class TreatmentController {
      */
     @GetMapping("/date/families/{familyId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ApiResult<TreatmentDateResponse> getFamilyTreatmentsByDate(@PathVariable Long familyId, @RequestParam Integer year, @RequestParam Integer month,
-                                                                      @AuthenticationPrincipal User user) {
+    public ApiResult<TreatmentDatesResponse> getFamilyTreatmentsByDate(@PathVariable Long familyId, @RequestParam Integer year, @RequestParam Integer month,
+                                                                       @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getFamilyTreatmentsByDate called");
 
         Long memberId = Long.valueOf(user.getUsername());
-        TreatmentDateResponse response = treatmentQueryService.getFamilyTreatmentsByDate(memberId, familyId, year, month);
+        TreatmentDatesResponse response = treatmentQueryService.getFamilyTreatmentsByDate(memberId, familyId, year, month);
 
         return ApiResult.OK(response);
     }
