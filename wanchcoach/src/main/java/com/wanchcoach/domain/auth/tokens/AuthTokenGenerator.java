@@ -31,4 +31,11 @@ public class AuthTokenGenerator {
     public Long extractMemberId(String accessToken){
         return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
     }
+
+    public String getAccessToken(String subject) {
+        long now = (new Date()).getTime();
+        Date accessTokenExpiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        String acessToken = jwtTokenProvider.generate(subject, accessTokenExpiredAt);
+        return acessToken;
+    }
 }
