@@ -280,6 +280,7 @@ public class TreatmentQueryRepository {
                 .where(treatment.family.familyId.in(familyIds),
                         treatment.active.eq(true),
                         dateTemplate.eq(String.format("%d-%02d-%02d", year, month, day)))
+                .orderBy(treatment.date.asc())
                 // treatment.date.year().eq(year),
                 // treatment.date.month().eq(month)
                 .fetch();

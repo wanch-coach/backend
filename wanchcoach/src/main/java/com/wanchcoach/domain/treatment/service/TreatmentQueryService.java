@@ -127,12 +127,12 @@ public class TreatmentQueryService {
      * @param memberId 회원 ID
      * @return 계정에 등록된 모든 가족의 월별 진료 정보
      */
-    public TreatmentDateResponse getTreatmentsByDate(Long memberId, Integer year, Integer month) {
+    public TreatmentDatesResponse getTreatmentsByDate(Long memberId, Integer year, Integer month) {
         List<Long> familyIds = familyQueryRepository.findFamilyIdsByMemberId(memberId);
         List<TreatmentItem> items = treatmentQueryRepository.findTreatmentsByDate(familyIds, year, month);
         List<TreatmentDateItem> dateItems = refineTreatmentItemsByDate(items);
 
-        return new TreatmentDateResponse(dateItems);
+        return new TreatmentDatesResponse(dateItems);
     }
 
     /**
@@ -144,9 +144,8 @@ public class TreatmentQueryService {
     public TreatmentDateResponse getTreatmentsByDate(Long memberId, Integer year, Integer month, Integer day) {
         List<Long> familyIds = familyQueryRepository.findFamilyIdsByMemberId(memberId);
         List<TreatmentItem> items = treatmentQueryRepository.findTreatmentsByDate(familyIds, year, month, day);
-        List<TreatmentDateItem> dateItems = refineTreatmentItemsByDate(items);
 
-        return new TreatmentDateResponse(dateItems);
+        return new TreatmentDateResponse(items);
     }
 
     /**
@@ -155,7 +154,7 @@ public class TreatmentQueryService {
      * @param familyId 가족 ID
      * @return 가족의 월별 진료 정보
      */
-    public TreatmentDateResponse getFamilyTreatmentsByDate(Long memberId, Long familyId, Integer year, Integer month) {
+    public TreatmentDatesResponse getFamilyTreatmentsByDate(Long memberId, Long familyId, Integer year, Integer month) {
         Member member = memberQueryRepository.findByMemberId(memberId);
         Family family = familyQueryRepository.findById(familyId);
         checkValidAccess(member, family);
@@ -163,7 +162,7 @@ public class TreatmentQueryService {
         List<TreatmentItem> items = treatmentQueryRepository.findFamilyTreatmentsByDate(familyId, year, month);
         List<TreatmentDateItem> dateItems = refineTreatmentItemsByDate(items);
 
-        return new TreatmentDateResponse(dateItems);
+        return new TreatmentDatesResponse(dateItems);
     }
 
     private List<TreatmentDateItem> refineTreatmentItemsByDate(List<TreatmentItem> items) {
