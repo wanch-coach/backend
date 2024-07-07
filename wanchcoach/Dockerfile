@@ -4,8 +4,6 @@ ARG JAR_FILE=build/libs/wanchcoach-0.0.1-SNAPSHOT.jar
 
 ADD ${JAR_FILE} wanchcoach.jar
 
-COPY /home/ubuntu/sql/ src/main/resources/
-
 EXPOSE 8081
 
 # 환경변수 설정
