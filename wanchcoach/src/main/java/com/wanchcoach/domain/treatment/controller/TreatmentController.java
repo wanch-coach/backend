@@ -185,13 +185,32 @@ public class TreatmentController {
      * @param month 조회할 달
      * @return 전체 가족 월별 진료 정보
      */
-    @GetMapping("/date")
+    @GetMapping(value ="/date", params = {"year", "month"})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ApiResult<TreatmentDateResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month, @AuthenticationPrincipal User user) {
         log.info("TreatmentController#getTreatmentsByDate called");
 
         Long memberId = Long.valueOf(user.getUsername());
         TreatmentDateResponse response = treatmentQueryService.getTreatmentsByDate(memberId, year, month);
+
+        return ApiResult.OK(response);
+    }
+
+    /**
+     * 전체 가족 진료 날짜별 조회 API
+     *
+     * @param year 조회할 연도
+     * @param month 조회할 달
+     * @param day 조회할 날짜
+     * @return 전체 가족 월별 진료 정보
+     */
+    @GetMapping(value ="/date", params = {"year", "month", "day"})
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ApiResult<TreatmentDateResponse> getTreatmentsByDate(@RequestParam Integer year, @RequestParam Integer month,  @RequestParam Integer day, @AuthenticationPrincipal User user) {
+        log.info("TreatmentController#getTreatmentsByDate called");
+
+        Long memberId = Long.valueOf(user.getUsername());
+        TreatmentDateResponse response = treatmentQueryService.getTreatmentsByDate(memberId, year, month, day);
 
         return ApiResult.OK(response);
     }

@@ -249,6 +249,39 @@ public class TreatmentQueryRepository {
     /**
      * 가족 ID 집합으로 진료 조회 쿼리
      *
+     * @param familyIds 가족 ID 목록
+     * @return 모든 진료 정보
+     */
+    public List<TreatmentItem> findTreatmentsByDate(List<Long> familyIds, Integer year, Integer month, Integer day) {
+
+        DateTemplate<String> dateTemplate = Expressions.dateTemplate(String.class, "DATE_FORMAT({0}, '%Y-%m-%d')", treatment.date);
+
+        return queryFactory
+                .select(Projections.constructor(TreatmentItem.class,
+                        treatment.treatmentId,
+                        treatment.family.familyId,
+                        treatment.family.name,
+                        treatment.family.color,
+                        treatment.hospital.hospitalId,
+                        treatment.hospital.name,
+                        treatment.prescription.prescriptionId,
+                        treatment.department,
+                        treatment.date,
+                        treatment.taken,
+                        treatment.alarm,
+                        treatment.symptom))
+                .from(treatment)
+                .where(treatment.family.familyId.in(familyIds),
+                        treatment.active.eq(true),
+                        dateTemplate.eq(String.format("%d-%02d-%02d", year, month, day)))
+                // treatment.date.year().eq(year),
+                // treatment.date.month().eq(month)
+                .fetch();
+    }
+
+    /**
+     * 가족 ID 집합으로 진료 조회 쿼리
+     *
      * @param familyId 가족 ID
      * @return 모든 진료 정보
      */
