@@ -211,10 +211,13 @@ public class MedicationQRepository {
 
         List<DailyPrescriptionInfo> morningTaken = new ArrayList<>();
         List<DailyPrescriptionInfo> morningUnTaken= new ArrayList<>();
+
         List<DailyPrescriptionInfo> noonTaken= new ArrayList<>();
         List<DailyPrescriptionInfo> noonUnTaken= new ArrayList<>();
+
         List<DailyPrescriptionInfo> eveningTaken= new ArrayList<>();
         List<DailyPrescriptionInfo> eveningUnTaken= new ArrayList<>();
+
         List<DailyPrescriptionInfo> beforeBedTaken= new ArrayList<>();
         List<DailyPrescriptionInfo> beforeBedUnTaken= new ArrayList<>();
 
@@ -234,7 +237,6 @@ public class MedicationQRepository {
                 .join(treatment).on(treatment.family.familyId.eq(family.familyId))
                 .join(hospital).on(treatment.hospital.hospitalId.eq(hospital.hospitalId))
                 .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
-                .join(medicineRecord).on(medicineRecord.prescription.prescriptionId.eq(prescription.prescriptionId))
                 .where(family.familyId.eq(familyId).and(prescription.taking.eq(true)))
                 .fetch();
 
