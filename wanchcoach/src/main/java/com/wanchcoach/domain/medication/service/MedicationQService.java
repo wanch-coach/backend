@@ -130,4 +130,9 @@ public class MedicationQService {
         return response;
     }
 
+    public Long getTreatmentIdByPrescriptionId(Long prescriptionId){
+        Long treatmentId = medicationQRepository.getTreatmentIdByPrescriptionId(prescriptionId);
+        return treatmentId;
+    }
+
 }

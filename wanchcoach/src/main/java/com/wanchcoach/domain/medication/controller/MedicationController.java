@@ -1,12 +1,8 @@
 package com.wanchcoach.domain.medication.controller;
 
 import com.wanchcoach.domain.drug.controller.dto.response.SearchDrugsResponse;
-import com.wanchcoach.domain.medication.controller.response.RecordCalendarResponse;
-import com.wanchcoach.domain.medication.controller.response.DailyPrescriptionResponse;
-import com.wanchcoach.domain.medication.controller.response.TakenPillsResponse;
-import com.wanchcoach.domain.medication.controller.response.PrescriptionRecordResponse;
+import com.wanchcoach.domain.medication.controller.response.*;
 import com.wanchcoach.domain.medication.controller.request.TakingMedicineRequest;
-import com.wanchcoach.domain.medication.controller.response.TodayMedicationResponse;
 import com.wanchcoach.domain.medication.service.MedicationQService;
 import com.wanchcoach.domain.medication.service.MedicationService;
 import com.wanchcoach.domain.medication.service.dto.GetPillsDto;
@@ -74,9 +70,11 @@ public class MedicationController {
         }
     }
     //복약 알림 여부 수정(처방전 On, Off)
-    @PatchMapping("/alarm/{medicineRecordId}")
-    public ApiResult<?> updateAlarm(@PathVariable(value="medicineRecordId")Long medicineRecordId){
-        return OK(null);
+    @PatchMapping("/alarm/{prescriptionId}")
+    public ApiResult<?> updateAlarm(@PathVariable(value="prescriptionId")Long prescriptionId){
+        Long treatmentId = medicationQService.getTreatmentIdByPrescriptionId(prescriptionId);
+        medicationService.changeAlarm(treatmentId);
+        return OK(prescriptionId);
     }
 
     //월별 복약 이력 조회(복약 이력/달력)

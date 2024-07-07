@@ -333,4 +333,14 @@ public class MedicationQRepository {
         DailyPrescription beforeBed = new DailyPrescription(beforeBedUnTaken, beforeBedTaken);
         return new DailyPrescriptionResponse(familyId, morning, noon, evening, beforeBed);
     }
+
+    public Long getTreatmentIdByPrescriptionId(Long prescriptionId){
+
+        return queryFactory.select(treatment.treatmentId)
+                .from(treatment)
+                .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
+                .where(prescription.prescriptionId.eq(prescriptionId))
+                .fetchOne();
+    }
+
 }
