@@ -12,6 +12,7 @@ public class TreatmentItem implements Comparable<TreatmentItem> {
     private Long id;
     private Long familyId;
     private String familyName;
+    private String familyColor;
     private Long hospitalId;
     private String hospitalName;
     private Long prescriptionId;

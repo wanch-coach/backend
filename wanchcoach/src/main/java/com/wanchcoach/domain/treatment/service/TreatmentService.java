@@ -112,9 +112,9 @@ public class TreatmentService {
             prescribedDrugRepository.save(cpmDto.toEntity(prescription, drug));
         }
 
-        // todo: 예정된 복약 기록 저장
+        // 예정된 복약 기록 저장 > 다른 방식으로 처리
         /*
-            medicalService.createScheduledMedicineRecord();
+            medicationService.createScheduledMedicineRecord(memberId, );
             1. 진료 ID로 가족 찾기
                 Long familyId = treatment.getFamily().getId();
             2. 진료 시간 체크
