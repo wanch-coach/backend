@@ -224,6 +224,7 @@ public class MedicationQRepository {
 
         //가족의 복용중인 처방전 목록
         List<DailyPrescriptionDto> prescriptionList = queryFactory.select(Projections.constructor(DailyPrescriptionDto.class,
+                        treatment.alarm,
                         prescription.remains,
                         hospital.name,
                         treatment.department,
@@ -278,16 +279,16 @@ public class MedicationQRepository {
             }
 
             if(pst.morning()){
-                morningUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                morningUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
             if(pst.noon()){
-                noonUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                noonUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
             if(pst.evening()){
-                eveningUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                eveningUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
             if(pst.beforeBed()){
-                beforeBedUnTaken.add(new DailyPrescriptionInfo(pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
+                beforeBedUnTaken.add(new DailyPrescriptionInfo(pst.alarm(), pst.prescriptionId(), pst.hospitalName(), pst.department(), pst.remains(), drugResponse));
             }
 
             //복용 기록
