@@ -3,6 +3,7 @@ package com.wanchcoach.domain.auth.controller;
 import com.wanchcoach.domain.auth.application.OAuthLoginService;
 import com.wanchcoach.domain.auth.controller.request.AccessTokenUpdateRequest;
 import com.wanchcoach.domain.auth.controller.response.SocialResponse;
+import com.wanchcoach.domain.auth.controller.response.TokenResponse;
 import com.wanchcoach.domain.auth.params.KaKaoLoginParams;
 import com.wanchcoach.domain.auth.params.NaverLoginParams;
 import com.wanchcoach.domain.auth.tokens.AuthTokens;
@@ -36,7 +37,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/updatetoken")
-    public ApiResult<?> updateAccessToken(@RequestBody AccessTokenUpdateRequest req){
+    public ApiResult<TokenResponse> updateAccessToken(@RequestBody AccessTokenUpdateRequest req){
         log.info("<<< update AccessToken request >>>");
         return ApiResult.OK(oAuthLoginService.updateToken(req));
     }

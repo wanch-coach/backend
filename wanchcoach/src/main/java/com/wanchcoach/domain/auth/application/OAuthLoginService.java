@@ -114,12 +114,8 @@ public class OAuthLoginService {
 
         TokenResponse response = null;
         if(jwtTokenProvider.validateToken(req.refreshToken())){
-            Authentication authentication = jwtTokenProvider.getAuthentication(req.refreshToken());
-            User user = (User) authentication.getPrincipal();
-            Long memberId = Long.valueOf(user.getUsername());
+            Long memberId = authTokenGenerator.extractMemberId(req.refreshToken());
             Member member = memberRepository.findByMemberId(memberId);
-            Long memberIdTest = authTokenGenerator.extractMemberId(req.refreshToken());
-            log.info(String.valueOf(memberIdTest));
             if(!member.getRefreshToken().equals(req.refreshToken())){
                 return null;
             }
