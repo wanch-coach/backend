@@ -144,7 +144,7 @@ public class MedicationQRepository {
                         hospital.name,
                         treatment.department,
                         prescription.prescriptionId,
-                        prescription.createdDate,
+                        medicineRecord.takenDate,
                         medicineRecord.time
                 ))
                 .from(treatment)
@@ -152,7 +152,7 @@ public class MedicationQRepository {
                 .join(hospital).on(treatment.hospital.hospitalId.eq(hospital.hospitalId))
                 .join(prescription).on(prescription.prescriptionId.eq(treatment.prescription.prescriptionId))
                 .join(medicineRecord).on(medicineRecord.prescription.prescriptionId.eq(prescription.prescriptionId))
-                .where(family.familyId.eq(familyId).and(medicineRecord.createdDate.year().eq(year).and(medicineRecord.createdDate.month().eq(month))))
+                .where(family.familyId.eq(familyId).and(medicineRecord.takenDate.year().eq(year).and(medicineRecord.takenDate.month().eq(month))))
                 .fetch();
 
         for(MedicineRecordPrescriptionDto dto : prescriptionList) {
