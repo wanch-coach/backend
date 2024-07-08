@@ -10,6 +10,7 @@ import lombok.*;
 public class TodayMedicationDto{
     private Long familyId;
     private String familyName;
+    private String familyColor;
     private String hospitalName;
     private String department;
     private Boolean morning;

@@ -55,6 +55,7 @@ public class MedicationQRepository {
         List<TodayMedicationDto> today = queryFactory.select(Projections.constructor(TodayMedicationDto.class,
                         family.familyId,
                         family.name,
+                        family.color,
                         hospital.name,
                         treatment.department,
                         prescription.morning,
