@@ -46,6 +46,7 @@ public class MedicationQService {
     }
 
     public PrescriptionRecordResponse getPrescriptionRecord(Long familyId){
+        Family family = familyRepository.findByFamilyId(familyId).orElseThrow();
         List<PrescriptionRecordDto> prescriptionListDto = medicationQRepository.getPrescriptionRecord(familyId);
 
         List<PrescriptionTakingRecord> prescriptionTaking = new ArrayList<>();
@@ -60,7 +61,7 @@ public class MedicationQService {
             }
         }
 
-        return new PrescriptionRecordResponse(prescriptionTaking, prescriptionEnd);
+        return new PrescriptionRecordResponse(family.getColor(),prescriptionTaking, prescriptionEnd);
     }
 
     public RecordCalendarResponse getCalendarRecord(Long familyId, int year, int month){
@@ -125,7 +126,7 @@ public class MedicationQService {
 
         List<DailyPrescriptionResponse> response = new ArrayList<>();
         for(Family fam : familyList){
-            response.add(medicationQRepository.getDailyPrescriptions(year, month, day, fam.getFamilyId()));
+            response.add(medicationQRepository.getDailyPrescriptions(fam.getColor(),year, month, day, fam.getFamilyId()));
         }
         return response;
     }

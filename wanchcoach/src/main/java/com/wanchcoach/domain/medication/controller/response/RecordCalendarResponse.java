@@ -5,7 +5,7 @@ import java.util.List;
 public record RecordCalendarResponse(
     int year,
     int month,
-    String color,
+    String familyColor,
     List<RecordCalendarDay> records
 
 ) {
