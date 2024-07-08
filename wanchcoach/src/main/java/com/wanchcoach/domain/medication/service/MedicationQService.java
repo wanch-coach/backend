@@ -125,7 +125,7 @@ public class MedicationQService {
 
         List<DailyPrescriptionResponse> response = new ArrayList<>();
         for(Family fam : familyList){
-            response.add(medicationQRepository.getDailyPrescriptions(year, month, day, fam.getFamilyId()));
+            response.add(medicationQRepository.getDailyPrescriptions(fam.getColor(),year, month, day, fam.getFamilyId()));
         }
         return response;
     }

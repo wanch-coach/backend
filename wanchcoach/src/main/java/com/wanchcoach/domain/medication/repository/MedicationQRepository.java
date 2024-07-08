@@ -208,7 +208,7 @@ public class MedicationQRepository {
         return pillsDto;
     }
 
-    public DailyPrescriptionResponse getDailyPrescriptions(int year, int month, int day, Long familyId){
+    public DailyPrescriptionResponse getDailyPrescriptions(String familyColor, int year, int month, int day, Long familyId){
 
         List<DailyPrescriptionInfo> morningTaken = new ArrayList<>();
         List<DailyPrescriptionInfo> morningUnTaken= new ArrayList<>();
@@ -339,7 +339,7 @@ public class MedicationQRepository {
         DailyPrescription noon = new DailyPrescription(noonUnTaken, noonTaken);
         DailyPrescription evening = new DailyPrescription(eveningUnTaken, eveningTaken);
         DailyPrescription beforeBed = new DailyPrescription(beforeBedUnTaken, beforeBedTaken);
-        return new DailyPrescriptionResponse(familyId, morning, noon, evening, beforeBed);
+        return new DailyPrescriptionResponse(familyId, familyColor, morning, noon, evening, beforeBed);
     }
 
     public Long getTreatmentIdByPrescriptionId(Long prescriptionId){
