@@ -37,6 +37,7 @@ public class MedicationService {
                     .family(family)
                     .prescription(prescription)
                     .time(takingMedicineDto.time())
+                    .takenDate(takingMedicineDto.takenDate())
                     .build();
             medicineRecordRepository.save(medicineRecord);
         }else{
