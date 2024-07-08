@@ -250,7 +250,7 @@ public class MedicationQRepository {
                 .from(family)
                 .join(medicineRecord).on(medicineRecord.family.familyId.eq(family.familyId))
                 .join(prescription).on(medicineRecord.prescription.prescriptionId.eq(prescription.prescriptionId))
-                .where(family.familyId.eq(familyId).and(medicineRecord.createdDate.year().eq(year)).and(medicineRecord.createdDate.month().eq(month)).and(medicineRecord.createdDate.dayOfMonth().eq(day)))
+                .where(family.familyId.eq(familyId).and(medicineRecord.takenDate.year().eq(year)).and(medicineRecord.takenDate.month().eq(month)).and(medicineRecord.takenDate.dayOfMonth().eq(day)))
                 .fetch();
 
         //처방전 목록 순회
