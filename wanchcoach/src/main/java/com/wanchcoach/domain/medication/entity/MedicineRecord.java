@@ -10,6 +10,8 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @Entity
 @Getter
@@ -32,4 +34,7 @@ public class MedicineRecord extends BaseEntity {
 
     @Column(name="time", nullable = false)
     private Integer time;
+
+    @Column(name="taken_date")
+    private LocalDate takenDate;
 }
