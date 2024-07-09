@@ -83,7 +83,7 @@ public class TreatmentQueryRepository {
                             treatment.date.goe(LocalDateTime.now()),
                             treatment.active.eq(true)
                     )
-                    .orderBy(treatment.date.desc())
+                    .orderBy(treatment.date.asc())
                     .fetch();
         } else {
             return queryFactory
@@ -138,7 +138,7 @@ public class TreatmentQueryRepository {
                             treatment.date.goe(LocalDateTime.now()),
                             treatment.active.eq(true)
                     )
-                    .orderBy(treatment.date.desc())
+                    .orderBy(treatment.date.asc())
                     .fetch();
         } else {
             return queryFactory
